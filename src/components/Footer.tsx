@@ -1,17 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Clock, Facebook, MessageCircle, Send } from 'lucide-react';
 
-const languages = [
-  { code: 'km', label: 'ខ្មែរ' },      // Khmer (default)
-  { code: 'zh', label: '中文' },        // Chinese
-  { code: 'en', label: 'English' },     // English
-  { code: 'th', label: 'ไทย' },         // Thai
-  { code: 'vi', label: 'Tiếng Việt' },  // Vietnamese
-  { code: 'ja', label: '日本語' },       // Japanese
-  { code: 'ko', label: '한국어' },       // Korean
-  { code: 'fr', label: 'Français' },    // French
-];
-
 const jobSeekerLinks = [
   { label: 'Search Jobs', path: '/jobs' },
   { label: 'Create Resume', path: '/resume' },
@@ -167,15 +156,15 @@ export default function Footer() {
             &copy; 2025 高棉职通车 (Khmer Career Express). All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
+            <Link to="/privacy" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
               Privacy Policy
-            </a>
-            <a href="#" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
+            </Link>
+            <Link to="/terms" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
               Terms of Service
-            </a>
-            <a href="#" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
+            </Link>
+            <Link to="/privacy" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
               Cookies
-            </a>
+            </Link>
           </div>
         </div>
       </div>
