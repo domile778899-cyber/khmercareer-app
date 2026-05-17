@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Jobs from './pages/Jobs'
@@ -14,26 +15,34 @@ import Training from './pages/Training'
 import Business from './pages/Business'
 import Credit from './pages/Credit'
 import Loan from './pages/Loan'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Profile from './pages/Profile'
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/jobs" element={<Jobs />} />
-        <Route path="/jobs/:id" element={<JobDetail />} />
-        <Route path="/employers" element={<Employers />} />
-        <Route path="/resume" element={<Resume />} />
-        <Route path="/interview" element={<Interview />} />
-        <Route path="/live" element={<Live />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/training" element={<Training />} />
-        <Route path="/business" element={<Business />} />
-        <Route path="/credit" element={<Credit />} />
-        <Route path="/loan" element={<Loan />} />
-      </Route>
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/jobs" element={<Jobs />} />
+          <Route path="/jobs/:id" element={<JobDetail />} />
+          <Route path="/employers" element={<Employers />} />
+          <Route path="/resume" element={<Resume />} />
+          <Route path="/interview" element={<Interview />} />
+          <Route path="/live" element={<Live />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/training" element={<Training />} />
+          <Route path="/business" element={<Business />} />
+          <Route path="/credit" element={<Credit />} />
+          <Route path="/loan" element={<Loan />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   )
 }
