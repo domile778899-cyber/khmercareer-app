@@ -156,12 +156,15 @@ export default function Footer() {
             {t('footer.copyright')}
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
+            <Link to="/privacy" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
               {t('footer.privacy')}
-            </a>
-            <a href="#" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
+            </Link>
+            <Link to="/terms" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
               {t('footer.terms')}
-            </a>
+            </Link>
+            <Link to="/privacy" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
+              Cookies
+            </Link>
           </div>
         </div>
       </div>
