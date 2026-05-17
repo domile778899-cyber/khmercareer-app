@@ -9,6 +9,7 @@ import Pricing from './pages/Pricing'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import Interview from './pages/Interview'
+import Live from './pages/Live'
 
 export default function App() {
   return (
@@ -19,10 +20,11 @@ export default function App() {
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/employers" element={<Employers />} />
         <Route path="/resume" element={<Resume />} />
+        <Route path="/interview" element={<Interview />} />
+        <Route path="/live" element={<Live />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/interview" element={<Interview />} />
       </Route>
     </Routes>
   )
