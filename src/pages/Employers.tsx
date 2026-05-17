@@ -15,8 +15,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Users,
-  BarChart3,
-  Clock,
   Globe,
 } from 'lucide-react';
 import {
@@ -37,15 +35,6 @@ import {
 const easeSmooth = [0.25, 0.46, 0.45, 0.94] as [number, number, number, number];
 const easeOutExpo = [0.19, 1, 0.22, 1] as [number, number, number, number];
 const easeBounce = [0.34, 1.56, 0.64, 1] as [number, number, number, number];
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.1, duration: 0.7, ease: easeSmooth },
-  }),
-};
 
 const staggerContainer = {
   hidden: {},

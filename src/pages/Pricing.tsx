@@ -30,11 +30,6 @@ const staggerChild = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: easeSmooth } },
 };
 
-const fadeUp = (delay = 0) => ({
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { delay, duration: 0.7, ease: easeOutExpo } },
-});
-
 /* ─── Feature data ─── */
 const featureCategories = [
   {
@@ -480,10 +475,8 @@ export default function Pricing() {
                         {cat.name}
                       </td>
                     </tr>
-                    {cat.features.map((f, fi) => {
-                      const rowIdx = ci * 10 + fi;
-                      return (
-                        <motion.tr
+                    {cat.features.map((f, fi) => (
+                      <motion.tr
                           key={fi}
                           initial={{ opacity: 0, y: 10 }}
                           whileInView={{ opacity: 1, y: 0 }}
@@ -504,8 +497,7 @@ export default function Pricing() {
                             <CellValue value={f.enterprise} />
                           </td>
                         </motion.tr>
-                      );
-                    })}
+                    ))}
                   </React.Fragment>
                 ))}
               </tbody>
