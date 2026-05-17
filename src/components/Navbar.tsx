@@ -1,8 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, User, LogOut, Briefcase, Building2 } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import type { UserRole } from '../context/AuthContext';
 
-const navLinks = [
+interface NavLink {
+  label: string;
+  path: string;
+  roles?: UserRole[];
+}
+
+const allNavLinks: NavLink[] = [
   { label: 'Jobs', path: '/jobs' },
   { label: 'Training', path: '/training' },
   { label: 'Loan', path: '/loan' },
@@ -17,14 +25,14 @@ const navLinks = [
 ];
 
 const languages = [
-  { code: 'km', label: 'ខ្មែរ' },      // Khmer (default)
-  { code: 'zh', label: '中文' },        // Chinese
-  { code: 'en', label: 'English' },     // English
-  { code: 'th', label: 'ไทย' },         // Thai
-  { code: 'vi', label: 'Tiếng Việt' },  // Vietnamese
-  { code: 'ja', label: '日本語' },       // Japanese
-  { code: 'ko', label: '한국어' },       // Korean
-  { code: 'fr', label: 'Français' },    // French
+  { code: 'km', label: 'ខ្មែរ' },
+  { code: 'zh', label: '中文' },
+  { code: 'en', label: 'English' },
+  { code: 'th', label: 'ไทย' },
+  { code: 'vi', label: 'Tiếng Việt' },
+  { code: 'ja', label: '日本語' },
+  { code: 'ko', label: '한국어' },
+  { code: 'fr', label: 'Français' },
 ];
 
 function getLanguageFont(code: string): string {
@@ -49,11 +57,14 @@ function getLanguageFont(code: string): string {
 
 export default function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [lang, setLang] = useState('km');
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [avatarDropdownOpen, setAvatarDropdownOpen] = useState(false);
 
   const handleScroll = useCallback(() => {
     const currentY = window.scrollY;
@@ -73,6 +84,7 @@ export default function Navbar() {
 
   useEffect(() => {
     setMobileOpen(false);
+    setAvatarDropdownOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -83,10 +95,27 @@ export default function Navbar() {
     }
   }, [mobileOpen]);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!avatarDropdownOpen) return;
+    const handleClick = () => setAvatarDropdownOpen(false);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [avatarDropdownOpen]);
+
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
   };
+
+  // Filter nav links based on role
+  const navLinks = allNavLinks.filter((link) => {
+    if (!link.roles) return true;
+    if (!user) return true;
+    return link.roles.includes(user.role);
+  });
+
+  const avatarLetter = (user?.fullName || user?.email || '?')[0].toUpperCase();
 
   return (
     <>
@@ -118,27 +147,25 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-4 py-2 text-body font-medium transition-colors duration-200 ${
+                className={`px-3 py-2 text-body font-medium transition-colors duration-200 ${
                   isActive(link.path)
                     ? 'text-gold'
-                    : scrolled
-                    ? 'text-charcoal hover:text-gold'
                     : 'text-charcoal hover:text-gold'
                 } relative`}
               >
                 {link.label}
                 {isActive(link.path) && (
-                  <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-gold rounded-full" />
+                  <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-gold rounded-full" />
                 )}
               </Link>
             ))}
           </div>
 
-          {/* Right Side: Language Switcher + CTA */}
+          {/* Right Side: Language Switcher + Auth */}
           <div className="hidden lg:flex items-center gap-3">
             {/* Language Switcher */}
             <div className="flex items-center bg-sand/50 rounded-full p-0.5">
-              {languages.map((l) => (
+              {languages.slice(0, 3).map((l) => (
                 <button
                   key={l.code}
                   onClick={() => setLang(l.code)}
@@ -147,20 +174,93 @@ export default function Navbar() {
                       ? 'bg-gold text-deep-brown'
                       : 'text-warm-gray hover:text-charcoal'
                   }`}
-                  style={{
-                    fontFamily: getLanguageFont(l.code),
-                  }}
+                  style={{ fontFamily: getLanguageFont(l.code) }}
                 >
                   {l.label}
                 </button>
               ))}
             </div>
-            <Link
-              to="/employers"
-              className="bg-coral text-white px-5 py-2.5 rounded-xl text-button-small font-semibold min-h-[40px] flex items-center justify-center shadow-coral hover:bg-coral-dark hover:scale-[1.03] transition-all duration-200"
-            >
-              Post a Job
-            </Link>
+
+            {/* Auth Section */}
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setAvatarDropdownOpen(!avatarDropdownOpen);
+                  }}
+                  className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full hover:bg-sand/30 transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gold flex items-center justify-center text-deep-brown text-caption font-bold">
+                    {avatarLetter}
+                  </div>
+                  <span className="text-body-small font-medium text-charcoal max-w-[80px] truncate">
+                    {user?.fullName || 'User'}
+                  </span>
+                </button>
+
+                {/* Avatar Dropdown */}
+                {avatarDropdownOpen && (
+                  <div
+                    className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl border border-sand shadow-[0_8px_32px_rgba(0,0,0,0.12)] py-2 z-[200]"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="px-4 py-3 border-b border-sand mb-1">
+                      <p className="text-body-small font-semibold text-charcoal truncate">
+                        {user?.fullName || 'User'}
+                      </p>
+                      <p className="text-caption text-warm-gray truncate">{user?.email}</p>
+                      <div className="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-sand text-warm-gray text-caption">
+                        {user?.role === 'employer' ? <Building2 size={10} /> : <Briefcase size={10} />}
+                        {user?.role === 'employer' ? 'Employer' : 'Job Seeker'}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => { navigate('/profile'); setAvatarDropdownOpen(false); }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-body-small text-charcoal hover:bg-gold/10 hover:text-gold transition-colors"
+                    >
+                      <User size={16} />
+                      My Profile
+                    </button>
+                    <button
+                      onClick={() => {
+                        logout();
+                        navigate('/');
+                        setAvatarDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-body-small text-coral hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut size={16} />
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/login"
+                  className="px-4 py-2 rounded-xl text-body-small font-medium text-charcoal hover:text-gold hover:bg-gold/5 transition-all duration-200"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="bg-gold text-deep-brown px-4 py-2 rounded-xl text-body-small font-semibold flex items-center justify-center shadow-[0_2px_8px_rgba(212,175,55,0.25)] hover:bg-gold-dark hover:scale-[1.03] transition-all duration-200"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
+
+            {!isAuthenticated && (
+              <Link
+                to="/employers"
+                className="bg-coral text-white px-5 py-2.5 rounded-xl text-button-small font-semibold min-h-[40px] flex items-center justify-center shadow-coral hover:bg-coral-dark hover:scale-[1.03] transition-all duration-200"
+              >
+                Post a Job
+              </Link>
+            )}
           </div>
 
           {/* Mobile: Hamburger */}
@@ -201,7 +301,7 @@ export default function Navbar() {
 
             {/* Mobile Language Switcher */}
             <div className="flex items-center justify-center gap-2 p-4 border-b border-sand">
-              {languages.map((l) => (
+              {languages.slice(0, 3).map((l) => (
                 <button
                   key={l.code}
                   onClick={() => setLang(l.code)}
@@ -216,7 +316,43 @@ export default function Navbar() {
               ))}
             </div>
 
-            <div className="flex flex-col gap-2 p-4 flex-1">
+            {/* Mobile: Auth Section */}
+            {isAuthenticated && (
+              <div className="p-4 border-b border-sand bg-gold/5">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-gold flex items-center justify-center text-deep-brown text-body font-bold">
+                    {avatarLetter}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-body font-semibold text-charcoal truncate">{user?.fullName || 'User'}</p>
+                    <p className="text-caption text-warm-gray truncate">{user?.email}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-3">
+                  <Link
+                    to="/profile"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-gold text-deep-brown text-body-small font-semibold rounded-xl"
+                  >
+                    <User size={16} />
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      navigate('/');
+                      setMobileOpen(false);
+                    }}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 border-2 border-coral text-coral text-body-small font-semibold rounded-xl"
+                  >
+                    <LogOut size={16} />
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2 p-4 flex-1 overflow-y-auto">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
@@ -232,6 +368,26 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+
+              {!isAuthenticated && (
+                <div className="mt-4 space-y-2">
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="block w-full text-center py-3.5 border-2 border-gold text-gold rounded-xl text-button font-semibold min-h-[48px]"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setMobileOpen(false)}
+                    className="block w-full text-center py-3.5 bg-gold text-deep-brown rounded-xl text-button font-semibold min-h-[48px]"
+                  >
+                    Register
+                  </Link>
+                </div>
+              )}
+
               <Link
                 to="/employers"
                 onClick={() => setMobileOpen(false)}

@@ -1,17 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Clock, Facebook, MessageCircle, Send } from 'lucide-react';
 
-const languages = [
-  { code: 'km', label: 'ខ្មែរ' },      // Khmer (default)
-  { code: 'zh', label: '中文' },        // Chinese
-  { code: 'en', label: 'English' },     // English
-  { code: 'th', label: 'ไทย' },         // Thai
-  { code: 'vi', label: 'Tiếng Việt' },  // Vietnamese
-  { code: 'ja', label: '日本語' },       // Japanese
-  { code: 'ko', label: '한국어' },       // Korean
-  { code: 'fr', label: 'Français' },    // French
-];
-
 const jobSeekerLinks = [
   { label: 'Search Jobs', path: '/jobs' },
   { label: 'Create Resume', path: '/resume' },
