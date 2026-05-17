@@ -7,25 +7,50 @@ const navLinks = [
   { label: 'Training', path: '/training' },
   { label: 'Employers', path: '/employers' },
   { label: 'Interview', path: '/interview' },
-  { label: 'Resume', path: '/resume' },
   { label: 'Live', path: '/live' },
+  { label: 'Resume', path: '/resume' },
   { label: 'Pricing', path: '/pricing' },
   { label: 'About', path: '/about' },
   { label: 'Contact', path: '/contact' },
 ];
 
 const languages = [
-  { code: 'km', label: 'ខ្មែរ' },
-  { code: 'zh', label: '中文' },
-  { code: 'en', label: 'EN' },
+  { code: 'km', label: 'ខ្មែរ' },      // Khmer (default)
+  { code: 'zh', label: '中文' },        // Chinese
+  { code: 'en', label: 'English' },     // English
+  { code: 'th', label: 'ไทย' },         // Thai
+  { code: 'vi', label: 'Tiếng Việt' },  // Vietnamese
+  { code: 'ja', label: '日本語' },       // Japanese
+  { code: 'ko', label: '한국어' },       // Korean
+  { code: 'fr', label: 'Français' },    // French
 ];
+
+function getLanguageFont(code: string): string {
+  switch (code) {
+    case 'km':
+      return 'Noto Sans Khmer, sans-serif';
+    case 'zh':
+      return 'Noto Sans SC, sans-serif';
+    case 'th':
+      return 'Noto Sans Thai, sans-serif';
+    case 'ja':
+      return 'Noto Sans JP, sans-serif';
+    case 'ko':
+      return 'Noto Sans KR, sans-serif';
+    case 'vi':
+    case 'fr':
+    case 'en':
+    default:
+      return 'Inter, sans-serif';
+  }
+}
 
 export default function Navbar() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [lang, setLang] = useState('en');
+  const [lang, setLang] = useState('km');
   const [lastScrollY, setLastScrollY] = useState(0);
 
   const handleScroll = useCallback(() => {
@@ -73,12 +98,15 @@ export default function Navbar() {
       >
         <div className="mx-auto h-full flex items-center justify-between lg:max-w-[1200px] xl:max-w-[1320px] px-4 md:px-8">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-0 shrink-0 z-10">
-            <span className="font-display italic text-[24px] lg:text-[28px] text-gold tracking-tight">
-              Khmer
+          <Link to="/" className="flex flex-col items-start shrink-0 z-10 leading-none">
+            <span
+              className="text-[22px] lg:text-[26px] text-gold tracking-tight font-bold"
+              style={{ fontFamily: 'Noto Sans SC, sans-serif' }}
+            >
+              高棉职通车
             </span>
-            <span className="font-body font-bold text-[24px] lg:text-[28px] text-gold tracking-tight">
-              HR
+            <span className="text-[11px] lg:text-[12px] text-gold/80 tracking-[0.08em] font-medium mt-0.5">
+              Career Express
             </span>
           </Link>
 
@@ -118,12 +146,7 @@ export default function Navbar() {
                       : 'text-warm-gray hover:text-charcoal'
                   }`}
                   style={{
-                    fontFamily:
-                      l.code === 'km'
-                        ? 'Noto Sans Khmer, sans-serif'
-                        : l.code === 'zh'
-                        ? 'Noto Sans SC, sans-serif'
-                        : 'Inter, sans-serif',
+                    fontFamily: getLanguageFont(l.code),
                   }}
                 >
                   {l.label}
@@ -158,9 +181,16 @@ export default function Navbar() {
           />
           <div className="absolute right-0 top-0 bottom-0 w-[80%] max-w-[360px] bg-[#FAF8F3] shadow-[-8px_0_32px_rgba(0,0,0,0.1)] flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-sand">
-              <Link to="/" className="flex items-center" onClick={() => setMobileOpen(false)}>
-                <span className="font-display italic text-[24px] text-gold">Khmer</span>
-                <span className="font-body font-bold text-[24px] text-gold">HR</span>
+              <Link to="/" className="flex flex-col items-start leading-none" onClick={() => setMobileOpen(false)}>
+                <span
+                  className="text-[22px] text-gold tracking-tight font-bold"
+                  style={{ fontFamily: 'Noto Sans SC, sans-serif' }}
+                >
+                  高棉职通车
+                </span>
+                <span className="text-[11px] text-gold/80 tracking-[0.08em] font-medium mt-0.5">
+                  Career Express
+                </span>
               </Link>
               <button onClick={() => setMobileOpen(false)} className="p-2 text-gold">
                 <X size={24} />

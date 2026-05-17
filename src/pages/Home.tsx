@@ -100,7 +100,7 @@ const employers = [
 
 const testimonials = [
   {
-    quote: 'We hired 45 garment workers through KhmerHR in just two weeks. The verified badge system gives us confidence, and the candidates actually show up for interviews.',
+    quote: 'We hired 45 garment workers through 高棉职通车 (Khmer Career Express) in just two weeks. The verified badge system gives us confidence, and the candidates actually show up for interviews.',
     avatar: '/employer-camko.jpg',
     name: 'Sopheap Chhun',
     nameZh: '春索帕',
@@ -109,7 +109,7 @@ const testimonials = [
     industry: 'Garment',
   },
   {
-    quote: 'As a Chinese investor, I need bilingual staff. KhmerHR helped us find Khmer-Chinese translators and operations managers who understand both cultures.',
+    quote: 'As a Chinese investor, I need bilingual staff. 高棉职通车 helped us find Khmer-Chinese translators and operations managers who understand both cultures.',
     avatar: '/employer-sokha.jpg',
     name: 'Li Wei',
     nameZh: '李伟',

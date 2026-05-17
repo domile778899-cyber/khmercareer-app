@@ -1,6 +1,17 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Clock, Facebook, MessageCircle, Send } from 'lucide-react';
 
+const languages = [
+  { code: 'km', label: 'ខ្មែរ' },      // Khmer (default)
+  { code: 'zh', label: '中文' },        // Chinese
+  { code: 'en', label: 'English' },     // English
+  { code: 'th', label: 'ไทย' },         // Thai
+  { code: 'vi', label: 'Tiếng Việt' },  // Vietnamese
+  { code: 'ja', label: '日本語' },       // Japanese
+  { code: 'ko', label: '한국어' },       // Korean
+  { code: 'fr', label: 'Français' },    // French
+];
+
 const jobSeekerLinks = [
   { label: 'Search Jobs', path: '/jobs' },
   { label: 'Create Resume', path: '/resume' },
@@ -22,9 +33,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {/* Column 1: Brand */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-0">
-              <span className="font-display italic text-[28px] text-gold">Khmer</span>
-              <span className="font-body font-bold text-[28px] text-gold">HR</span>
+            <Link to="/" className="flex flex-col items-start leading-none">
+              <span
+                className="text-[24px] text-gold tracking-tight font-bold"
+                style={{ fontFamily: 'Noto Sans SC, sans-serif' }}
+              >
+                高棉职通车
+              </span>
+              <span className="text-[11px] text-gold/80 tracking-[0.08em] font-medium mt-0.5">
+                Khmer Career Express
+              </span>
             </Link>
             <p className="font-khmer text-gold-light/80 text-sm">
               កម្ពុជា​នៃ​ការងារ
@@ -117,7 +135,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={16} className="text-gold shrink-0" />
-                <span className="text-body-small">info@khmerhr.com</span>
+                <span className="text-body-small">info@khmercareer.com</span>
               </li>
               <li className="flex items-start gap-2">
                 <Clock size={16} className="text-gold mt-0.5 shrink-0" />
@@ -146,7 +164,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-16 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-caption text-warm-gray/60">
-            &copy; 2025 KhmerHR. All rights reserved.
+            &copy; 2025 高棉职通车 (Khmer Career Express). All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <a href="#" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">

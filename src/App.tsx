@@ -11,6 +11,9 @@ import Contact from './pages/Contact'
 import Interview from './pages/Interview'
 import Live from './pages/Live'
 import Training from './pages/Training'
+import Business from './pages/Business'
+import Credit from './pages/Credit'
+import Loan from './pages/Loan'
 
 export default function App() {
   return (
@@ -27,6 +30,9 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/training" element={<Training />} />
+        <Route path="/business" element={<Business />} />
+        <Route path="/credit" element={<Credit />} />
+        <Route path="/loan" element={<Loan />} />
       </Route>
     </Routes>
   )
