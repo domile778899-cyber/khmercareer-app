@@ -14,6 +14,10 @@ import Training from './pages/Training'
 import Business from './pages/Business'
 import Credit from './pages/Credit'
 import Loan from './pages/Loan'
+import CourseMarket from './pages/CourseMarket'
+import CoursePlayer from './pages/CoursePlayer'
+import Teach from './pages/Teach'
+import CourseUpload from './pages/CourseUpload'
 
 export default function App() {
   return (
@@ -33,6 +37,10 @@ export default function App() {
         <Route path="/business" element={<Business />} />
         <Route path="/credit" element={<Credit />} />
         <Route path="/loan" element={<Loan />} />
+        <Route path="/courses" element={<CourseMarket />} />
+        <Route path="/courses/:id" element={<CoursePlayer />} />
+        <Route path="/teach" element={<Teach />} />
+        <Route path="/course-upload" element={<CourseUpload />} />
       </Route>
     </Routes>
   )
