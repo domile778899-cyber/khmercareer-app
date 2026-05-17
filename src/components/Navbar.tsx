@@ -6,6 +6,7 @@ const navLinks = [
   { label: 'Jobs', path: '/jobs' },
   { label: 'Employers', path: '/employers' },
   { label: 'Resume', path: '/resume' },
+  { label: 'Live', path: '/live' },
   { label: 'Pricing', path: '/pricing' },
   { label: 'About', path: '/about' },
   { label: 'Contact', path: '/contact' },
