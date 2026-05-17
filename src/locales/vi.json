@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "jobs": "Việc làm",
+    "training": "Đào tạo",
+    "loan": "Vay vốn",
+    "employers": "Nhà tuyển dụng",
+    "interview": "Phỏng vấn",
+    "live": "Trực tiếp",
+    "resume": "Hồ sơ",
+    "pricing": "Giá cả",
+    "business": "Kinh doanh",
+    "credit": "Điểm tín nhiệm",
+    "about": "Giới thiệu",
+    "contact": "Liên hệ",
+    "postJob": "Đăng tin tuyển dụng",
+    "forJobSeekers": "Dành cho ngườitìm việc",
+    "forEmployers": "Dành cho nhà tuyển dụng"
+  },
+  "hero": {
+    "title": "Hành trình nghề nghiệp của bạn bắt đầu từ đây",
+    "subtitle": "Kết nối với hơn 2.900+ nhà tuyển dụng trên khắp Campuchia",
+    "searchPlaceholder": "Chức danh, từ khóa...",
+    "locationPlaceholder": "Tất cả thành phố",
+    "searchButton": "Tìm kiếm việc làm",
+    "stats": {
+      "workers": "990K+ lao động",
+      "hiring": "74% nhu cầu tuyển dụng",
+      "companies": "2.900+ công ty",
+      "talent": "600K thiếu hụt nhân tài"
+    }
+  },
+  "footer": {
+    "tagline": "Kết nối tài năng với cơ hội trên khắp Campuchia",
+    "jobSeekers": "Ngườitìm việc",
+    "employers": "Nhà tuyển dụng",
+    "company": "Công ty",
+    "legal": "Pháp lý",
+    "privacy": "Chính sách bảo mật",
+    "terms": "Điều khoản dịch vụ",
+    "copyright": "© 2025 高棉职通车 (Khmer Career Express). Mọi quyền được bảo lưu.",
+    "contact": "Liên hệ",
+    "newsletter": "Bản tin",
+    "subscribe": "Đăng ký",
+    "emailPlaceholder": "Email của bạn"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "jobs": "职位",
+    "training": "培训",
+    "loan": "贷款",
+    "employers": "企业",
+    "interview": "面试",
+    "live": "直播",
+    "resume": "简历",
+    "pricing": "定价",
+    "business": "商业",
+    "credit": "信用分",
+    "about": "关于",
+    "contact": "联系",
+    "postJob": "发布职位",
+    "forJobSeekers": "求职者",
+    "forEmployers": "雇主"
+  },
+  "hero": {
+    "title": "您的职业旅程从这里开始",
+    "subtitle": "连接柬埔寨2,900+ employers",
+    "searchPlaceholder": "职位名称、关键词...",
+    "locationPlaceholder": "所有城市",
+    "searchButton": "搜索职位",
+    "stats": {
+      "workers": "99万+ 劳动者",
+      "hiring": "74% 招聘需求",
+      "companies": "2,900+ 企业",
+      "talent": "60万 人才缺口"
+    }
+  },
+  "footer": {
+    "tagline": "连接柬埔寨各地人才与机遇",
+    "jobSeekers": "求职者",
+    "employers": "雇主",
+    "company": "公司",
+    "legal": "法律",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "copyright": "© 2025 高棉职通车 版权所有",
+    "contact": "联系",
+    "newsletter": "订阅",
+    "subscribe": "订阅",
+    "emailPlaceholder": "您的邮箱"
+  }
+}

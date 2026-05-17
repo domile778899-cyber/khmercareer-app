@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "jobs": "งาน",
+    "training": "การฝึกอบรม",
+    "loan": "เงินกู้",
+    "employers": "นายจ้าง",
+    "interview": "สัมภาษณ์",
+    "live": "ถ่ายทอดสด",
+    "resume": "ประวัติย่อ",
+    "pricing": "ราคา",
+    "business": "ธุรกิจ",
+    "credit": "คะแนนความน่าเชื่อถือ",
+    "about": "เกี่ยวกับ",
+    "contact": "ติดต่อ",
+    "postJob": "ประกาศงาน",
+    "forJobSeekers": "สำหรับผู้สมัครงาน",
+    "forEmployers": "สำหรับนายจ้าง"
+  },
+  "hero": {
+    "title": "การเดินทางสู่อาชีพของคุณเริ่มต้นที่นี่",
+    "subtitle": "เชื่อมต่อกับนายจ้างกว่า 2,900+ รายทั่วกัมพูชา",
+    "searchPlaceholder": "ตำแหน่งงาน, คำสำคัญ...",
+    "locationPlaceholder": "ทุกเมือง",
+    "searchButton": "ค้นหางาน",
+    "stats": {
+      "workers": "990K+ คนงาน",
+      "hiring": "74% ต้องการรับสมัคร",
+      "companies": "2,900+ บริษัท",
+      "talent": "600K ช่องว่างความสามารถ"
+    }
+  },
+  "footer": {
+    "tagline": "เชื่อมต่อความสามารถกับโอกาสทั่วกัมพูชา",
+    "jobSeekers": "ผู้สมัครงาน",
+    "employers": "นายจ้าง",
+    "company": "บริษัท",
+    "legal": "กฎหมาย",
+    "privacy": "นโยบายความเป็นส่วนตัว",
+    "terms": "เงื่อนไขการให้บริการ",
+    "copyright": "© 2025 高棉职通车 (Khmer Career Express) สงวนลิขสิทธิ์",
+    "contact": "ติดต่อ",
+    "newsletter": "จดหมายข่าว",
+    "subscribe": "สมัครสมาชิก",
+    "emailPlaceholder": "อีเมลของคุณ"
+  }
+}

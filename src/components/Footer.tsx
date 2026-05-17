@@ -1,32 +1,24 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { MapPin, Phone, Mail, Clock, Facebook, MessageCircle, Send } from 'lucide-react';
 
-const languages = [
-  { code: 'km', label: 'ខ្មែរ' },      // Khmer (default)
-  { code: 'zh', label: '中文' },        // Chinese
-  { code: 'en', label: 'English' },     // English
-  { code: 'th', label: 'ไทย' },         // Thai
-  { code: 'vi', label: 'Tiếng Việt' },  // Vietnamese
-  { code: 'ja', label: '日本語' },       // Japanese
-  { code: 'ko', label: '한국어' },       // Korean
-  { code: 'fr', label: 'Français' },    // French
-];
-
 const jobSeekerLinks = [
-  { label: 'Search Jobs', path: '/jobs' },
-  { label: 'Create Resume', path: '/resume' },
-  { label: 'Job Alerts', path: '/jobs' },
-  { label: 'Career Tips', path: '/about' },
+  { labelKey: 'nav.jobs', path: '/jobs' },
+  { labelKey: 'nav.resume', path: '/resume' },
+  { labelKey: 'nav.training', path: '/training' },
+  { labelKey: 'nav.credit', path: '/credit' },
 ];
 
 const employerLinks = [
-  { label: 'Post a Job', path: '/employers' },
-  { label: 'Pricing', path: '/pricing' },
-  { label: 'Verification', path: '/employers' },
-  { label: 'Employer Dashboard', path: '/employers' },
+  { labelKey: 'nav.postJob', path: '/employers' },
+  { labelKey: 'nav.pricing', path: '/pricing' },
+  { labelKey: 'nav.interview', path: '/interview' },
+  { labelKey: 'nav.business', path: '/business' },
 ];
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-deep-brown text-warm-gray">
       <div className="mx-auto px-4 md:px-8 pt-20 pb-8 lg:max-w-[1200px] xl:max-w-[1320px]">
@@ -48,7 +40,7 @@ export default function Footer() {
               កម្ពុជា​នៃ​ការងារ
             </p>
             <p className="text-body-small text-warm-gray/80 leading-relaxed">
-              Cambodia's premier recruitment platform connecting employers with talent across garment, tourism, ICT, and emerging sectors.
+              {t('footer.tagline')}
             </p>
             {/* Social Icons */}
             <div className="flex items-center gap-3 pt-2">
@@ -78,18 +70,17 @@ export default function Footer() {
 
           {/* Column 2: Job Seekers */}
           <div>
-            <h4 className="font-khmer text-warm-white font-semibold text-h4 mb-4">
-              សម្រាប់​អ្នក​ស្វែងរក​ការងារ
+            <h4 className="font-khmer text-warm-white font-semibold text-h4 mb-1">
+              {t('footer.jobSeekers')}
             </h4>
-            <p className="text-caption text-warm-gray/60 mb-3">For Job Seekers</p>
-            <ul className="space-y-3">
+            <ul className="space-y-3 mt-4">
               {jobSeekerLinks.map((link) => (
-                <li key={link.label}>
+                <li key={link.path + link.labelKey}>
                   <Link
                     to={link.path}
                     className="text-body-small text-warm-gray hover:text-gold transition-colors duration-200"
                   >
-                    {link.label}
+                    {t(link.labelKey)}
                   </Link>
                 </li>
               ))}
@@ -98,18 +89,17 @@ export default function Footer() {
 
           {/* Column 3: Employers */}
           <div>
-            <h4 className="font-khmer text-warm-white font-semibold text-h4 mb-4">
-              សម្រាប់​និយោជក
+            <h4 className="font-khmer text-warm-white font-semibold text-h4 mb-1">
+              {t('footer.employers')}
             </h4>
-            <p className="text-caption text-warm-gray/60 mb-3">For Employers</p>
-            <ul className="space-y-3">
+            <ul className="space-y-3 mt-4">
               {employerLinks.map((link) => (
-                <li key={link.label}>
+                <li key={link.path + link.labelKey}>
                   <Link
                     to={link.path}
                     className="text-body-small text-warm-gray hover:text-gold transition-colors duration-200"
                   >
-                    {link.label}
+                    {t(link.labelKey)}
                   </Link>
                 </li>
               ))}
@@ -118,11 +108,10 @@ export default function Footer() {
 
           {/* Column 4: Contact */}
           <div>
-            <h4 className="font-khmer text-warm-white font-semibold text-h4 mb-4">
-              ទំនាក់ទំនង
+            <h4 className="font-khmer text-warm-white font-semibold text-h4 mb-1">
+              {t('footer.contact')}
             </h4>
-            <p className="text-caption text-warm-gray/60 mb-3">Contact</p>
-            <ul className="space-y-3">
+            <ul className="space-y-3 mt-4">
               <li className="flex items-start gap-2">
                 <MapPin size={16} className="text-gold mt-0.5 shrink-0" />
                 <span className="text-body-small">
@@ -146,15 +135,15 @@ export default function Footer() {
             </ul>
             {/* Newsletter */}
             <div className="mt-6">
-              <p className="text-caption text-warm-gray/60 mb-2">Newsletter</p>
+              <p className="text-caption text-warm-gray/60 mb-2">{t('footer.newsletter')}</p>
               <div className="flex gap-2">
                 <input
                   type="email"
-                  placeholder="Your email"
+                  placeholder={t('footer.emailPlaceholder')}
                   className="flex-1 min-h-[40px] px-3 py-2 bg-[#2D2926] border border-[#3D3936] rounded-lg text-body-small text-warm-white placeholder:text-warm-gray/50 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all"
                 />
                 <button className="px-4 py-2 bg-gold text-deep-brown rounded-lg text-button-small font-semibold hover:bg-gold-dark transition-colors">
-                  Subscribe
+                  {t('footer.subscribe')}
                 </button>
               </div>
             </div>
@@ -164,17 +153,14 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-16 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-caption text-warm-gray/60">
-            &copy; 2025 高棉职通车 (Khmer Career Express). All rights reserved.
+            {t('footer.copyright')}
           </p>
           <div className="flex items-center gap-4">
             <a href="#" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
-              Privacy Policy
+              {t('footer.privacy')}
             </a>
             <a href="#" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
-              Terms of Service
-            </a>
-            <a href="#" className="text-caption text-warm-gray/60 hover:text-gold transition-colors">
-              Cookies
+              {t('footer.terms')}
             </a>
           </div>
         </div>

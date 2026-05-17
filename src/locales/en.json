@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "jobs": "Jobs",
+    "training": "Training",
+    "loan": "Loan",
+    "employers": "Employers",
+    "interview": "Interview",
+    "live": "Live",
+    "resume": "Resume",
+    "pricing": "Pricing",
+    "business": "Business",
+    "credit": "Trust Score",
+    "about": "About",
+    "contact": "Contact",
+    "postJob": "Post a Job",
+    "forJobSeekers": "For Job Seekers",
+    "forEmployers": "For Employers"
+  },
+  "hero": {
+    "title": "Your Career Journey Starts Here",
+    "subtitle": "Connect with 2,900+ employers across Cambodia",
+    "searchPlaceholder": "Job title, keywords...",
+    "locationPlaceholder": "All Cities",
+    "searchButton": "Search Jobs",
+    "stats": {
+      "workers": "990K+ Workers",
+      "hiring": "74% Hiring Need",
+      "companies": "2,900+ Companies",
+      "talent": "600K Talent Gap"
+    }
+  },
+  "footer": {
+    "tagline": "Connecting talent with opportunity across Cambodia",
+    "jobSeekers": "Job Seekers",
+    "employers": "Employers",
+    "company": "Company",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "© 2025 高棉职通车 (Khmer Career Express). All rights reserved.",
+    "contact": "Contact",
+    "newsletter": "Newsletter",
+    "subscribe": "Subscribe",
+    "emailPlaceholder": "Your email"
+  }
+}
