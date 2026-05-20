@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -290,27 +291,27 @@ const staggerContainer = {
 }
 
 // ─── Components ──────────────────────────────────────────
-function VerifiedBadge() {
+function VerifiedBadge({ t }: { t: (key: string) => string }) {
   return (
     <span className="inline-flex items-center gap-1 bg-gradient-to-br from-emerald to-emerald-light text-white text-caption px-2 py-0.5 rounded-full animate-pulse-glow">
       <CheckCircle2 className="w-3 h-3" />
-      Verified
+      {t('home.verified')}
     </span>
   )
 }
 
-function UrgentBadge() {
+function UrgentBadge({ t }: { t: (key: string) => string }) {
   return (
     <span className="inline-flex items-center gap-1 bg-gradient-to-br from-coral to-warning text-white text-caption px-2 py-0.5 rounded-full">
-      Urgent Hiring
+      {t('jobs.urgentHiring')}
     </span>
   )
 }
 
-function NewBadge() {
+function NewBadge({ t }: { t: (key: string) => string }) {
   return (
     <span className="inline-flex items-center gap-1 bg-gradient-to-br from-coral to-warning text-white text-caption px-2 py-0.5 rounded-full">
-      New
+      {t('home.new')}
     </span>
   )
 }
@@ -333,6 +334,7 @@ function SalaryTag({ min, max }: { min: number; max: number }) {
 
 // ─── Filter Panel Component ──────────────────────────────
 function FilterPanel({
+  t,
   salaryRange,
   setSalaryRange,
   selectedExp,
@@ -348,6 +350,7 @@ function FilterPanel({
   resultCount,
   onClear,
 }: {
+  t: (key: string) => string
   salaryRange: number[]
   setSalaryRange: (v: number[]) => void
   selectedExp: string[]
@@ -372,7 +375,7 @@ function FilterPanel({
     <div className="w-full space-y-6">
       {/* Salary Range */}
       <div className="border-b border-sand pb-4">
-        <h4 className="text-body font-semibold text-charcoal mb-3">Salary Range</h4>
+        <h4 className="text-body font-semibold text-charcoal mb-3">{t('jobs.salaryRange')}</h4>
         <Slider
           value={salaryRange}
           onValueChange={setSalaryRange}
@@ -404,7 +407,7 @@ function FilterPanel({
 
       {/* Experience Level */}
       <div className="border-b border-sand pb-4">
-        <h4 className="text-body font-semibold text-charcoal mb-3">Experience Level</h4>
+        <h4 className="text-body font-semibold text-charcoal mb-3">{t('jobs.experienceLevel')}</h4>
         <div className="space-y-2">
           {EXPERIENCE_LEVELS.map((level) => (
             <label key={level} className="flex items-center gap-3 cursor-pointer group">
@@ -423,7 +426,7 @@ function FilterPanel({
 
       {/* Job Type */}
       <div className="border-b border-sand pb-4">
-        <h4 className="text-body font-semibold text-charcoal mb-3">Job Type</h4>
+        <h4 className="text-body font-semibold text-charcoal mb-3">{t('jobs.jobType')}</h4>
         <div className="space-y-2">
           {JOB_TYPES.map((type) => (
             <label key={type} className="flex items-center gap-3 cursor-pointer group">
@@ -440,7 +443,7 @@ function FilterPanel({
 
       {/* Industry */}
       <div className="border-b border-sand pb-4">
-        <h4 className="text-body font-semibold text-charcoal mb-3">Industry</h4>
+        <h4 className="text-body font-semibold text-charcoal mb-3">{t('jobs.industry')}</h4>
         <div className="space-y-2 max-h-48 overflow-y-auto">
           {INDUSTRIES.filter((i) => i !== 'All Industries').map((ind) => (
             <label key={ind} className="flex items-center gap-3 cursor-pointer group">
@@ -457,7 +460,7 @@ function FilterPanel({
 
       {/* Date Posted */}
       <div className="border-b border-sand pb-4">
-        <h4 className="text-body font-semibold text-charcoal mb-3">Date Posted</h4>
+        <h4 className="text-body font-semibold text-charcoal mb-3">{t('jobs.datePosted')}</h4>
         <div className="space-y-2">
           {DATE_POSTED_OPTIONS.map((opt) => (
             <label key={opt} className="flex items-center gap-3 cursor-pointer group">
@@ -485,7 +488,7 @@ function FilterPanel({
 
       {/* Employer Type */}
       <div className="pb-4">
-        <h4 className="text-body font-semibold text-charcoal mb-3">Employer Type</h4>
+        <h4 className="text-body font-semibold text-charcoal mb-3">{t('jobs.employerType')}</h4>
         <div className="space-y-2">
           <label className="flex items-center gap-3 cursor-pointer group">
             <Checkbox
@@ -493,19 +496,19 @@ function FilterPanel({
               onCheckedChange={(v) => setVerifiedOnly(!!v)}
               className="w-5 h-5 border-2 border-sand data-[state=checked]:bg-gold data-[state=checked]:border-gold"
             />
-            <span className="text-body-small text-charcoal group-hover:text-gold transition-colors">Verified Only</span>
+            <span className="text-body-small text-charcoal group-hover:text-gold transition-colors">{t('jobs.verifiedOnly')}</span>
           </label>
         </div>
       </div>
 
       {/* Actions */}
       <div className="pt-2 space-y-2">
-        <p className="text-body-small text-warm-gray">{resultCount} jobs found</p>
+        <p className="text-body-small text-warm-gray">{resultCount} {t('jobs.jobsFound')}</p>
         <button
           onClick={onClear}
           className="w-full text-center text-body-small text-gold hover:text-gold-dark transition-colors py-2"
         >
-          Clear All
+          {t('jobs.clearAll')}
         </button>
       </div>
     </div>
@@ -514,6 +517,7 @@ function FilterPanel({
 
 // ─── Main Jobs Page ──────────────────────────────────────
 export default function Jobs() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
 
@@ -673,11 +677,11 @@ export default function Jobs() {
             <ol className="flex items-center gap-2 text-caption text-warm-gray">
               <li>
                 <button onClick={() => navigate('/')} className="hover:text-gold transition-colors">
-                  Home
+                  {t('jobs.home')}
                 </button>
               </li>
               <span>/</span>
-              <li className="text-gold">Jobs</li>
+              <li className="text-gold">{t('nav.jobs')}</li>
             </ol>
           </nav>
 
@@ -688,7 +692,7 @@ export default function Jobs() {
             transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] as [number, number, number, number] }}
             className="text-h1 font-display text-[#FAF8F3] mb-2"
           >
-            Find Your Perfect Job
+            {t('jobs.findYourPerfectJob')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -696,7 +700,7 @@ export default function Jobs() {
             transition={{ duration: 0.6, delay: 0.1, ease: [0.19, 1, 0.22, 1] as [number, number, number, number] }}
             className="text-body text-[rgba(250,248,243,0.7)] mb-space-6"
           >
-            2,400+ jobs from 850+ verified employers across Cambodia
+            {t('jobs.jobsFromEmployers', { count: '2,400', employers: '850' })}
           </motion.p>
 
           {/* Search Bar */}
@@ -714,7 +718,7 @@ export default function Jobs() {
                   type="text"
                   value={keyword}
                   onChange={(e) => { setKeyword(e.target.value); setCurrentPage(1) }}
-                  placeholder="Job title, skills, or company"
+                  placeholder={t('jobs.searchPlaceholder')}
                   className="w-full h-14 pl-12 pr-4 border-2 border-sand rounded-xl text-body-large text-charcoal placeholder:text-warm-gray focus:border-gold focus:shadow-[0_0_0_3px_rgba(212,175,55,0.15)] outline-none transition-all"
                 />
               </div>
@@ -750,7 +754,7 @@ export default function Jobs() {
                 className="lg:w-[10%] h-14 bg-gold text-[#1A1714] font-semibold rounded-xl flex items-center justify-center gap-2 shadow-gold hover:bg-gold-dark hover:shadow-gold-hover hover:scale-[1.02] active:scale-[0.98] transition-all text-button"
               >
                 <Search className="w-5 h-5" />
-                <span className="hidden lg:inline">Search</span>
+                <span className="hidden lg:inline">{t('jobs.search')}</span>
               </button>
             </div>
           </motion.div>
@@ -783,9 +787,10 @@ export default function Jobs() {
             <aside className="hidden lg:block w-[280px] shrink-0 bg-warm-white border-r border-sand pr-6">
               <div className="flex items-center gap-2 mb-4">
                 <SlidersHorizontal className="w-5 h-5 text-gold" />
-                <h3 className="text-h4 text-charcoal">Filters</h3>
+                <h3 className="text-h4 text-charcoal">{t('jobs.filters')}</h3>
               </div>
               <FilterPanel
+                t={t}
                 salaryRange={salaryRange}
                 setSalaryRange={setSalaryRange}
                 selectedExp={selectedExp}
@@ -836,7 +841,7 @@ export default function Jobs() {
                     <div className="flex items-center justify-between mb-6">
                       <h3 className="text-h4 text-charcoal flex items-center gap-2">
                         <SlidersHorizontal className="w-5 h-5 text-gold" />
-                        Filters
+                        {t('jobs.filters')}
                       </h3>
                       <button
                         onClick={() => setShowMobileFilters(false)}
@@ -846,6 +851,7 @@ export default function Jobs() {
                       </button>
                     </div>
                     <FilterPanel
+                      t={t}
                       salaryRange={salaryRange}
                       setSalaryRange={setSalaryRange}
                       selectedExp={selectedExp}
@@ -866,7 +872,7 @@ export default function Jobs() {
                         onClick={() => setShowMobileFilters(false)}
                         className="w-full h-14 bg-gold text-[#1A1714] font-semibold rounded-xl shadow-gold hover:bg-gold-dark transition-all text-button"
                       >
-                        Apply Filters
+                        {t('jobs.applyFilters')}
                       </button>
                     </div>
                   </motion.div>
@@ -879,18 +885,18 @@ export default function Jobs() {
           <div className="flex-1 min-w-0">
             {/* Results Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-              <h2 className="text-h4 text-charcoal">{filteredJobs.length} jobs found</h2>
+              <h2 className="text-h4 text-charcoal">{filteredJobs.length} {t('jobs.jobsFound')}</h2>
               <div className="flex items-center gap-2">
-                <span className="text-body-small text-warm-gray">Sort by:</span>
+                <span className="text-body-small text-warm-gray">{t('jobs.sortBy')}</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="h-10 px-3 border border-sand rounded-lg text-body-small text-charcoal bg-white focus:border-gold outline-none transition-all cursor-pointer"
                 >
-                  <option>Relevance</option>
-                  <option>Newest</option>
-                  <option>Salary (Low-High)</option>
-                  <option>Salary (High-Low)</option>
+                  <option>{t('jobs.relevance')}</option>
+                  <option>{t('jobs.newest')}</option>
+                  <option>{t('jobs.salaryLowHigh')}</option>
+                  <option>{t('jobs.salaryHighLow')}</option>
                 </select>
               </div>
             </div>
@@ -905,13 +911,13 @@ export default function Jobs() {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full border-2 border-gold flex items-center justify-center">
                   <Search className="w-8 h-8 text-gold" />
                 </div>
-                <h3 className="text-h3 text-charcoal mb-2">No jobs match your criteria</h3>
-                <p className="text-body text-warm-gray mb-6">Try adjusting your filters or search keywords</p>
+                <h3 className="text-h3 text-charcoal mb-2">{t('jobs.noJobsMatch')}</h3>
+                <p className="text-body text-warm-gray mb-6">{t('jobs.adjustFilters')}</p>
                 <button
                   onClick={clearAllFilters}
                   className="h-12 px-6 bg-gold text-[#1A1714] font-semibold rounded-xl shadow-gold hover:bg-gold-dark transition-all text-button"
                 >
-                  Clear All Filters
+                  {t('jobs.clearAllFilters')}
                 </button>
               </motion.div>
             )}
@@ -946,12 +952,12 @@ export default function Jobs() {
                           <h3 className="text-h3 text-charcoal group-hover:text-gold transition-colors truncate">
                             {job.title}
                           </h3>
-                          {job.urgent && <UrgentBadge />}
-                          {job.featured && <NewBadge />}
+                          {job.urgent && <UrgentBadge t={t} />}
+                          {job.featured && <NewBadge t={t} />}
                         </div>
                         <div className="flex flex-wrap items-center gap-2 mb-1">
                           <span className="text-body text-charcoal font-medium">{job.company}</span>
-                          {job.verified && <VerifiedBadge />}
+                          {job.verified && <VerifiedBadge t={t} />}
                         </div>
                         <div className="flex flex-wrap items-center gap-3 text-warm-gray text-body-small">
                           <span className="flex items-center gap-1">
@@ -975,7 +981,7 @@ export default function Jobs() {
                         <button
                           onClick={(e) => { e.stopPropagation(); toggleSaveJob(job.id) }}
                           className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-cream transition-colors"
-                          aria-label="Save job"
+                          aria-label={t('jobs.saveJob')}
                         >
                           <Bookmark
                             className={cn(
@@ -1008,13 +1014,13 @@ export default function Jobs() {
                           onClick={(e) => { e.stopPropagation(); navigate(`/jobs/${job.id}`) }}
                           className="h-10 px-5 border-2 border-gold text-gold font-semibold rounded-lg hover:bg-gold/10 transition-all text-button-small"
                         >
-                          View Details
+                          {t('jobs.viewDetails')}
                         </button>
                         <button
                           onClick={(e) => e.stopPropagation()}
                           className="h-10 px-5 bg-coral text-white font-semibold rounded-lg shadow-coral hover:bg-coral-dark hover:scale-[1.03] active:scale-[0.98] transition-all text-button-small"
                         >
-                          Quick Apply
+                          {t('jobs.quickApply')}
                         </button>
                       </div>
                     </div>
@@ -1055,7 +1061,7 @@ export default function Jobs() {
                 )}
 
                 <span className="text-body-small text-warm-gray px-2 sm:hidden">
-                  Page {currentPage} of {totalPages}
+                  {t('jobs.pageOf', { current: currentPage, total: totalPages })}
                 </span>
 
                 <button
@@ -1074,7 +1080,7 @@ export default function Jobs() {
       {/* ====== Section 5: Related Suggestions ====== */}
       <section className="bg-cream py-space-16">
         <div className="max-w-container-desktop xl:max-w-container-wide mx-auto px-4 md:px-8">
-          <h2 className="text-h3 text-charcoal text-center mb-8">You Might Also Like</h2>
+          <h2 className="text-h3 text-charcoal text-center mb-8">{t('jobs.youMightAlsoLike')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { title: 'Similar Jobs in Phnom Penh', count: '1,240 jobs', icon: MapPin },

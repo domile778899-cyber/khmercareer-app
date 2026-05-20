@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="km" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#D4AF37" />
+  <title>Offline - កម្ពុជា ការីរថភ្លើង</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @font-face {
+      font-family: 'System';
+      src: local(-apple-system), local(BlinkMacSystemFont), local('Segoe UI'), local(Roboto);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #FAF8F3;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @supports (padding-top: env(safe-area-inset-top)) {
+      body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+      }
+    }
+
+    .offline-container {
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+    }
+
+    .offline-icon {
+      width: 96px;
+      height: 96px;
+      background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      font-size: 44px;
+      box-shadow: 0 8px 32px rgba(212, 175, 55, 0.25);
+    }
+
+    h1 {
+      color: #2D2926;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      color: #9C9588;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .lang-switch {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .lang-btn {
+      padding: 6px 14px;
+      border: 1.5px solid #E8E0D0;
+      background: #FFFFFF;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: #9C9588;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn.active {
+      border-color: #D4AF37;
+      color: #D4AF37;
+      background: #FDF8E8;
+    }
+
+    .message-box {
+      background: #FFFFFF;
+      border: 1px solid #E8E0D0;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+
+    .message-box p {
+      color: #5C564D;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 36px;
+      background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
+      color: #FFFFFF;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+    }
+
+    .tips {
+      margin-top: 24px;
+      padding: 16px;
+      background: #F5F0E8;
+      border-radius: 12px;
+    }
+
+    .tips-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #2D2926;
+      margin-bottom: 8px;
+    }
+
+    .tips-list {
+      list-style: none;
+      text-align: left;
+    }
+
+    .tips-list li {
+      font-size: 0.8rem;
+      color: #9C9588;
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .tips-list li::before {
+      content: '•';
+      position: absolute;
+      left: 4px;
+      color: #D4AF37;
+    }
+
+    /* Spinner animation */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #FFFFFF;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    .btn.loading .spinner {
+      display: inline-block;
+    }
+
+    .btn.loading .btn-icon {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">📡</div>
+    <h1 id="title">អ្នកកំពុង offline</h1>
+    <p class="subtitle" id="subtitle">សូមពិនិត្យមើលការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក</p>
+
+    <div class="lang-switch">
+      <button class="lang-btn active" data-lang="km" onclick="setLang('km')">ខ្មែរ</button>
+      <button class="lang-btn" data-lang="zh" onclick="setLang('zh')">中文</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">English</button>
+      <button class="lang-btn" data-lang="ja" onclick="setLang('ja')">日本語</button>
+    </div>
+
+    <div class="message-box">
+      <p id="message">ខ្លឹមសារមួយចំនួនអាចមានសម្រាប់ពី cache ។ សូមព្យាយាមម្តងទៀតនៅពេលអ្នកតភ្ជាប់ឡើងវិញ។</p>
+    </div>
+
+    <button class="btn" id="retryBtn" onclick="retryConnection()">
+      <span class="btn-icon">↻</span>
+      <span class="spinner"></span>
+      <span id="btnText">ព្យាយាមម្តងទៀត</span>
+    </button>
+
+    <div class="tips">
+      <div class="tips-title" id="tipsTitle">គន្លឹះ</div>
+      <ul class="tips-list" id="tipsList">
+        <li>ពិនិត្យមើលថាអ្នកបានបើក Wi-Fi ឬ ទិន្នន័យចល័ត</li>
+        <li>ប្តូរទៅបណ្តាញផ្សេង</li>
+        <li>បិទ ហើយបើក router របស់អ្នកឡើងវិញ</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const translations = {
+      km: {
+        title: 'អ្នកកំពុង offline',
+        subtitle: 'សូមពិនិត្យមើលការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក',
+        message: 'ខ្លឹមសារមួយចំនួនអាចមានសម្រាប់ពី cache ។ សូមព្យាយាមម្តងទៀតនៅពេលអ្នកតភ្ជាប់ឡើងវិញ។',
+        btnText: 'ព្យាយាមម្តងទៀត',
+        tipsTitle: 'គន្លឹះ',
+        tips: [
+          'ពិនិត្យមើលថាអ្នកបានបើក Wi-Fi ឬ ទិន្នន័យចល័ត',
+          'ប្តូរទៅបណ្តាញផ្សេង',
+          'បិទ ហើយបើក router របស់អ្នកឡើងវិញ'
+        ]
+      },
+      zh: {
+        title: '您已离线',
+        subtitle: '请检查您的网络连接',
+        message: '部分缓存内容可能仍可用。请在重新连接后重试。',
+        btnText: '重试',
+        tipsTitle: '提示',
+        tips: [
+          '检查 Wi-Fi 或移动数据是否已开启',
+          '切换到其他网络',
+          '重启您的路由器'
+        ]
+      },
+      en: {
+        title: 'You are offline',
+        subtitle: 'Please check your internet connection',
+        message: 'Some cached content may still be available. Please retry after reconnecting.',
+        btnText: 'Retry',
+        tipsTitle: 'Tips',
+        tips: [
+          'Check if Wi-Fi or mobile data is turned on',
+          'Switch to a different network',
+          'Restart your router'
+        ]
+      },
+      ja: {
+        title: 'オフラインです',
+        subtitle: 'インターネット接続を確認してください',
+        message: 'キャッシュされたコンテンツの一部が利用可能な場合があります。再接続後に再試行してください。',
+        btnText: '再試行',
+        tipsTitle: 'ヒント',
+        tips: [
+          'Wi-Fiまたはモバイルデータがオンになっているか確認',
+          '別のネットワークに切り替える',
+          'ルーターを再起動する'
+        ]
+      }
+    };
+
+    let currentLang = 'km';
+
+    function setLang(lang) {
+      currentLang = lang;
+      const t = translations[lang];
+
+      document.getElementById('title').textContent = t.title;
+      document.getElementById('subtitle').textContent = t.subtitle;
+      document.getElementById('message').textContent = t.message;
+      document.getElementById('btnText').textContent = t.btnText;
+      document.getElementById('tipsTitle').textContent = t.tipsTitle;
+
+      const tipsList = document.getElementById('tipsList');
+      tipsList.innerHTML = t.tips.map(tip => `<li>${tip}</li>`).join('');
+
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+    }
+
+    function retryConnection() {
+      const btn = document.getElementById('retryBtn');
+      btn.classList.add('loading');
+
+      fetch(window.location.origin, { mode: 'no-cors', cache: 'no-store' })
+        .then(() => {
+          window.location.reload();
+        })
+        .catch(() => {
+          btn.classList.remove('loading');
+        })
+        .finally(() => {
+          setTimeout(() => btn.classList.remove('loading'), 3000);
+        });
+    }
+
+    // Listen for online event
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>

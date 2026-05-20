@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
   ShieldCheck,
@@ -45,6 +46,113 @@ const staggerChild = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: easeSmooth } },
 };
+
+/* ─── Specialized Section Component ─── */
+function EmployersSpecializedSection() {
+  const { t } = useTranslation();
+  return (
+    <section className="bg-cream py-10 md:py-14">
+      <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
+        <motion.div
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: easeSmooth }}
+        >
+          <p className="text-caption text-emerald tracking-[0.15em] uppercase mb-2">{t('employers.specializedRecruitment')}</p>
+          <h2 className="text-h2 text-charcoal">{t('employers.industryFocusedSolutions')}</h2>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+        >
+          {/* Factory Recruitment Card */}
+          <motion.div
+            variants={staggerChild}
+            whileHover={{ y: -6, borderColor: '#059669' }}
+            transition={{ duration: 0.3, ease: easeSmooth }}
+            className="relative bg-white border-2 border-emerald/30 rounded-2xl p-8 shadow-card hover:shadow-feature transition-all duration-300 overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="relative z-10">
+              <div className="w-14 h-14 bg-emerald/10 rounded-xl flex items-center justify-center mb-4">
+                <Factory className="w-7 h-7 text-emerald" />
+              </div>
+              <h3 className="text-h3 text-charcoal mb-2">{t('employers.factoryBatchRecruitment')}</h3>
+              <p className="text-body-small text-warm-gray mb-4 max-w-[400px]">
+                {t('employers.factoryBatchDesc')}
+              </p>
+              <ul className="space-y-2 mb-6">
+                {[
+                  t('employers.factoryStat1'),
+                  t('employers.factoryStat2'),
+                  t('employers.factoryStat3'),
+                  t('employers.factoryStat4'),
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-body-small text-charcoal">
+                    <CheckCircle className="w-4 h-4 text-emerald shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/factory-jobs"
+                className="inline-flex items-center gap-2 bg-emerald text-white px-6 py-3 rounded-xl font-semibold min-h-[48px] hover:bg-emerald-dark hover:scale-[1.03] transition-all duration-200"
+              >
+                {t('employers.goFactoryRecruitment')}
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* Chinese Enterprise Card */}
+          <motion.div
+            variants={staggerChild}
+            whileHover={{ y: -6, borderColor: '#D4AF37' }}
+            transition={{ duration: 0.3, ease: easeSmooth }}
+            className="relative bg-white border-2 border-gold/30 rounded-2xl p-8 shadow-card hover:shadow-feature transition-all duration-300 overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="relative z-10">
+              <div className="w-14 h-14 bg-gold/10 rounded-xl flex items-center justify-center mb-4">
+                <Globe className="w-7 h-7 text-gold" />
+              </div>
+              <h3 className="text-h3 text-charcoal mb-2">{t('employers.chineseEnterpriseServices')}</h3>
+              <p className="text-body-small text-warm-gray mb-4 max-w-[400px]">
+                {t('employers.chineseEnterpriseDesc')}
+              </p>
+              <ul className="space-y-2 mb-6">
+                {[
+                  t('employers.chineseStat1'),
+                  t('employers.chineseStat2'),
+                  t('employers.chineseStat3'),
+                  t('employers.chineseStat4'),
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-body-small text-charcoal">
+                    <CheckCircle className="w-4 h-4 text-gold shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/chinese-enterprise"
+                className="inline-flex items-center gap-2 bg-gold text-deep-brown px-6 py-3 rounded-xl font-semibold min-h-[48px] shadow-gold hover:bg-gold-dark hover:scale-[1.03] transition-all duration-200"
+              >
+                {t('employers.chineseEnterpriseCTA')}
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
 /* ─── Mock data ─── */
 const barData = [
@@ -453,6 +561,9 @@ export default function Employers() {
           </div>
         </div>
       </section>
+
+      {/* ════════ SECTION 1.5: FACTORY & CHINESE ENTERPRISE ════════ */}
+      <EmployersSpecializedSection />
 
       {/* ════════ SECTION 2: WHY KHMERHR ════════ */}
       <section className="bg-warm-white py-12 md:py-16 lg:py-20">

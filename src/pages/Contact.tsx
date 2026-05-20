@@ -8,50 +8,9 @@ import {
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { useTranslation } from 'react-i18next';
 
 gsap.registerPlugin(ScrollTrigger);
-
-/* ───────────────────── DATA ───────────────────── */
-
-const faqCategories = [
-  {
-    icon: User,
-    color: 'gold' as const,
-    title: 'For Job Seekers',
-    links: [
-      { label: 'How do I create a resume?', to: '/resume' },
-      { label: 'How do I apply for a job?', to: '/jobs' },
-      { label: 'Is KhmerHR free for job seekers?', to: '/pricing' },
-    ],
-  },
-  {
-    icon: Building2,
-    color: 'emerald' as const,
-    title: 'For Employers',
-    links: [
-      { label: 'How do I post a job?', to: '/employers' },
-      { label: 'What is the verification process?', to: '/employers' },
-      { label: 'How does pricing work?', to: '/pricing' },
-    ],
-  },
-  {
-    icon: Wrench,
-    color: 'coral' as const,
-    title: 'Technical Support',
-    links: [
-      { label: "I can't log in", action: 'contact' },
-      { label: 'How do I change my language?', action: 'language' },
-      { label: 'Report a bug', action: 'contact' },
-    ],
-  },
-];
-
-const socialButtons = [
-  { name: 'Facebook', bg: '#1877F2', icon: Facebook },
-  { name: 'Messenger', bg: '#0084FF', icon: MessageCircle },
-  { name: 'Telegram', bg: '#26A5E4', icon: Send },
-  { name: 'LinkedIn', bg: '#0A66C2', icon: Linkedin },
-];
 
 /* ───────────────────── LOTUS SVG ───────────────────── */
 function LotusIcon({ size = 48, className = '' }: { size?: number; className?: string }) {
@@ -68,6 +27,7 @@ function LotusIcon({ size = 48, className = '' }: { size?: number; className?: s
 
 /* ───────────────────── CONTACT PAGE ───────────────────── */
 export default function Contact() {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const [formState, setFormState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [formData, setFormData] = useState({
@@ -81,6 +41,47 @@ export default function Contact() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  /* ── Data arrays (defined inside component to use t) ── */
+  const faqCategories = [
+    {
+      icon: User,
+      color: 'gold' as const,
+      title: t('contact.faq.forJobSeekers'),
+      links: [
+        { label: t('contact.faq.howCreateResume'), to: '/resume' },
+        { label: t('contact.faq.howApplyJob'), to: '/jobs' },
+        { label: t('contact.faq.isFree'), to: '/pricing' },
+      ],
+    },
+    {
+      icon: Building2,
+      color: 'emerald' as const,
+      title: t('contact.faq.forEmployers'),
+      links: [
+        { label: t('contact.faq.howPostJob'), to: '/employers' },
+        { label: t('contact.faq.verificationProcess'), to: '/employers' },
+        { label: t('contact.faq.howPricingWorks'), to: '/pricing' },
+      ],
+    },
+    {
+      icon: Wrench,
+      color: 'coral' as const,
+      title: t('contact.faq.technicalSupport'),
+      links: [
+        { label: t('contact.faq.cantLogin'), action: 'contact' },
+        { label: t('contact.faq.changeLanguage'), action: 'language' },
+        { label: t('contact.faq.reportBug'), action: 'contact' },
+      ],
+    },
+  ];
+
+  const socialButtons = [
+    { name: 'Facebook', bg: '#1877F2', icon: Facebook },
+    { name: 'Messenger', bg: '#0084FF', icon: MessageCircle },
+    { name: 'Telegram', bg: '#26A5E4', icon: Send },
+    { name: 'LinkedIn', bg: '#0A66C2', icon: Linkedin },
+  ];
+
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -90,11 +91,11 @@ export default function Contact() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Please enter a valid email';
-    if (!formData.subject) newErrors.subject = 'Please select a subject';
-    if (!formData.message.trim()) newErrors.message = 'Please enter a message';
+    if (!formData.name.trim()) newErrors.name = t('errors.required');
+    if (!formData.email.trim()) newErrors.email = t('errors.required');
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = t('errors.invalidEmail');
+    if (!formData.subject) newErrors.subject = t('contact.selectSubject');
+    if (!formData.message.trim()) newErrors.message = t('errors.required');
     return newErrors;
   };
 
@@ -107,7 +108,6 @@ export default function Contact() {
       return;
     }
     setFormState('loading');
-    // Simulate API call
     setTimeout(() => {
       setFormState('success');
     }, 1500);
@@ -177,33 +177,30 @@ export default function Contact() {
         <div className="relative z-10 max-w-[700px] mx-auto px-4 md:px-8 text-center">
           {/* Breadcrumb */}
           <p className="contact-breadcrumb text-caption text-warm-gray mb-4">
-            <Link to="/" className="hover:text-gold transition-colors">Home</Link>
+            <Link to="/" className="hover:text-gold transition-colors">{t('nav.home')}</Link>
             <span className="mx-2">/</span>
-            <span>Contact</span>
+            <span>{t('contact.title')}</span>
           </p>
 
           {/* Eyebrow */}
           <p className="contact-eyebrow text-caption uppercase tracking-[0.15em] text-gold mb-6">
-            ទ្ម្ន្ទិក្ទិម្និ / 联系 / CONTACT
+            {t('contact.title')}
           </p>
 
           {/* Title */}
           <h1 className="contact-title text-hero-title font-display text-[#FAF8F3] mb-6">
-            <span className="inline-block">We&apos;re</span>{' '}
-            <span className="inline-block">Here</span>{' '}
-            <span className="inline-block">to</span>{' '}
-            <span className="inline-block">Help</span>
+            <span className="inline-block">{t('contact.title')}</span>
           </h1>
 
           {/* Subtitle */}
           <p className="contact-subtitle text-body-large text-[rgba(250,248,243,0.7)] max-w-[560px] mx-auto mb-6">
-            Have questions about hiring, job searching, or using KhmerHR? Our team speaks Khmer, Chinese, and English.
+            {t('contact.description')}
           </p>
 
           {/* Response time badge */}
           <div className="contact-badge inline-flex items-center gap-2 px-4 py-2 rounded-lg animate-pulse-glow" style={{ background: 'rgba(5,150,105,0.15)' }}>
             <Zap size={16} className="text-emerald" />
-            <span className="text-caption text-emerald font-medium">Average response: 2 hours</span>
+            <span className="text-caption text-emerald font-medium">{t('contact.responseTime')}</span>
           </div>
         </div>
       </section>
@@ -223,25 +220,25 @@ export default function Contact() {
                         <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-check"/>
                       </svg>
                     </div>
-                    <h3 className="text-h3 font-display text-charcoal mb-2">Message Sent!</h3>
-                    <p className="text-body text-warm-gray mb-6">We&apos;ll get back to you within 2 hours.</p>
+                    <h3 className="text-h3 font-display text-charcoal mb-2">{t('contact.successTitle')}</h3>
+                    <p className="text-body text-warm-gray mb-6">{t('contact.successDesc')}</p>
                     <button
                       onClick={handleReset}
                       className="text-gold hover:text-gold-dark text-body font-medium transition-colors"
                     >
-                      Send Another Message
+                      {t('contact.sendAnother')}
                     </button>
                   </div>
                 ) : (
                   <>
-                    <h3 className="text-h3 font-display text-charcoal mb-1">Send us a Message</h3>
+                    <h3 className="text-h3 font-display text-charcoal mb-1">{t('contact.formTitle')}</h3>
                     <p className="text-body-small text-warm-gray mb-6">
-                      You can write to us in Khmer, Chinese, or English
+                      {t('contact.formSubtitle')}
                     </p>
 
                     {formState === 'error' && Object.keys(errors).length > 0 && (
                       <div className="mb-6 p-4 rounded-xl bg-error/5 border border-error/20">
-                        <p className="text-body-small text-error font-medium">Please fix the following errors:</p>
+                        <p className="text-body-small text-error font-medium">{t('contact.fixErrors')}</p>
                         <ul className="mt-1 space-y-1">
                           {Object.values(errors).map((err, i) => (
                             <li key={i} className="text-caption text-error">{err}</li>
@@ -253,55 +250,55 @@ export default function Contact() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div className="form-field">
                         <label className="block text-body-small font-medium text-charcoal mb-1.5">
-                          Your Name <span className="text-coral">*</span>
+                          {t('contact.form.name')} <span className="text-coral">*</span>
                         </label>
                         <input
                           type="text"
                           value={formData.name}
                           onChange={(e) => handleChange('name', e.target.value)}
-                          placeholder="Your full name"
+                          placeholder={t('contact.namePlaceholder')}
                           className={inputClasses(errors.name)}
                         />
                       </div>
 
                       <div className="form-field">
                         <label className="block text-body-small font-medium text-charcoal mb-1.5">
-                          Email <span className="text-coral">*</span>
+                          {t('contact.form.email')} <span className="text-coral">*</span>
                         </label>
                         <input
                           type="email"
                           value={formData.email}
                           onChange={(e) => handleChange('email', e.target.value)}
-                          placeholder="your@email.com"
+                          placeholder={t('contact.emailPlaceholder')}
                           className={inputClasses(errors.email)}
                         />
                       </div>
 
                       <div className="form-field">
                         <label className="block text-body-small font-medium text-charcoal mb-1.5">
-                          Phone <span className="text-warm-gray">(optional)</span>
+                          {t('contact.form.phone')} <span className="text-warm-gray">{t('contact.optional')}</span>
                         </label>
                         <input
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => handleChange('phone', e.target.value)}
-                          placeholder="+855 XX XXX XXXX"
+                          placeholder={t('contact.phonePlaceholder')}
                           className={inputClasses()}
                         />
                       </div>
 
                       <div className="form-field">
-                        <label className="block text-body-small font-medium text-charcoal mb-1.5">I am a...</label>
+                        <label className="block text-body-small font-medium text-charcoal mb-1.5">{t('contact.iAmA')}</label>
                         <div className="relative">
                           <select
                             value={formData.iam}
                             onChange={(e) => handleChange('iam', e.target.value)}
                             className={inputClasses() + ' appearance-none cursor-pointer'}
                           >
-                            <option value="">Select</option>
-                            <option value="seeker">Job Seeker</option>
-                            <option value="employer">Employer</option>
-                            <option value="other">Other</option>
+                            <option value="">{t('contact.select')}</option>
+                            <option value="seeker">{t('contact.jobSeeker')}</option>
+                            <option value="employer">{t('contact.employer')}</option>
+                            <option value="other">{t('contact.other')}</option>
                           </select>
                           <ChevronDown size={20} className="absolute right-4 top-1/2 -translate-y-1/2 text-warm-gray pointer-events-none" />
                         </div>
@@ -309,7 +306,7 @@ export default function Contact() {
 
                       <div className="form-field">
                         <label className="block text-body-small font-medium text-charcoal mb-1.5">
-                          Subject <span className="text-coral">*</span>
+                          {t('contact.form.subject')} <span className="text-coral">*</span>
                         </label>
                         <div className="relative">
                           <select
@@ -317,12 +314,12 @@ export default function Contact() {
                             onChange={(e) => handleChange('subject', e.target.value)}
                             className={inputClasses(errors.subject) + ' appearance-none cursor-pointer'}
                           >
-                            <option value="">Select a subject</option>
-                            <option value="general">General Question</option>
-                            <option value="technical">Technical Support</option>
-                            <option value="billing">Billing</option>
-                            <option value="partnership">Partnership</option>
-                            <option value="issue">Report an Issue</option>
+                            <option value="">{t('contact.selectSubject')}</option>
+                            <option value="general">{t('contact.generalQuestion')}</option>
+                            <option value="technical">{t('contact.technicalSupport')}</option>
+                            <option value="billing">{t('contact.billing')}</option>
+                            <option value="partnership">{t('contact.partnership')}</option>
+                            <option value="issue">{t('contact.reportIssue')}</option>
                           </select>
                           <ChevronDown size={20} className="absolute right-4 top-1/2 -translate-y-1/2 text-warm-gray pointer-events-none" />
                         </div>
@@ -330,12 +327,12 @@ export default function Contact() {
 
                       <div className="form-field">
                         <label className="block text-body-small font-medium text-charcoal mb-1.5">
-                          Message <span className="text-coral">*</span>
+                          {t('contact.form.message')} <span className="text-coral">*</span>
                         </label>
                         <textarea
                           value={formData.message}
                           onChange={(e) => handleChange('message', e.target.value)}
-                          placeholder="How can we help you?"
+                          placeholder={t('contact.messagePlaceholder')}
                           rows={5}
                           className={inputClasses(errors.message) + ' resize-none pt-4'}
                         />
@@ -343,7 +340,7 @@ export default function Contact() {
 
                       <div className="form-field">
                         <label className="block text-body-small font-medium text-charcoal mb-2">
-                          Preferred Language
+                          {t('contact.preferredLanguage')}
                         </label>
                         <div className="flex items-center gap-3">
                           {[
@@ -378,10 +375,10 @@ export default function Contact() {
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
-                            Sending...
+                            {t('contact.form.sending')}
                           </span>
                         ) : (
-                          'Send Message'
+                          t('contact.form.submit')
                         )}
                       </button>
                     </form>
@@ -397,16 +394,16 @@ export default function Contact() {
                 <div className="mb-8">
                   <div className="flex items-center gap-2 mb-2">
                     <Phone size={20} className="text-gold" />
-                    <h4 className="text-h4 text-[#FAF8F3]">Call Us</h4>
+                    <h4 className="text-h4 text-[#FAF8F3]">{t('contact.info.callUs')}</h4>
                   </div>
                   <a href="tel:+85523XXXXXX" className="text-body text-gold hover:text-gold-light transition-colors block mb-1">
                     +855 23 XXX XXX
                   </a>
                   <p className="text-caption text-[rgba(250,248,243,0.5)]">
-                    Mon-Fri, 8:00 AM - 6:00 PM (Cambodia time)
+                    {t('contact.info.hours')}
                   </p>
                   <p className="text-caption text-emerald mt-1">
-                    Toll-free from Smart, Metfone, Cellcard
+                    {t('contact.info.tollFree')}
                   </p>
                 </div>
 
@@ -414,7 +411,7 @@ export default function Contact() {
                 <div className="mb-8">
                   <div className="flex items-center gap-2 mb-2">
                     <Mail size={20} className="text-gold" />
-                    <h4 className="text-h4 text-[#FAF8F3]">Email Us</h4>
+                    <h4 className="text-h4 text-[#FAF8F3]">{t('contact.info.emailUs')}</h4>
                   </div>
                   <a href="mailto:support@khmerhr.com" className="text-body text-gold hover:text-gold-light transition-colors block mb-1">
                     support@khmerhr.com
@@ -423,7 +420,7 @@ export default function Contact() {
                     enterprise@khmerhr.com
                   </a>
                   <p className="text-caption text-[rgba(250,248,243,0.5)]">
-                    For employers &amp; partnerships
+                    {t('contact.info.emailNote')}
                   </p>
                 </div>
 
@@ -431,24 +428,24 @@ export default function Contact() {
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
                     <MessageCircle size={20} className="text-gold" />
-                    <h4 className="text-h4 text-[#FAF8F3]">Chat on Messenger</h4>
+                    <h4 className="text-h4 text-[#FAF8F3]">{t('contact.info.chatMessenger')}</h4>
                   </div>
                   <a href="#" className="text-body text-gold hover:text-gold-light transition-colors block mb-1">
-                    Facebook: @KhmerHR
+                    {t('contact.info.facebook')}
                   </a>
                   <div className="flex items-center gap-1 mb-1">
                     <Zap size={14} className="text-emerald" />
-                    <span className="text-caption text-emerald">Fastest response time</span>
+                    <span className="text-caption text-emerald">{t('contact.info.fastestResponse')}</span>
                   </div>
                   <p className="text-caption text-[rgba(250,248,243,0.5)]">
-                    Most Cambodians prefer Messenger — we do too.
+                    {t('contact.info.messengerNote')}
                   </p>
                 </div>
 
                 {/* Response time badge */}
                 <div className="flex items-center gap-2 px-4 py-3 rounded-lg" style={{ background: 'rgba(5,150,105,0.15)' }}>
                   <Zap size={16} className="text-emerald" />
-                  <span className="text-caption text-emerald font-medium">Average response: 2 hours</span>
+                  <span className="text-caption text-emerald font-medium">{t('contact.responseTime')}</span>
                 </div>
               </div>
             </div>
@@ -460,71 +457,71 @@ export default function Contact() {
       <section className="offices-section bg-cream py-12 md:py-16">
         <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
           <h2 className="text-h2 font-display text-charcoal text-center mb-10">
-            Visit Our Offices
+            {t('contact.offices.title')}
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Phnom Penh */}
             <div className="office-card bg-white border border-sand rounded-2xl p-6">
               <span className="inline-flex items-center gap-1 px-3 py-1 bg-gold/10 text-gold-dark text-caption font-medium rounded-full mb-4">
-                <MapPin size={14} /> Phnom Penh
+                <MapPin size={14} /> {t('contact.offices.phnomPenh')}
               </span>
               <p className="text-body text-charcoal mb-4">
-                #123 Preah Monivong Blvd, Chamkarmon, Phnom Penh, Cambodia
+                {t('contact.offices.phnomPenhAddress')}
               </p>
               {/* Map placeholder */}
               <div className="w-full h-[250px] rounded-xl bg-sand/50 flex items-center justify-center mb-4 overflow-hidden relative">
                 <iframe
                   src="https://www.openstreetmap.org/export/embed.html?bbox=104.92%2C11.55%2C104.93%2C11.56&layer=mapnik&marker=11.555%2C104.925"
                   className="absolute inset-0 w-full h-full border-0"
-                  title="Phnom Penh Office Map"
+                  title={t('contact.offices.phnomPenh')}
                 />
               </div>
               <div className="space-y-1">
                 <p className="text-body-small text-warm-gray flex items-center gap-2">
-                  <Clock size={14} /> Monday - Friday: 8:00 AM - 6:00 PM
+                  <Clock size={14} /> {t('contact.offices.phnomPenhHours')}
                 </p>
                 <p className="text-body-small text-warm-gray flex items-center gap-2">
-                  <Clock size={14} /> Saturday: 9:00 AM - 12:00 PM
+                  <Clock size={14} /> {t('contact.offices.phnomPenhSaturday')}
                 </p>
                 <p className="text-body-small text-warm-gray flex items-center gap-2">
-                  <Clock size={14} /> Sunday: Closed
+                  <Clock size={14} /> {t('contact.offices.phnomPenhSunday')}
                 </p>
               </div>
               <p className="text-caption text-warm-gray mt-3">
-                Near Independence Monument. Tuk-tuk accessible.
+                {t('contact.offices.phnomPenhNote')}
               </p>
             </div>
 
             {/* Siem Reap */}
             <div className="office-card bg-white border border-sand rounded-2xl p-6">
               <span className="inline-flex items-center gap-1 px-3 py-1 bg-gold/10 text-gold-dark text-caption font-medium rounded-full mb-4">
-                <MapPin size={14} /> Siem Reap
+                <MapPin size={14} /> {t('contact.offices.siemReap')}
               </span>
               <p className="text-body text-charcoal mb-4">
-                #45 Sivutha Blvd, Svay Dangkum, Siem Reap, Cambodia
+                {t('contact.offices.siemReapAddress')}
               </p>
               {/* Map placeholder */}
               <div className="w-full h-[250px] rounded-xl bg-sand/50 flex items-center justify-center mb-4 overflow-hidden relative">
                 <iframe
                   src="https://www.openstreetmap.org/export/embed.html?bbox=103.85%2C13.35%2C103.86%2C13.37&layer=mapnik&marker=13.36%2C103.855"
                   className="absolute inset-0 w-full h-full border-0"
-                  title="Siem Reap Office Map"
+                  title={t('contact.offices.siemReap')}
                 />
               </div>
               <div className="space-y-1">
                 <p className="text-body-small text-warm-gray flex items-center gap-2">
-                  <Clock size={14} /> Monday - Friday: 8:00 AM - 6:00 PM
+                  <Clock size={14} /> {t('contact.offices.phnomPenhHours')}
                 </p>
                 <p className="text-body-small text-warm-gray flex items-center gap-2">
-                  <Clock size={14} /> Saturday: 9:00 AM - 12:00 PM
+                  <Clock size={14} /> {t('contact.offices.phnomPenhSaturday')}
                 </p>
                 <p className="text-body-small text-warm-gray flex items-center gap-2">
-                  <Clock size={14} /> Sunday: Closed
+                  <Clock size={14} /> {t('contact.offices.phnomPenhSunday')}
                 </p>
               </div>
               <p className="text-caption text-gold mt-3">
-                Specializing in tourism &amp; hospitality recruitment
+                {t('contact.offices.siemReapNote')}
               </p>
             </div>
           </div>
@@ -535,9 +532,9 @@ export default function Contact() {
       <section className="faq-section bg-warm-white py-10 md:py-12">
         <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
           <div className="text-center mb-8">
-            <h3 className="text-h3 font-display text-charcoal mb-2">Common Questions</h3>
+            <h3 className="text-h3 font-display text-charcoal mb-2">{t('contact.faq.title')}</h3>
             <p className="text-body-small text-warm-gray">
-              Find quick answers to common questions. Or send us a message above.
+              {t('contact.faq.subtitle')}
             </p>
           </div>
 
@@ -595,9 +592,9 @@ export default function Contact() {
             <LotusIcon size={56} />
           </div>
 
-          <h2 className="text-h2 font-display text-[#FAF8F3] mb-3">Connect With Us</h2>
+          <h2 className="text-h2 font-display text-[#FAF8F3] mb-3">{t('contact.social.title')}</h2>
           <p className="text-body text-[rgba(250,248,243,0.7)] mb-8">
-            Get job alerts, career tips, and company updates on your favorite platform.
+            {t('contact.social.subtitle')}
           </p>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
@@ -617,7 +614,7 @@ export default function Contact() {
           </div>
 
           <p className="text-caption text-[rgba(250,248,243,0.5)]">
-            Join 50,000+ followers across our channels
+            {t('contact.social.followers')}
           </p>
         </div>
       </section>

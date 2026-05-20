@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
   Search, MapPin, Users, TrendingUp, Building2, Code,
@@ -14,10 +15,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* ───────────────────── DATA ───────────────────── */
 const trustStats = [
-  { value: 990, suffix: 'K+', label: 'Active Workforce', labelKm: 'កម្លាំង​ពលកម្ម​សកម្ម', labelZh: '活跃劳动力', icon: Users, color: 'gold' as const },
-  { value: 74, suffix: '%', label: 'Employers Report Hiring Difficulty', labelKm: 'និយោជក 74% ប្រឈម​ការ​ជ្រើសរើស', labelZh: '企业招聘困难', icon: TrendingUp, color: 'coral' as const },
-  { value: 2900, suffix: '+', label: 'Chinese Enterprises in Cambodia', labelKm: 'ធុរកិច្ច​ចិន​នៅ​កម្ពុជា', labelZh: '在柬中资企业', icon: Building2, color: 'gold' as const },
-  { value: 600, suffix: 'K', label: 'IT Talent Gap to Fill', labelKm: 'ចន្លោះ​ប្រហោង​ព័ត៌មានវិទ្យា', labelZh: 'IT人才缺口', icon: Code, color: 'emerald' as const },
+  { value: 990, suffix: 'K+', labelKey: 'hero.stats.workers', label: 'Active Workforce', labelKm: 'កម្លាំង​ពលកម្ម​សកម្ម', labelZh: '活跃劳动力', icon: Users, color: 'gold' as const },
+  { value: 74, suffix: '%', labelKey: 'hero.stats.employers', label: 'Employers Report Hiring Difficulty', labelKm: 'និយោជក 74% ប្រឈម​ការ​ជ្រើសរើស', labelZh: '企业招聘困难', icon: TrendingUp, color: 'coral' as const },
+  { value: 2900, suffix: '+', labelKey: 'hero.stats.workers', label: 'Chinese Enterprises in Cambodia', labelKm: 'ធុរកិច្ច​ចិន​នៅ​កម្ពុជា', labelZh: '在柬中资企业', icon: Building2, color: 'gold' as const },
+  { value: 600, suffix: 'K', labelKey: 'hero.stats.workers', label: 'IT Talent Gap to Fill', labelKm: 'ចន្លោះ​ប្រហោង​ព័ត៌មានវិទ្យា', labelZh: 'IT人才缺口', icon: Code, color: 'emerald' as const },
 ];
 
 const sectors = [
@@ -130,6 +131,8 @@ const testimonials = [
 
 /* ───────────────────── HOME COMPONENT ───────────────────── */
 export default function Home() {
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language || 'km';
   const containerRef = useRef<HTMLDivElement>(null);
   const [savedJobs, setSavedJobs] = useState<Set<number>>(new Set());
 
@@ -238,21 +241,17 @@ export default function Home() {
         <div className="relative z-10 max-w-[800px] mx-auto px-4 md:px-8 pt-20 pb-12 text-center">
           {/* Tagline */}
           <p className="hero-tagline text-caption uppercase tracking-[0.15em] text-gold mb-6">
-            Cambodia's Trusted Recruitment Platform
+            {t('hero.tagline')}
           </p>
 
           {/* Headline */}
           <h1 className="hero-headline text-hero-title font-display text-[#FAF8F3] mb-6" style={{ textShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
-            <span className="inline-block">Find</span>{' '}
-            <span className="inline-block">Your</span>{' '}
-            <span className="inline-block">Next</span>{' '}
-            <span className="inline-block">Great</span>{' '}
-            <span className="inline-block">Hire</span>
+            {t('hero.headline')}
           </h1>
 
           {/* Subheadline */}
           <p className="hero-sub text-body-large text-[rgba(250,248,243,0.85)] max-w-[560px] mx-auto mb-8">
-            Connecting Cambodia's talent with opportunity. From garment factories to tech startups, we help employers find the right people — fast.
+            {t('hero.subtitle')}
           </p>
 
           {/* Search Bar */}
@@ -268,7 +267,7 @@ export default function Home() {
               <Search size={20} className="text-warm-gray shrink-0" />
               <input
                 type="text"
-                placeholder="Job title, keyword, or company"
+                placeholder={t('hero.searchPlaceholder')}
                 className="w-full bg-transparent text-charcoal text-body placeholder:text-warm-gray focus:outline-none"
               />
             </div>
@@ -276,7 +275,7 @@ export default function Home() {
             <div className="flex items-center gap-2 px-4 min-h-[48px] md:w-[180px]">
               <MapPin size={20} className="text-warm-gray shrink-0" />
               <select className="bg-transparent text-charcoal text-body focus:outline-none w-full cursor-pointer appearance-none">
-                <option>All Locations</option>
+                <option>{t('hero.allLocations')}</option>
                 <option>Phnom Penh</option>
                 <option>Siem Reap</option>
                 <option>Kandal</option>
@@ -287,16 +286,16 @@ export default function Home() {
               to="/jobs"
               className="bg-gold text-deep-brown px-6 py-3 rounded-xl text-button font-semibold min-h-[48px] md:min-h-[48px] flex items-center justify-center shadow-gold hover:bg-gold-dark hover:scale-[1.03] hover:shadow-gold-hover transition-all duration-200 shrink-0"
             >
-              Search Jobs
+              {t('hero.searchJobs')}
             </Link>
           </div>
 
           {/* Quick Stats Row */}
           <div className="hero-stats flex items-center justify-center gap-3 md:gap-6 flex-wrap mb-6">
             {[
-              { value: '2,400+', label: 'Jobs' },
-              { value: '850+', label: 'Employers' },
-              { value: '50,000+', label: 'Job Seekers' },
+              { value: '2,400+', label: t('hero.stats.jobs') },
+              { value: '850+', label: t('hero.stats.employers') },
+              { value: '50,000+', label: t('hero.stats.jobSeekers') },
             ].map((s, i) => (
               <div key={i} className="hero-stats-item flex items-center gap-2 md:gap-6">
                 {i > 0 && <span className="w-1.5 h-1.5 rounded-full bg-gold/60 shrink-0" />}
@@ -309,7 +308,7 @@ export default function Home() {
 
           {/* Social Proof */}
           <p className="hero-stats-item text-caption text-[rgba(250,248,243,0.5)]">
-            Trusted by leading Cambodian and Chinese enterprises
+            {t('hero.trust')}
           </p>
         </div>
 
@@ -330,13 +329,15 @@ export default function Home() {
                   <IconComp size={24} className={stat.color === 'coral' ? 'text-coral' : stat.color === 'emerald' ? 'text-emerald' : 'text-gold'} />
                   <div className="flex items-baseline gap-0.5 mt-3">
                     <span className={`stat-num-${i} text-stat-number font-mono ${stat.color === 'coral' ? 'text-coral' : stat.color === 'emerald' ? 'text-emerald' : 'text-gold'}`}>
-                      0
+                      {stat.value}
                     </span>
                     <span className={`stat-suffix-${i} text-stat-number font-mono ${stat.color === 'coral' ? 'text-coral' : stat.color === 'emerald' ? 'text-emerald' : 'text-gold'}`}>
                       {stat.suffix}
                     </span>
                   </div>
-                  <p className="text-body-small text-warm-gray max-w-[160px] mt-2">{stat.label}</p>
+                  <p className="text-body-small text-warm-gray max-w-[160px] mt-2">
+                    {currentLang === 'km' ? stat.labelKm : currentLang === 'zh' ? stat.labelZh : stat.label}
+                  </p>
                 </div>
               );
             })}
@@ -349,13 +350,13 @@ export default function Home() {
         <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
           <div className="text-center mb-12 reveal-section">
             <p className="reveal-item text-caption uppercase tracking-[0.1em] text-gold mb-2">
-              INDUSTRIES
+              {t('home.industries')}
             </p>
             <h2 className="reveal-item text-h2 font-display text-charcoal mb-3">
-              Industries We Serve
+              {t('home.industries')}
             </h2>
             <p className="reveal-item text-body text-warm-gray max-w-[520px] mx-auto">
-              Specialized recruitment solutions for Cambodia's key economic sectors
+              {t('home.industriesSubtitle')}
             </p>
           </div>
 
@@ -389,7 +390,7 @@ export default function Home() {
                       ))}
                     </div>
                     <Link to="/jobs" className="text-body-small font-medium text-gold hover:underline inline-flex items-center gap-1">
-                      Browse Jobs &rarr;
+                      {t('home.browseJobs')}
                     </Link>
                   </div>
                 </div>
@@ -405,14 +406,14 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 reveal-section">
             <div>
               <p className="reveal-item text-caption uppercase tracking-[0.1em] text-gold mb-2">
-                FEATURED JOBS
+                {t('home.featuredJobs')}
               </p>
               <h2 className="reveal-item text-h2 font-display text-charcoal">
-                Latest Opportunities
+                {t('home.latestOpportunities')}
               </h2>
             </div>
             <Link to="/jobs" className="reveal-item text-body font-medium text-gold hover:underline mt-3 sm:mt-0 inline-flex items-center gap-1">
-              View All Jobs &rarr;
+              {t('home.viewAllJobs')}
             </Link>
           </div>
 
@@ -434,11 +435,11 @@ export default function Home() {
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-body-small text-charcoal font-medium">{job.company}</span>
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gradient-to-br from-emerald to-emerald-light text-white text-[11px] font-medium rounded-full animate-pulse-glow">
-                            <CheckCircle size={10} /> Verified
+                            <CheckCircle size={10} /> {t('home.verified')}
                           </span>
                           {job.isNew && (
                             <span className="px-2 py-0.5 bg-gradient-to-br from-coral to-[#F59E0B] text-white text-[11px] font-medium rounded-full">
-                              New
+                              {t('home.new')}
                             </span>
                           )}
                         </div>
@@ -470,7 +471,7 @@ export default function Home() {
                         <button
                           onClick={(e) => { e.stopPropagation(); toggleSave(i); }}
                           className="w-9 h-9 rounded-full flex items-center justify-center text-warm-gray hover:text-gold hover:bg-gold/10 transition-all"
-                          aria-label="Save job"
+                          aria-label={t('home.saveJob')}
                         >
                           <Bookmark size={18} className={savedJobs.has(i) ? 'fill-gold text-gold' : ''} />
                         </button>
@@ -478,7 +479,7 @@ export default function Home() {
                           to={`/jobs/${i + 1}`}
                           className="bg-coral text-white px-4 py-2 rounded-lg text-button-small font-semibold min-h-[36px] flex items-center shadow-coral hover:bg-coral-dark hover:scale-[1.03] transition-all duration-200"
                         >
-                          Apply
+                          {t('home.apply')}
                         </Link>
                       </div>
                     </div>
@@ -495,13 +496,13 @@ export default function Home() {
         <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
           <div className="text-center mb-12 reveal-section">
             <p className="reveal-item text-caption uppercase tracking-[0.1em] text-gold mb-2">
-              HOW IT WORKS
+              {t('home.howItWorks')}
             </p>
             <h2 className="reveal-item text-h2 font-display text-charcoal mb-3">
-              Three Simple Steps
+              {t('home.threeSteps')}
             </h2>
             <p className="reveal-item text-body text-warm-gray">
-              Create your profile, find the right job, get hired — all in minutes
+              {t('home.stepsSubtitle')}
             </p>
           </div>
 
@@ -551,10 +552,10 @@ export default function Home() {
         <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
           <div className="text-center mb-10 reveal-section">
             <p className="reveal-item text-caption uppercase tracking-[0.1em] text-gold mb-2">
-              PARTNERS
+              {t('home.partners')}
             </p>
             <h2 className="reveal-item text-h2 font-display text-charcoal">
-              Trusted by Leading Employers
+              {t('home.trustedEmployers')}
             </h2>
           </div>
 
@@ -574,7 +575,7 @@ export default function Home() {
               to="/employers"
               className="inline-flex items-center gap-2 px-6 py-3 border-2 border-gold text-gold rounded-xl text-button-small font-semibold hover:bg-gold/10 transition-colors duration-200"
             >
-              Become a Trusted Employer &rarr;
+              {t('home.becomeEmployer')}
             </Link>
           </div>
         </div>
@@ -590,19 +591,19 @@ export default function Home() {
             {/* Left Column - Text */}
             <div className="reveal-section order-2 lg:order-1">
               <p className="reveal-item text-caption uppercase tracking-[0.1em] text-gold mb-2">
-                RESUME BUILDER
+                {t('home.resumeBuilder')}
               </p>
               <h2 className="reveal-item text-h2 font-display text-[#FAF8F3] mb-4">
-                Build Your Resume in 3 Minutes
+                {t('home.buildResume')}
               </h2>
               <p className="reveal-item text-body text-[rgba(250,248,243,0.8)] mb-6">
-                No writing skills needed. Choose your industry, fill in your details, and get a professional resume instantly. Available in Khmer, Chinese, and English.
+                {t('home.resumeDesc')}
               </p>
               <ul className="space-y-3 mb-8">
                 {[
-                  'Industry-specific templates (Garment, Tourism, ICT)',
-                  'Auto-fill from your profile — no retyping',
-                  'Share directly to Facebook & Messenger',
+                  t('home.resumeTemplates'),
+                  t('home.resumeAutoFill'),
+                  t('home.resumeShare'),
                 ].map((item, i) => (
                   <li key={i} className="reveal-item flex items-start gap-3 text-body text-[rgba(250,248,243,0.8)]">
                     <CheckCircle2 size={20} className="text-emerald shrink-0 mt-0.5" />
@@ -615,13 +616,13 @@ export default function Home() {
                   to="/resume"
                   className="bg-gold text-deep-brown px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] flex items-center justify-center shadow-gold hover:bg-gold-dark hover:scale-[1.03] hover:shadow-gold-hover transition-all duration-200"
                 >
-                  Create My Resume &rarr;
+                  {t('home.createMyResume')}
                 </Link>
                 <Link
                   to="/resume"
                   className="px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] flex items-center justify-center text-gold hover:bg-gold/10 transition-colors duration-200 border border-transparent hover:border-gold/20"
                 >
-                  See How It Works
+                  {t('home.seeHowItWorks')}
                 </Link>
               </div>
             </div>
@@ -641,15 +642,15 @@ export default function Home() {
                   <div className="w-16 h-16 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4">
                     <UserPlus size={32} className="text-gold" />
                   </div>
-                  <p className="text-warm-white font-semibold text-h4 mb-1">Resume Builder</p>
-                  <p className="text-warm-gray text-caption">3 easy steps</p>
+                  <p className="text-warm-white font-semibold text-h4 mb-1">{t('home.resumeBuilder')}</p>
+                  <p className="text-warm-gray text-caption">{t('home.threeSteps')}</p>
                   <div className="mt-6 space-y-2">
                     <div className="w-40 h-3 bg-gold/20 rounded-full mx-auto" />
                     <div className="w-32 h-3 bg-gold/15 rounded-full mx-auto" />
                     <div className="w-36 h-3 bg-gold/20 rounded-full mx-auto" />
                   </div>
                   <div className="mt-6 w-32 h-8 bg-gold rounded-lg mx-auto flex items-center justify-center">
-                    <span className="text-deep-brown text-caption font-semibold">Get Started</span>
+                    <span className="text-deep-brown text-caption font-semibold">{t('home.searchJobsBtn')}</span>
                   </div>
                 </div>
               </div>
@@ -663,15 +664,15 @@ export default function Home() {
         <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
           <div className="text-center mb-12 reveal-section">
             <p className="reveal-item text-caption uppercase tracking-[0.1em] text-gold mb-2">
-              TESTIMONIALS
+              {t('home.testimonials')}
             </p>
             <h2 className="reveal-item text-h2 font-display text-charcoal">
-              Success Stories
+              {t('home.successStories')}
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
+            {testimonials.map((testimonial, i) => (
               <div
                 key={i}
                 className="testimonial-card bg-cream rounded-2xl p-6 border border-sand relative"
@@ -681,17 +682,17 @@ export default function Home() {
                   &ldquo;
                 </span>
                 <p className="text-body text-charcoal leading-relaxed mb-6 relative z-10 pt-6">
-                  {t.quote}
+                  {testimonial.quote}
                 </p>
                 <div className="flex items-center gap-3">
                   <img
-                    src={t.avatar}
-                    alt={t.name}
+                    src={testimonial.avatar}
+                    alt={testimonial.name}
                     className="w-14 h-14 rounded-full object-cover border-2 border-gold/20"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-body-small font-semibold text-charcoal truncate">{t.name}</p>
-                    <p className="text-caption text-warm-gray truncate">{t.role}</p>
+                    <p className="text-body-small font-semibold text-charcoal truncate">{testimonial.name}</p>
+                    <p className="text-caption text-warm-gray truncate">{testimonial.role}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1">
                     <div className="flex items-center gap-0.5">
@@ -700,7 +701,7 @@ export default function Home() {
                       ))}
                     </div>
                     <span className="text-[11px] text-warm-gray bg-sand/50 px-2 py-0.5 rounded-full">
-                      {t.industry}
+                      {testimonial.industry}
                     </span>
                   </div>
                 </div>
@@ -712,7 +713,7 @@ export default function Home() {
 
       {/* ═══════════════ SECTION 9: CTA / NEWSLETTER ═══════════════ */}
       <section
-        className="cta-section py-16 md:py-20 lg:py-24"
+        className="cta-section relative py-16 md:py-20 lg:py-24"
         style={{
           background: 'linear-gradient(135deg, #1A1714 0%, #2D2926 40%, #1A1714 100%)',
         }}
@@ -734,10 +735,10 @@ export default function Home() {
             </div>
 
             <h2 className="text-h2 font-display text-[#FAF8F3] mb-4" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
-              Ready to Find Your Next Opportunity?
+              {t('home.ready')}
             </h2>
             <p className="text-body-large text-[rgba(250,248,243,0.8)] mb-8">
-              Join 50,000+ job seekers and 850+ employers on Cambodia's most trusted recruitment platform.
+              {t('home.joinPlatform')}
             </p>
 
             {/* CTA Buttons */}
@@ -746,25 +747,25 @@ export default function Home() {
                 to="/jobs"
                 className="bg-gold text-deep-brown px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] sm:min-h-[64px] flex items-center justify-center shadow-gold hover:bg-gold-dark hover:scale-[1.03] hover:shadow-gold-hover transition-all duration-200 sm:w-[240px]"
               >
-                <Search size={20} className="mr-2" /> Search Jobs
+                <Search size={20} className="mr-2" /> {t('home.searchJobsBtn')}
               </Link>
               <Link
                 to="/employers"
                 className="px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] sm:min-h-[64px] flex items-center justify-center border-2 border-gold text-gold hover:bg-gold/10 transition-all duration-200 sm:w-[240px]"
               >
-                <Briefcase size={20} className="mr-2" /> Post a Job
+                <Briefcase size={20} className="mr-2" /> {t('home.postAJob')}
               </Link>
             </div>
 
             {/* Newsletter */}
             <div className="mb-8">
               <p className="text-body-small text-[rgba(250,248,243,0.6)] mb-3">
-                Get new jobs delivered to your inbox
+                {t('home.newsletter')}
               </p>
               <div className="flex flex-col sm:flex-row gap-2 max-w-[480px] mx-auto">
                 <input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t('home.newsletterPlaceholder')}
                   className="flex-1 min-h-[48px] px-4 py-3 rounded-xl text-body text-white placeholder:text-[rgba(250,248,243,0.4)] focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
                   style={{
                     background: 'rgba(255,255,255,0.1)',
@@ -772,23 +773,23 @@ export default function Home() {
                   }}
                 />
                 <button className="bg-gold text-deep-brown px-6 py-3 rounded-xl text-button-small font-semibold min-h-[48px] hover:bg-gold-dark transition-colors shrink-0">
-                  Subscribe
+                  {t('home.subscribe')}
                 </button>
               </div>
               <p className="text-caption text-[rgba(250,248,243,0.4)] mt-2">
-                We respect your privacy. Unsubscribe anytime.
+                {t('home.privacyNote')}
               </p>
             </div>
 
             {/* Social Share */}
             <div className="flex flex-col items-center gap-3">
-              <p className="text-caption text-[rgba(250,248,243,0.6)]">Share with friends:</p>
+              <p className="text-caption text-[rgba(250,248,243,0.6)]">{t('home.shareWithFriends')}</p>
               <div className="flex items-center gap-3">
                 {[
                   { icon: Facebook, label: 'Facebook' },
                   { icon: MessageCircle, label: 'Messenger' },
                   { icon: Send, label: 'Telegram' },
-                  { icon: LinkIcon, label: 'Copy Link' },
+                  { icon: LinkIcon, label: t('home.copyLink') },
                 ].map(({ icon: Icon, label }) => (
                   <button
                     key={label}

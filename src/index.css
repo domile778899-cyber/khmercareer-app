@@ -75,6 +75,183 @@
     scroll-behavior: smooth;
   }
 
+  /* ============================================
+     iOS Safe Area & Mobile Adaptation
+     ============================================ */
+
+  /* Enable safe area support */
+  @supports (padding-top: env(safe-area-inset-top)) {
+    html {
+      --safe-area-top: env(safe-area-inset-top);
+      --safe-area-bottom: env(safe-area-inset-bottom);
+      --safe-area-left: env(safe-area-inset-left);
+      --safe-area-right: env(safe-area-inset-right);
+    }
+  }
+
+  /* Default safe area values for non-iOS */
+  html {
+    --safe-area-top: 0px;
+    --safe-area-bottom: 0px;
+    --safe-area-left: 0px;
+    --safe-area-right: 0px;
+  }
+
+  /* Prevent iOS tap highlight */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent callout on long press (iOS) */
+  * {
+    -webkit-touch-callout: none;
+  }
+
+  /* Enable touch callout only on links */
+  a, button {
+    -webkit-touch-callout: default;
+  }
+
+  /* iOS: Prevent text size adjustment on orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* ============================================
+     iOS Input Zoom Prevention
+     ============================================ */
+
+  /* Prevent iOS zoom on input focus (font-size must be >= 16px) */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
+  /* ============================================
+     Safe Area Utility Classes
+     ============================================ */
+
+  .safe-area-top {
+    padding-top: var(--safe-area-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: var(--safe-area-bottom);
+  }
+
+  .safe-area-left {
+    padding-left: var(--safe-area-left);
+  }
+
+  .safe-area-right {
+    padding-right: var(--safe-area-right);
+  }
+
+  .safe-area-x {
+    padding-left: var(--safe-area-left);
+    padding-right: var(--safe-area-right);
+  }
+
+  .safe-area-y {
+    padding-top: var(--safe-area-top);
+    padding-bottom: var(--safe-area-bottom);
+  }
+
+  .safe-area-all {
+    padding-top: var(--safe-area-top);
+    padding-bottom: var(--safe-area-bottom);
+    padding-left: var(--safe-area-left);
+    padding-right: var(--safe-area-right);
+  }
+
+  /* Margin variants for safe area */
+  .safe-area-margin-top {
+    margin-top: var(--safe-area-top);
+  }
+
+  .safe-area-margin-bottom {
+    margin-bottom: var(--safe-area-bottom);
+  }
+
+  /* Fixed bottom bar safe area padding */
+  .fixed-bottom-safe {
+    padding-bottom: calc(var(--safe-area-bottom) + 1rem);
+  }
+
+  /* Header safe area padding */
+  .header-safe {
+    padding-top: calc(var(--safe-area-top) + 0.5rem);
+  }
+
+  /* ============================================
+     Scroll Behavior (iOS Momentum Scroll)
+     ============================================ */
+
+  .ios-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+
+  /* ============================================
+     Standalone Mode (PWA Installed) Styles
+     ============================================ */
+
+  @media (display-mode: standalone) {
+    /* Remove default margins in standalone mode */
+    body {
+      overscroll-behavior-y: none;
+    }
+
+    /* Prevent overscroll bounce on the whole page */
+    html {
+      overscroll-behavior-y: none;
+    }
+  }
+
+  /* ============================================
+     Touch Action Utilities
+     ============================================ */
+
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+
+  .touch-pan-x {
+    touch-action: pan-x;
+  }
+
+  .touch-none {
+    touch-action: none;
+  }
+
+  /* ============================================
+     Reduced Motion Support
+     ============================================ */
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* ============================================
+     Dark Mode Support (System Level)
+     ============================================ */
+
+  @media (prefers-color-scheme: dark) {
+    /* Keep our warm theme, just adjust system UI */
+    meta[name="theme-color"] {
+      content: "#B8941F";
+    }
+  }
+
   /* Khmer text: increase line-height for vowel stacking */
   [lang="km"],
   .font-khmer {

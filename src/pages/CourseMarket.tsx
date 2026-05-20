@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -121,17 +122,32 @@ const aiCourses: Course[] = [
   { id: 103, title: 'AI Interview Preparation', teacher: 'AI Tutor', category: 'Personal Development', price: 7.99, rating: 4.6, reviews: 42, students: 650, duration: '8h', isAiGenerated: true },
 ];
 
+const categoryTranslationMap: Record<string, string> = {
+  'All': 'courses.categories.all',
+  'English': 'courses.categories.english',
+  'Chinese': 'courses.categories.chinese',
+  'Khmer': 'courses.categories.khmer',
+  'IT Skills': 'courses.categories.itSkills',
+  'Business': 'courses.categories.business',
+  'Design': 'courses.categories.design',
+  'Marketing': 'courses.categories.marketing',
+  'Personal Development': 'courses.categories.personalDevelopment',
+  'Factory Skills': 'courses.categories.factorySkills',
+  'Hospitality': 'courses.categories.hospitality',
+};
+
 /* ──────────────────────── Section 1: Hero ──────────────────────── */
 
 function HeroSection() {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
   const stats = [
-    { value: '120+', label: 'Courses' },
-    { value: '50+', label: 'Teachers' },
-    { value: '15K+', label: 'Students' },
-    { value: '95%', label: 'Satisfaction' },
+    { value: '120+', label: t('courses.courses') },
+    { value: '50+', label: t('courses.teachers') },
+    { value: '15K+', label: t('courses.students') },
+    { value: '95%', label: t('courses.satisfaction') },
   ];
 
   return (
@@ -151,13 +167,13 @@ function HeroSection() {
         >
           {/* Trilingual title */}
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-warm-white mb-3">
-            Course Marketplace
+            {t('courses.title')}
           </h1>
-          <p className="font-khmer text-xl sm:text-2xl text-gold mb-1">ទីផ្សារវគ្គសិក្សា</p>
-          <p className="font-chinese text-lg sm:text-xl text-gold-light mb-6">课程集市</p>
+          <p className="font-khmer text-xl sm:text-2xl text-gold mb-1">{t('courses.titleKm')}</p>
+          <p className="font-chinese text-lg sm:text-xl text-gold-light mb-6">{t('courses.titleZh')}</p>
 
           <p className="text-warm-gray text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-            Learn from expert teachers and AI-generated courses. New skills, new opportunities.
+            {t('courses.subtitle')}
           </p>
 
           {/* Search bar + Category filter */}
@@ -168,7 +184,7 @@ function HeroSection() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search courses..."
+                placeholder={t('courses.searchPlaceholder')}
                 className="w-full pl-12 pr-4 py-4 bg-charcoal border-2 border-sand/20 rounded-xl text-warm-white placeholder:text-warm-gray focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all"
               />
             </div>
@@ -181,7 +197,7 @@ function HeroSection() {
               >
                 {categories.map((cat) => (
                   <option key={cat.label} value={cat.label}>
-                    {cat.label}
+                    {t(categoryTranslationMap[cat.label] || 'courses.categories.all')}
                   </option>
                 ))}
               </select>
@@ -223,6 +239,8 @@ function CategoryFilters({
   activeCategory: string;
   onCategoryChange: (cat: string) => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <ScrollReveal>
       <section className="bg-warm-white py-8 border-b border-sand">
@@ -242,7 +260,7 @@ function CategoryFilters({
                   }`}
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="text-sm font-medium">{cat.label}</span>
+                  <span className="text-sm font-medium">{t(categoryTranslationMap[cat.label] || 'courses.categories.all')}</span>
                 </button>
               );
             })}
@@ -256,6 +274,8 @@ function CategoryFilters({
 /* ──────────────────────── Section 3: Featured Courses ──────────────────────── */
 
 function CourseCard({ course, index }: { course: Course; index: number }) {
+  const { t } = useTranslation();
+
   const categoryColors: Record<string, string> = {
     English: 'bg-blue-50 text-blue-700',
     Chinese: 'bg-red-50 text-red-700',
@@ -290,7 +310,7 @@ function CourseCard({ course, index }: { course: Course; index: number }) {
             <Play className="w-12 h-12 text-gold/80 relative z-10" />
             {course.price === null && (
               <span className="absolute top-3 left-3 bg-emerald text-white text-xs font-semibold px-3 py-1 rounded-full">
-                FREE
+                {t('common.free')}
               </span>
             )}
             {course.isAiGenerated && (
@@ -312,7 +332,7 @@ function CourseCard({ course, index }: { course: Course; index: number }) {
                 categoryColors[course.category] || 'bg-cream text-charcoal'
               }`}
             >
-              {course.category}
+              {t(categoryTranslationMap[course.category] || course.category)}
             </span>
 
             <h3 className="font-display text-lg font-semibold text-charcoal mb-2 line-clamp-2 leading-snug">
@@ -331,9 +351,9 @@ function CourseCard({ course, index }: { course: Course; index: number }) {
                 <Star className="w-4 h-4 text-gold fill-gold" />
                 <span className="text-sm font-semibold text-charcoal">{course.rating}</span>
               </div>
-              <span className="text-xs text-warm-gray">({course.reviews} reviews)</span>
+              <span className="text-xs text-warm-gray">({course.reviews} {t('courses.reviews')})</span>
               <span className="text-warm-gray mx-1">·</span>
-              <span className="text-xs text-warm-gray">{course.students.toLocaleString()} students</span>
+              <span className="text-xs text-warm-gray">{course.students.toLocaleString()} {t('courses.students')}</span>
             </div>
 
             <div className="mt-auto pt-3 border-t border-sand flex items-center justify-between">
@@ -342,7 +362,7 @@ function CourseCard({ course, index }: { course: Course; index: number }) {
                   ${course.price.toFixed(2)}
                 </span>
               ) : (
-                <span className="text-lg font-bold text-emerald font-display">FREE</span>
+                <span className="text-lg font-bold text-emerald font-display">{t('common.free')}</span>
               )}
               <span className="text-xs text-warm-gray flex items-center gap-1">
                 <Play className="w-3 h-3" />
@@ -363,6 +383,8 @@ function FeaturedCourses({
   activeCategory: string;
   searchQuery: string;
 }) {
+  const { t } = useTranslation();
+
   const filtered = courses.filter((c) => {
     const matchCategory = activeCategory === 'All' || c.category === activeCategory;
     const matchSearch =
@@ -380,14 +402,14 @@ function FeaturedCourses({
           <div className="flex items-center justify-between mb-10">
             <div>
               <h2 className="font-display text-2xl sm:text-3xl font-bold text-charcoal mb-2">
-                Featured Courses
+                {t('courses.featured')}
               </h2>
               <p className="text-warm-gray text-sm sm:text-base">
-                Hand-picked courses to boost your career
+                {t('courses.featuredSubtitle')}
               </p>
             </div>
             <span className="text-sm text-warm-gray bg-cream px-4 py-2 rounded-full">
-              {filtered.length} courses
+              {filtered.length} {t('courses.coursesCount')}
             </span>
           </div>
         </ScrollReveal>
@@ -401,8 +423,8 @@ function FeaturedCourses({
         ) : (
           <div className="text-center py-20">
             <BookOpen className="w-16 h-16 text-sand mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-charcoal mb-2">No courses found</h3>
-            <p className="text-warm-gray">Try adjusting your search or filter criteria.</p>
+            <h3 className="text-lg font-semibold text-charcoal mb-2">{t('courses.noCourses')}</h3>
+            <p className="text-warm-gray">{t('courses.noCoursesDesc')}</p>
           </div>
         )}
       </div>
@@ -413,16 +435,18 @@ function FeaturedCourses({
 /* ──────────────────────── Section 4: Top Teachers ──────────────────────── */
 
 function TeachersSection() {
+  const { t } = useTranslation();
+
   return (
     <section className="bg-cream py-12 md:py-20">
       <div className="max-w-container-desktop mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-container-wide">
         <ScrollReveal>
           <div className="text-center mb-12">
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-charcoal mb-3">
-              Top Teachers
+              {t('courses.topTeachers')}
             </h2>
             <p className="text-warm-gray max-w-xl mx-auto">
-              Learn from industry experts with years of real-world experience
+              {t('courses.topTeachersSubtitle')}
             </p>
           </div>
         </ScrollReveal>
@@ -448,20 +472,20 @@ function TeachersSection() {
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div>
                   <div className="text-sm font-bold text-charcoal">{teacher.courses}</div>
-                  <div className="text-xs text-warm-gray">Courses</div>
+                  <div className="text-xs text-warm-gray">{t('courses.courses')}</div>
                 </div>
                 <div>
                   <div className="text-sm font-bold text-charcoal">
                     {(teacher.students / 1000).toFixed(1)}K
                   </div>
-                  <div className="text-xs text-warm-gray">Students</div>
+                  <div className="text-xs text-warm-gray">{t('courses.students')}</div>
                 </div>
                 <div>
                   <div className="flex items-center justify-center gap-0.5">
                     <Star className="w-3 h-3 text-gold fill-gold" />
                     <span className="text-sm font-bold text-charcoal">{teacher.rating}</span>
                   </div>
-                  <div className="text-xs text-warm-gray">Rating</div>
+                  <div className="text-xs text-warm-gray">{t('courses.satisfaction')}</div>
                 </div>
               </div>
             </motion.div>
@@ -475,6 +499,8 @@ function TeachersSection() {
 /* ──────────────────────── Section 5: AI Generated Courses Banner ──────────────────────── */
 
 function AiCoursesSection() {
+  const { t } = useTranslation();
+
   return (
     <section className="bg-deep-brown py-12 md:py-20 relative overflow-hidden">
       <div className="absolute inset-0 opacity-10">
@@ -487,13 +513,13 @@ function AiCoursesSection() {
             <div>
               <div className="inline-flex items-center gap-2 bg-gold/20 border border-gold/30 text-gold px-4 py-1.5 rounded-full text-sm font-medium mb-4">
                 <Cpu className="w-4 h-4" />
-                AI-Powered Learning
+                {t('courses.aiLearning')}
               </div>
               <h2 className="font-display text-2xl sm:text-3xl font-bold text-warm-white mb-2">
-                Learn from AI
+                {t('courses.aiCourses')}
               </h2>
               <p className="text-warm-gray max-w-xl">
-                Personalized courses generated by advanced AI. Learn at your own pace with intelligent tutoring.
+                {t('courses.aiSubtitle')}
               </p>
             </div>
             <Link
@@ -501,7 +527,7 @@ function AiCoursesSection() {
               className="inline-flex items-center gap-2 bg-gold text-deep-brown px-6 py-3 rounded-xl font-semibold shadow-gold hover:bg-gold-dark hover:shadow-gold-hover transition-all duration-300 hover:scale-103 flex-shrink-0"
             >
               <Sparkles className="w-5 h-5" />
-              Try AI Course Generator
+              {t('courses.tryAIGenerator')}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
@@ -539,7 +565,7 @@ function AiCoursesSection() {
 
                   <div className="p-5 flex-1 flex flex-col">
                     <span className="inline-block self-start text-xs font-medium px-3 py-1 rounded-full bg-gold/10 text-gold mb-3">
-                      {course.category}
+                      {t(categoryTranslationMap[course.category] || course.category)}
                     </span>
                     <h3 className="font-display text-base font-semibold text-warm-white mb-2 line-clamp-2">
                       {course.title}
@@ -553,14 +579,14 @@ function AiCoursesSection() {
                       <span className="text-sm font-semibold text-warm-white">{course.rating}</span>
                       <span className="text-xs text-warm-gray">({course.reviews})</span>
                       <span className="text-warm-gray mx-1">·</span>
-                      <span className="text-xs text-warm-gray">{course.students.toLocaleString()} students</span>
+                      <span className="text-xs text-warm-gray">{course.students.toLocaleString()} {t('courses.students')}</span>
                     </div>
                     <div className="mt-auto pt-3 border-t border-sand/20 flex items-center justify-between">
                       <span className="text-lg font-bold text-gold font-display">
                         ${course.price?.toFixed(2)}
                       </span>
                       <span className="text-xs text-gold/70 flex items-center gap-1">
-                        AI-generated
+                        {t('courses.aiGenerated')}
                       </span>
                     </div>
                   </div>
@@ -577,6 +603,8 @@ function AiCoursesSection() {
 /* ──────────────────────── Section 6: CTA ──────────────────────── */
 
 function CtaSection() {
+  const { t } = useTranslation();
+
   return (
     <section className="bg-warm-white py-12 md:py-20">
       <div className="max-w-container-desktop mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-container-wide">
@@ -594,17 +622,17 @@ function CtaSection() {
             <div className="relative z-10 max-w-2xl mx-auto">
               <HeartHandshake className="w-14 h-14 text-white mx-auto mb-6" />
               <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
-                Have knowledge to share?
+                {t('courses.ctaTitle')}
               </h2>
               <p className="text-white/80 text-base sm:text-lg mb-8">
-                Join our community of expert teachers and help thousands of students build new skills. Earn income while making an impact.
+                {t('courses.ctaSubtitle')}
               </p>
               <Link
                 to="/teach"
                 className="inline-flex items-center gap-2 bg-white text-emerald px-8 py-4 rounded-xl font-semibold shadow-lg hover:bg-cream transition-all duration-300 hover:scale-103"
               >
                 <GraduationCap className="w-5 h-5" />
-                Become a Teacher
+                {t('courses.becomeTeacher')}
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
@@ -626,6 +654,8 @@ function Pagination({
   currentPage: number;
   onPageChange: (page: number) => void;
 }) {
+  const { t } = useTranslation();
+
   if (totalPages <= 1) return null;
 
   return (
@@ -637,7 +667,7 @@ function Pagination({
             disabled={currentPage === 1}
             className="px-4 py-2 rounded-lg border border-sand text-charcoal hover:bg-cream disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
-            Previous
+            {t('courses.previous')}
           </button>
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
@@ -657,7 +687,7 @@ function Pagination({
             disabled={currentPage === totalPages}
             className="px-4 py-2 rounded-lg border border-sand text-charcoal hover:bg-cream disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
-            Next
+            {t('courses.next')}
           </button>
         </div>
       </div>

@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import CookieConsent from './CookieConsent';
 
 export default function Layout() {
   useEffect(() => {
-    let lenis: any;
+    let lenis: { destroy: () => void; raf: (time: number) => void } | null = null;
     const initLenis = async () => {
       const Lenis = (await import('lenis')).default;
       lenis = new Lenis({
@@ -15,7 +16,7 @@ export default function Layout() {
       });
 
       function raf(time: number) {
-        lenis.raf(time);
+        lenis?.raf(time);
         requestAnimationFrame(raf);
       }
       requestAnimationFrame(raf);
@@ -35,6 +36,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <CookieConsent />
     </div>
   );
 }

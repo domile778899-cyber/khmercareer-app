@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -63,11 +64,13 @@ function ScrollReveal({
 /* ──────────────────────── Section 1: Hero ──────────────────────── */
 
 function HeroSection() {
+  const { t } = useTranslation();
+
   const stats = [
-    { icon: Users, label: 'Teachers', value: '50+' },
-    { icon: DollarSign, label: 'Avg Monthly Income', value: '$500' },
-    { icon: GraduationCap, label: 'Students', value: '15K+' },
-    { icon: Award, label: 'Satisfaction', value: '95%' },
+    { icon: Users, label: t('teach.stats.teachers'), value: '50+' },
+    { icon: DollarSign, label: t('teach.stats.avgIncome'), value: '$500' },
+    { icon: GraduationCap, label: t('teach.stats.students'), value: '15K+' },
+    { icon: Award, label: t('teach.stats.satisfaction'), value: '95%' },
   ];
 
   return (
@@ -89,22 +92,22 @@ function HeroSection() {
             variants={childFadeUp}
             className="text-gold text-caption font-semibold tracking-widest uppercase mb-4"
           >
-            ចែករំលែកចំណេះដឹង &middot; Share Knowledge &middot; 分享您的知识
+            {t('teach.shareKnowledge')}
           </motion.p>
 
           <motion.h1
             variants={childFadeUp}
             className="text-hero-title font-display text-warm-white mb-6"
           >
-            Share Your
-            <span className="text-gold"> Knowledge</span>
+            {t('teach.heroTitle').split(' ').slice(0, -1).join(' ')}
+            <span className="text-gold"> {t('teach.heroTitle').split(' ').slice(-1)}</span>
           </motion.h1>
 
           <motion.p
             variants={childFadeUp}
             className="text-body-large text-warm-gray mb-4 max-w-[650px] mx-auto"
           >
-            Teach what you love. Earn money. Impact thousands of students in Cambodia.
+            {t('teach.subtitle')}
           </motion.p>
 
           <motion.p
@@ -112,7 +115,7 @@ function HeroSection() {
             className="text-body text-warm-gray/70 mb-10 max-w-[600px] mx-auto"
             style={{ fontFamily: 'Noto Sans SC, sans-serif' }}
           >
-            教你所爱。赚取收入。影响柬埔寨数千名学生。
+            {t('teach.subtitleZh')}
           </motion.p>
 
           {/* CTAs */}
@@ -124,15 +127,15 @@ function HeroSection() {
               to="/course-upload"
               className="bg-gold text-deep-brown px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] flex items-center justify-center shadow-gold hover:bg-gold-dark hover:scale-[1.03] hover:shadow-gold-hover transition-all duration-200"
             >
-              Start Teaching
+              {t('teach.startTeaching')}
               <ArrowRight size={20} className="ml-2" />
             </Link>
             <button
-              onClick={() => alert('Demo video coming soon!')}
+              onClick={() => alert(t('teach.demoComingSoon'))}
               className="bg-transparent border-2 border-gold text-gold px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] flex items-center justify-center hover:bg-gold/10 transition-all duration-200"
             >
               <Play size={18} className="mr-2" />
-              Watch Demo
+              {t('teach.watchDemo')}
             </button>
           </motion.div>
 
@@ -166,52 +169,55 @@ function HeroSection() {
 
 interface ValueProp {
   icon: React.ComponentType<{ size?: number; className?: string }>;
-  title: string;
-  description: string;
+  titleKey: string;
+  descKey: string;
 }
 
-const valueProps: ValueProp[] = [
+const getValueProps = (_t: (key: string) => string): ValueProp[] => [
   {
     icon: DollarSign,
-    title: 'Earn Money',
-    description: 'Set your own price. Earn 70% of every sale. Get paid monthly directly to your bank account.',
+    titleKey: 'teach.earnMoney',
+    descKey: 'teach.earnMoneyDesc',
   },
   {
     icon: Calendar,
-    title: 'Flexible Schedule',
-    description: 'Teach on your own time. Pre-record and upload videos whenever it suits you.',
+    titleKey: 'teach.flexibleSchedule',
+    descKey: 'teach.flexibleDesc',
   },
   {
     icon: TrendingUp,
-    title: 'Build Your Brand',
-    description: 'Grow your personal brand and following. Become a recognized expert in your field.',
+    titleKey: 'teach.buildBrand',
+    descKey: 'teach.buildBrandDesc',
   },
   {
     icon: Heart,
-    title: 'Impact Lives',
-    description: 'Help Cambodian workers upskill and earn better. Make a real difference in your community.',
+    titleKey: 'teach.impactLives',
+    descKey: 'teach.impactDesc',
   },
 ];
 
 function WhyTeachSection() {
+  const { t } = useTranslation();
+  const valueProps = getValueProps(t);
+
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-warm-white">
       <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
         <ScrollReveal className="text-center mb-12">
           <p className="text-gold text-caption font-semibold tracking-widest uppercase mb-3">
-            Why Teach Here
+            {t('teach.whyTeach')}
           </p>
           <h2 className="text-h2 font-display text-charcoal mb-4">
-            The Best Place to Teach Online
+            {t('teach.bestPlace')}
           </h2>
           <p className="text-body text-warm-gray max-w-[600px] mx-auto">
-            Join Cambodia&apos;s fastest growing education platform. We provide everything you need to succeed.
+            {t('teach.whySubtitle')}
           </p>
         </ScrollReveal>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {valueProps.map((prop, i) => (
-            <ScrollReveal key={prop.title} delay={i * 0.1}>
+            <ScrollReveal key={prop.titleKey} delay={i * 0.1}>
               <motion.div
                 whileHover={{ y: -6 }}
                 className="bg-white border border-sand rounded-2xl p-8 hover:shadow-feature hover:border-gold/30 transition-all duration-300 h-full flex flex-col items-center text-center"
@@ -220,10 +226,10 @@ function WhyTeachSection() {
                   <prop.icon size={28} className="text-gold" />
                 </div>
                 <h3 className="text-h4 font-display text-charcoal mb-3">
-                  {prop.title}
+                  {t(prop.titleKey)}
                 </h3>
                 <p className="text-body-small text-warm-gray flex-1">
-                  {prop.description}
+                  {t(prop.descKey)}
                 </p>
               </motion.div>
             </ScrollReveal>
@@ -238,52 +244,55 @@ function WhyTeachSection() {
 
 interface Step {
   icon: React.ComponentType<{ size?: number; className?: string }>;
-  title: string;
-  description: string;
+  titleKey: string;
+  descKey: string;
 }
 
-const steps: Step[] = [
+const getSteps = (_t: (key: string) => string): Step[] => [
   {
     icon: FileText,
-    title: 'Apply',
-    description: 'Submit your teacher application with your expertise and qualifications.',
+    titleKey: 'teach.apply',
+    descKey: 'teach.applyDesc',
   },
   {
     icon: Video,
-    title: 'Create',
-    description: 'Record and upload your course videos using our simple tools.',
+    titleKey: 'teach.create',
+    descKey: 'teach.createDesc',
   },
   {
     icon: Globe,
-    title: 'Publish',
-    description: 'We review your course and publish it to thousands of students.',
+    titleKey: 'teach.publish',
+    descKey: 'teach.publishDesc',
   },
   {
     icon: Wallet,
-    title: 'Earn',
-    description: 'Students buy your course. You earn 70% of every sale.',
+    titleKey: 'teach.earn',
+    descKey: 'teach.earnDesc',
   },
 ];
 
 function HowItWorksSection() {
+  const { t } = useTranslation();
+  const steps = getSteps(t);
+
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-cream">
       <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
         <ScrollReveal className="text-center mb-12">
           <p className="text-gold text-caption font-semibold tracking-widest uppercase mb-3">
-            How It Works
+            {t('teach.howItWorks')}
           </p>
           <h2 className="text-h2 font-display text-charcoal mb-4">
-            Start Teaching in 4 Easy Steps
+            {t('teach.fourSteps')}
           </h2>
           <p className="text-body text-warm-gray max-w-[600px] mx-auto">
-            From application to your first student — it&apos;s simple and straightforward.
+            {t('teach.howSubtitle')}
           </p>
         </ScrollReveal>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((step, i) => (
-            <ScrollReveal key={step.title} delay={i * 0.1}>
+            <ScrollReveal key={step.titleKey} delay={i * 0.1}>
               <div className="relative flex flex-col items-center text-center">
                 {/* Connector line */}
                 {i < steps.length - 1 && (
@@ -295,13 +304,13 @@ function HowItWorksSection() {
                 </div>
 
                 <span className="text-caption font-semibold text-gold mb-2">
-                  Step {i + 1}
+                  {t('teach.step')} {i + 1}
                 </span>
                 <h3 className="text-h4 font-display text-charcoal mb-2">
-                  {step.title}
+                  {t(step.titleKey)}
                 </h3>
                 <p className="text-body-small text-warm-gray max-w-[240px]">
-                  {step.description}
+                  {t(step.descKey)}
                 </p>
               </div>
             </ScrollReveal>
@@ -315,6 +324,7 @@ function HowItWorksSection() {
 /* ──────────────────────── Section 4: Earning Calculator ──────────────────────── */
 
 function EarningCalculator() {
+  const { t } = useTranslation();
   const [price, setPrice] = useState(19.99);
   const [students, setStudents] = useState(100);
   const commission = 0.7;
@@ -333,13 +343,13 @@ function EarningCalculator() {
       <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
         <ScrollReveal className="text-center mb-12">
           <p className="text-gold text-caption font-semibold tracking-widest uppercase mb-3">
-            Earning Calculator
+            {t('teach.earningCalculator')}
           </p>
           <h2 className="text-h2 font-display text-warm-white mb-4">
-            See How Much You Can Earn
+            {t('teach.seeEarnings')}
           </h2>
           <p className="text-body text-warm-gray max-w-[600px] mx-auto">
-            Adjust the sliders to estimate your monthly teaching income.
+            {t('teach.calculatorSubtitle')}
           </p>
         </ScrollReveal>
 
@@ -349,7 +359,7 @@ function EarningCalculator() {
             <div className="mb-8">
               <div className="flex items-center justify-between mb-3">
                 <label className="text-body font-medium text-warm-white">
-                  Course Price
+                  {t('teach.coursePrice')}
                 </label>
                 <span className="text-h3 font-display text-gold">
                   ${price.toFixed(2)}
@@ -374,7 +384,7 @@ function EarningCalculator() {
             <div className="mb-8">
               <div className="flex items-center justify-between mb-3">
                 <label className="text-body font-medium text-warm-white">
-                  Students per Month
+                  {t('teach.studentsPerMonth')}
                 </label>
                 <span className="text-h3 font-display text-gold">
                   {students}
@@ -399,14 +409,14 @@ function EarningCalculator() {
             <div className="flex items-center justify-center gap-2 mb-6 text-emerald">
               <CheckCircle2 size={18} />
               <span className="text-body-small font-medium">
-                You earn 70% commission on every sale
+                {t('teach.commission')}
               </span>
             </div>
 
             {/* Result */}
             <div className="bg-gold/10 border border-gold/30 rounded-2xl p-6 text-center">
               <p className="text-body-small text-warm-gray mb-2">
-                Your estimated monthly income
+                {t('teach.monthlyIncome')}
               </p>
               <p className="text-stat-number font-display text-gold mb-3">
                 ${monthlyIncome.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -464,24 +474,26 @@ const testimonials: Testimonial[] = [
 ];
 
 function TestimonialsSection() {
+  const { t } = useTranslation();
+
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-warm-white">
       <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
         <ScrollReveal className="text-center mb-12">
           <p className="text-gold text-caption font-semibold tracking-widest uppercase mb-3">
-            Teacher Stories
+            {t('teach.teacherStories')}
           </p>
           <h2 className="text-h2 font-display text-charcoal mb-4">
-            What Our Teachers Say
+            {t('teach.whatTeachersSay')}
           </h2>
           <p className="text-body text-warm-gray max-w-[600px] mx-auto">
-            Real teachers earning real money and making a real impact.
+            {t('teach.testimonialsSubtitle')}
           </p>
         </ScrollReveal>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
-            <ScrollReveal key={t.name} delay={i * 0.1}>
+          {testimonials.map((testimonial, i) => (
+            <ScrollReveal key={testimonial.name} delay={i * 0.1}>
               <motion.div
                 whileHover={{ y: -6 }}
                 className="bg-cream border border-sand rounded-2xl p-6 hover:shadow-feature hover:border-gold/30 transition-all duration-300 h-full flex flex-col"
@@ -491,7 +503,7 @@ function TestimonialsSection() {
 
                 {/* Quote */}
                 <p className="text-body text-charcoal mb-6 flex-1 italic">
-                  &ldquo;{t.quote}&rdquo;
+                  &ldquo;{testimonial.quote}&rdquo;
                 </p>
 
                 {/* Person */}
@@ -499,17 +511,17 @@ function TestimonialsSection() {
                   <div
                     className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg shrink-0"
                     style={{
-                      backgroundColor: t.bgColor,
-                      fontFamily: t.flag === '中文' ? 'Noto Sans SC, sans-serif' : 'Inter, sans-serif',
+                      backgroundColor: testimonial.bgColor,
+                      fontFamily: testimonial.flag === '中文' ? 'Noto Sans SC, sans-serif' : 'Inter, sans-serif',
                     }}
                   >
-                    {t.initial}
+                    {testimonial.initial}
                   </div>
                   <div>
                     <p className="text-body-small font-semibold text-charcoal">
-                      {t.name}
+                      {testimonial.name}
                     </p>
-                    <p className="text-caption text-warm-gray">{t.role}</p>
+                    <p className="text-caption text-warm-gray">{testimonial.role}</p>
                   </div>
                 </div>
               </motion.div>
@@ -525,47 +537,50 @@ function TestimonialsSection() {
 
 interface Requirement {
   icon: React.ComponentType<{ size?: number; className?: string }>;
-  title: string;
-  description: string;
+  titleKey: string;
+  descKey: string;
 }
 
-const requirements: Requirement[] = [
+const getRequirements = (_t: (key: string) => string): Requirement[] => [
   {
     icon: CheckCircle2,
-    title: 'Expertise in Your Subject',
-    description: 'You should have deep knowledge and real-world experience in what you teach. Whether it\'s a language, a skill, or a profession — expertise matters.',
+    titleKey: 'teach.expertise',
+    descKey: 'teach.expertiseDesc',
   },
   {
     icon: Camera,
-    title: 'Basic Video Recording',
-    description: 'A smartphone is enough to get started. Good lighting and clear audio are more important than expensive equipment.',
+    titleKey: 'teach.videoRecording',
+    descKey: 'teach.videoDesc',
   },
   {
     icon: Flame,
-    title: 'Passion for Teaching',
-    description: 'The best teachers are those who genuinely care about helping others learn. Bring your enthusiasm and patience.',
+    titleKey: 'teach.passion',
+    descKey: 'teach.passionDesc',
   },
 ];
 
 function RequirementsSection() {
+  const { t } = useTranslation();
+  const requirements = getRequirements(t);
+
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-cream">
       <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
         <ScrollReveal className="text-center mb-12">
           <p className="text-gold text-caption font-semibold tracking-widest uppercase mb-3">
-            Requirements
+            {t('teach.requirements')}
           </p>
           <h2 className="text-h2 font-display text-charcoal mb-4">
-            What You Need to Get Started
+            {t('teach.whatYouNeed')}
           </h2>
           <p className="text-body text-warm-gray max-w-[600px] mx-auto">
-            We keep the barriers low. If you have expertise and passion, you can teach.
+            {t('teach.requirementsSubtitle')}
           </p>
         </ScrollReveal>
 
         <div className="grid md:grid-cols-3 gap-6">
           {requirements.map((req, i) => (
-            <ScrollReveal key={req.title} delay={i * 0.1}>
+            <ScrollReveal key={req.titleKey} delay={i * 0.1}>
               <motion.div
                 whileHover={{ y: -6 }}
                 className="bg-white border border-sand rounded-2xl p-8 hover:shadow-feature hover:border-gold/30 transition-all duration-300 h-full flex flex-col items-center text-center"
@@ -574,10 +589,10 @@ function RequirementsSection() {
                   <req.icon size={32} className="text-gold" />
                 </div>
                 <h3 className="text-h4 font-display text-charcoal mb-3">
-                  {req.title}
+                  {t(req.titleKey)}
                 </h3>
                 <p className="text-body-small text-warm-gray">
-                  {req.description}
+                  {t(req.descKey)}
                 </p>
               </motion.div>
             </ScrollReveal>
@@ -591,44 +606,46 @@ function RequirementsSection() {
 /* ──────────────────────── Section 7: CTA ──────────────────────── */
 
 function CTASection() {
+  const { t } = useTranslation();
+
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-warm-white">
       <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
         <ScrollReveal>
           <div className="bg-gradient-to-br from-gold/10 via-gold/5 to-emerald/5 border border-gold/20 rounded-3xl p-8 lg:p-16 text-center">
             <h2 className="text-h2 font-display text-charcoal mb-4">
-              Ready to Start?
+              {t('teach.ready')}
             </h2>
             <p className="text-body-large text-warm-gray mb-4 max-w-[500px] mx-auto">
-              Join our community of teachers and start earning while making a difference.
+              {t('teach.joinCommunity')}
             </p>
             <p
               className="text-body text-warm-gray/70 mb-8 max-w-[500px] mx-auto"
               style={{ fontFamily: 'Noto Sans SC, sans-serif' }}
             >
-              加入我们的教师社区，开始赚取收入，同时产生影响。
+              {t('teach.joinCommunityZh')}
             </p>
 
             <Link
               to="/course-upload"
               className="inline-flex items-center justify-center bg-gold text-deep-brown px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] shadow-gold hover:bg-gold-dark hover:scale-[1.03] hover:shadow-gold-hover transition-all duration-200"
             >
-              Apply Now
+              {t('teach.applyNow')}
               <ArrowRight size={20} className="ml-2" />
             </Link>
 
             <div className="flex items-center justify-center gap-6 mt-6">
               <div className="flex items-center gap-1.5 text-body-small text-warm-gray">
                 <CheckCircle2 size={14} className="text-emerald" />
-                Free to apply
+                {t('teach.freeToApply')}
               </div>
               <div className="flex items-center gap-1.5 text-body-small text-warm-gray">
                 <CheckCircle2 size={14} className="text-emerald" />
-                70% commission
+                {t('teach.seventyCommission')}
               </div>
               <div className="flex items-center gap-1.5 text-body-small text-warm-gray">
                 <CheckCircle2 size={14} className="text-emerald" />
-                Monthly payouts
+                {t('teach.monthlyPayouts')}
               </div>
             </div>
           </div>
