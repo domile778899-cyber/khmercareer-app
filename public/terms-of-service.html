@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service | លក្ខខណ្ឌសេវាកម្ម | 服务条款 - Khmer Career Express</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;600;700&family=Noto+Sans+SC:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --gold-light: #F0E2A3;
+      --gold-dark: #B8941F;
+      --green: #059669;
+      --green-light: #D1FAE5;
+      --green-dark: #047857;
+      --dark: #1F2937;
+      --gray: #6B7280;
+      --light-gray: #F9FAFB;
+      --border: #E5E7EB;
+      --red: #DC2626;
+      --red-light: #FEE2E2;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', 'Noto Sans SC', 'Noto Sans Khmer', sans-serif;
+      color: var(--dark);
+      line-height: 1.8;
+      background: #FAFAFA;
+    }
+    .lang-bar {
+      background: var(--dark);
+      padding: 12px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .lang-bar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-text {
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-icon { font-size: 1.4rem; }
+    .lang-buttons { display: flex; gap: 8px; }
+    .lang-btn {
+      padding: 6px 16px;
+      border: 1px solid var(--gold);
+      background: transparent;
+      color: var(--gold);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+    .lang-btn:hover, .lang-btn.active { background: var(--gold); color: var(--dark); }
+    .header {
+      background: linear-gradient(135deg, #B45309 0%, #D97706 50%, #F59E0B 100%);
+      color: white;
+      padding: 60px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(5,150,105,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+    .header-sub { font-size: 1rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+    .effective-date {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 6px 20px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+    .content-card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+    }
+    .toc {
+      background: linear-gradient(135deg, #FEF3C7 0%, #F0FDF4 100%);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+      border: 1px solid var(--gold-light);
+    }
+    .toc h2 { color: var(--green-dark); font-size: 1.2rem; margin-bottom: 16px; }
+    .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px; }
+    .toc-item {
+      padding: 10px 14px;
+      background: white;
+      border-radius: 8px;
+      border-left: 3px solid var(--gold);
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .toc-item:hover { transform: translateX(4px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .toc-num { color: var(--gold); font-weight: 700; margin-right: 8px; }
+    .section { margin-bottom: 40px; scroll-margin-top: 80px; }
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--gold-light);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: white;
+      border-radius: 50%;
+      font-size: 1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section h3 {
+      font-size: 1.1rem;
+      color: var(--green-dark);
+      margin: 20px 0 12px;
+      padding-left: 12px;
+      border-left: 3px solid var(--green);
+    }
+    .section p { margin-bottom: 12px; color: #374151; }
+    .section ul { margin: 12px 0; padding-left: 24px; }
+    .section li { margin-bottom: 8px; color: #374151; }
+    .info-box {
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .info-box-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .info-box.law { background: var(--green-light); border: 1px solid #A7F3D0; }
+    .info-box.warning { background: var(--red-light); border: 1px solid #FECACA; }
+    .info-box.notice { background: #FEF3C7; border: 1px solid #FCD34D; }
+    .info-box.tip { background: #EFF6FF; border: 1px solid #BFDBFE; }
+    .highlight-box {
+      background: linear-gradient(135deg, #F0FDF4, #FEF3C7);
+      border: 1px solid var(--gold-light);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+    }
+    .highlight-box h4 { color: var(--green-dark); margin-bottom: 12px; }
+    .fee-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.9rem;
+    }
+    .fee-table th {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: white;
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .fee-table th:first-child { border-radius: 8px 0 0 0; }
+    .fee-table th:last-child { border-radius: 0 8px 0 0; }
+    .fee-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+    .fee-table tr:nth-child(even) td { background: var(--light-gray); }
+    .fee-table .fee-amount {
+      color: var(--green);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .prohibited-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .prohibited-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--red-light);
+      border-radius: 10px;
+      border: 1px solid #FECACA;
+    }
+    .prohibited-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .prohibited-text { font-weight: 600; color: var(--dark); }
+    .footer {
+      background: var(--dark);
+      color: white;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .footer-logo { color: var(--gold); font-weight: 700; font-size: 1.2rem; margin-bottom: 12px; }
+    .footer-text { font-size: 0.85rem; color: #9CA3AF; max-width: 600px; margin: 0 auto; }
+    .lang-section { display: block; }
+    body[data-lang="km"] .lang-section:not([data-lang="km"]) { display: none; }
+    body[data-lang="zh"] .lang-section:not([data-lang="zh"]) { display: none; }
+    body[data-lang="en"] .lang-section:not([data-lang="en"]) { display: none; }
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: all 0.3s;
+      z-index: 999;
+    }
+    .scroll-top:hover { transform: translateY(-4px); }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    .tag-required { background: var(--red-light); color: var(--red); }
+    .tag-recommended { background: var(--green-light); color: var(--green-dark); }
+    @media (max-width: 768px) {
+      .header h1 { font-size: 1.6rem; }
+      .content-card { padding: 24px; }
+      .section-title { font-size: 1.15rem; }
+      .toc-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-lang="zh">
+
+<!-- Language Switcher -->
+<div class="lang-bar">
+  <div class="lang-bar-inner">
+    <div class="logo-text">
+      <span class="logo-icon">🚀</span>
+      <span>Khmer Career Express | ខ្មែរការងាររហ័ស | 高棉职通车</span>
+    </div>
+    <div class="lang-buttons">
+      <button class="lang-btn" onclick="switchLang('km')">ខ្មែរ</button>
+      <button class="lang-btn active" onclick="switchLang('zh')">中文</button>
+      <button class="lang-btn" onclick="switchLang('en')">English</button>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div class="lang-section" data-lang="km">
+    <h1>លក្ខខណ្ឌសេវាកម្ម</h1>
+    <p class="header-sub">សូមអានលក្ខខណ្ឌខាងក្រោមដោយយកចិត្តទុកដាក់ មុនពេលប្រើប្រាស់សេវាកម្មរបស់ Khmer Career Express</p>
+    <span class="effective-date">📅 មានប្រសិទ្ធភាពតាំងពី៖ ១ មករា ២០២៦</span>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <h1>服务条款</h1>
+    <p class="header-sub">在使用高棉职通车（Khmer Career Express）服务前，请仔细阅读以下条款和条件</p>
+    <span class="effective-date">📅 生效日期：2026年1月1日</span>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <h1>Terms of Service</h1>
+    <p class="header-sub">Please read these terms and conditions carefully before using Khmer Career Express services</p>
+    <span class="effective-date">📅 Effective Date: January 1, 2026</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- TOC -->
+<div class="content-card">
+  <div class="lang-section" data-lang="km">
+    <div class="toc">
+      <h2>📋 ខ្លឹមសារ</h2>
+      <div class="toc-grid">
+        <div class="toc-item"><span class="toc-num">1</span>ទិដ្ឋភាពទូទៅនៃសេវាកម្ម</div>
+        <div class="toc-item"><span class="toc-num">2</span>គណនីអ្នកប្រើប្រាស់</div>
+        <div class="toc-item"><span class="toc-num">3</span>លក្ខខណ្ឌសម្រាប់អ្នកស្វែងរកការងារ</div>
+        <div class="toc-item"><span class="toc-num">4</span>លក្ខខណ្ឌសម្រាប់និយោជក</div>
+        <div class="toc-item"><span class="toc-num">5</span>លក្ខខណ្ឌសម្រាប់វិទ្យាស្ថានបណ្តុះបណ្តាល</div>
+        <div class="toc-item"><span class="toc-num">6</span>លក្ខខណ្ឌបង់ប្រាក់</div>
+        <div class="toc-item"><span class="toc-num">7</span>ឥរិយាបទដែលត្រូវហាមឃាត់</div>
+        <div class="toc-item"><span class="toc-num">8</span>នយោបាយខ្លឹមសារ</div>
+        <div class="toc-item"><span class="toc-num">9</span>ការដាក់កម្រិតទំនួលខុសត្រូវ</div>
+        <div class="toc-item"><span class="toc-num">10</span>ការដោះស្រាយវិវាទ</div>
+        <div class="toc-item"><span class="toc-num">11</span>ការបញ្ឈប់សេវាកម្ម</div>
+        <div class="toc-item"><span class="toc-num">12</span>ការផ្លាស់ប្តូរលក្ខខណ្ឌ</div>
+      </div>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="toc">
+      <h2>📋 目录</h2>
+      <div class="toc-grid">
+        <div class="toc-item"><span class="toc-num">1</span>服务概述</div>
+        <div class="toc-item"><span class="toc-num">2</span>用户账户</div>
+        <div class="toc-item"><span class="toc-num">3</span>求职者条款</div>
+        <div class="toc-item"><span class="toc-num">4</span>雇主条款</div>
+        <div class="toc-item"><span class="toc-num">5</span>培训机构条款</div>
+        <div class="toc-item"><span class="toc-num">6</span>支付条款</div>
+        <div class="toc-item"><span class="toc-num">7</span>禁止行为</div>
+        <div class="toc-item"><span class="toc-num">8</span>内容政策</div>
+        <div class="toc-item"><span class="toc-num">9</span>责任限制</div>
+        <div class="toc-item"><span class="toc-num">10</span>争议解决</div>
+        <div class="toc-item"><span class="toc-num">11</span>服务终止</div>
+        <div class="toc-item"><span class="toc-num">12</span>条款变更</div>
+      </div>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="toc">
+      <h2>📋 Table of Contents</h2>
+      <div class="toc-grid">
+        <div class="toc-item"><span class="toc-num">1</span>Service Overview</div>
+        <div class="toc-item"><span class="toc-num">2</span>User Accounts</div>
+        <div class="toc-item"><span class="toc-num">3</span>Job Seeker Terms</div>
+        <div class="toc-item"><span class="toc-num">4</span>Employer Terms</div>
+        <div class="toc-item"><span class="toc-num">5</span>Training Provider Terms</div>
+        <div class="toc-item"><span class="toc-num">6</span>Payment Terms</div>
+        <div class="toc-item"><span class="toc-num">7</span>Prohibited Conduct</div>
+        <div class="toc-item"><span class="toc-num">8</span>Content Policy</div>
+        <div class="toc-item"><span class="toc-num">9</span>Liability Limitations</div>
+        <div class="toc-item"><span class="toc-num">10</span>Dispute Resolution</div>
+        <div class="toc-item"><span class="toc-num">11</span>Termination</div>
+        <div class="toc-item"><span class="toc-num">12</span>Changes to Terms</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section 1: Service Overview -->
+<div class="content-card" id="section1">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">1</span>ទិដ្ឋភាពទូទៅនៃសេវាកម្ម</h2>
+      <p><strong>Khmer Career Express</strong> គឺជាវេទិកាឌីជីថលដែលភ្ជាប់អ្នកស្វែងរកការងារ និយោជក និងវិទ្យាស្ថានបណ្តុះបណ្តាលនៅកម្ពុជា។ សេវាកម្មរបស់យើងរួមមាន៖</p>
+      <ul>
+        <li><strong>ការផ្សព្វផ្សាយការងារ និងការផ្គូផ្គងប្រវត្តិរូបសង្ខេប៖</strong> វេទិកាសម្រាប់និយោជកប្រកាសការងារ និងអ្នកស្វែងរកការងារដាក់ពាក្យ</li>
+        <li><strong>ការបណ្តុះបណ្តាលវិជ្ជាជីវៈ៖</strong> វគ្គបណ្តុះបណ្តាលអនឡាញ និងក្រៅបណ្តាញសម្រាប់ការអភិវឌ្ឍជំនាញ</li>
+        <li><strong>សេវាបង់ប្រាក់៖</strong> ការបង់ប្រាក់សម្រាប់សេវាកម្មវេទិកា (មិនមែនកម្ចីទេ)</li>
+        <li><strong>ការវាយតម្លៃឥណទាន៖</strong> ការណែនាំឥណទានប៉ុណ្ណោះ ដែលផ្តល់ដោយដៃគូដែលមានអាជ្ញាបណ្ណ</li>
+      </ul>
+      <div class="info-box law">
+        <span class="info-box-icon">⚖️</span>
+        <div><strong>ក្របខ័ណ្ឌច្បាប់៖</strong> លក្ខខណ្ឌនេះត្រូវបានគ្រប់គ្រងតាមច្បាប់រដ្ឋធម្មនុញ្ញ និងច្បាប់ពាណិជ្ជកម្មនៃព្រះរាជាណាចក្រកម្ពុជា។ ការប្រើប្រាស់សេវាកម្មបញ្ជាក់ថាអ្នកបានអាន យល់ព្រម និងទទួលខុសត្រូវអនុវត្តតាមលក្ខខណ្ឌនេះ។</div>
+      </div>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">1</span>服务概述</h2>
+      <p><strong>高棉职通车（Khmer Career Express）</strong>是连接柬埔寨求职者、雇主和培训机构的数字平台。我们的服务包括：</p>
+      <ul>
+        <li><strong>职位发布与简历匹配：</strong>为雇主提供职位发布平台，为求职者提供申请渠道</li>
+        <li><strong>职业培训：</strong>线上和线下技能发展培训课程</li>
+        <li><strong>支付服务：</strong>仅用于平台服务费用的支付处理（非贷款服务）</li>
+        <li><strong>信用评估参考：</strong>仅提供信贷建议，由持牌合作机构提供实际服务</li>
+      </ul>
+      <div class="info-box law">
+        <span class="info-box-icon">⚖️</span>
+        <div><strong>法律框架：</strong>本条款受柬埔寨王国宪法和商业法管辖。使用我们的服务即表示您已阅读、理解并同意遵守这些条款。</div>
+      </div>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">1</span>Service Overview</h2>
+      <p><strong>Khmer Career Express</strong> is a digital platform connecting job seekers, employers, and training institutes in Cambodia. Our services include:</p>
+      <ul>
+        <li><strong>Job Posting & Resume Matching:</strong> A platform for employers to post jobs and for job seekers to apply</li>
+        <li><strong>Professional Training:</strong> Online and offline skill development courses</li>
+        <li><strong>Payment Services:</strong> Payment processing for platform service fees only (not lending)</li>
+        <li><strong>Credit Assessment:</strong> Credit referral only, actual services provided by licensed partners</li>
+      </ul>
+      <div class="info-box law">
+        <span class="info-box-icon">⚖️</span>
+        <div><strong>Legal Framework:</strong> These terms are governed by the Constitution and Commercial Law of the Kingdom of Cambodia. Using our services indicates that you have read, understood, and agreed to comply with these terms.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section 2: User Accounts -->
+<div class="content-card" id="section2">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">2</span>គណនីអ្នកប្រើប្រាស់</h2>
+      <h3>2.1 លក្ខខណ្ឌក្នុងការចុះឈ្មោះ</h3>
+      <ul>
+        <li>អ្នកត្រូវតែមានអាយុយ៉ាងតិច <strong>១៨ ឆ្នាំ</strong> ដើម្បីបង្កើតគណនីនិយោជក ឬគណនីវិទ្យាស្ថានបណ្តុះបណ្តាល</li>
+        <li>អ្នកស្វែងរកការងារអាយុពី ១៣-១៧ ឆ្នាំត្រូវការការយល់ព្រមពីឪពុកម្តាយ</li>
+        <li>ព័ត៌មានទាំងអស់ដែលអ្នកបំពេញត្រូវតែ<strong>ពិតប្រាកដ ត្រឹមត្រូវ និងគ្រប់ជ្រុងជ្រោយ</strong></li>
+        <li>មួយអ៊ីមែល/លេខទូរស័ព្ទអាចបង្កើតបានតែមួយគណនីប៉ុណ្ណោះ</li>
+      </ul>
+      <h3>2.2 សុវត្ថិភាពគណនី</h3>
+      <ul>
+        <li>អ្នកទទួលខុសត្រូវក្នុងការរក្សាសម្ងាត់លេខសម្ងាត់របស់អ្នក</li>
+        <li>បើកការផ្ទៀងផ្ទាត់ពីរជាន់ (2FA) សូម្បីតែមិនជាប់ច្បាប់ ក៏គួរធ្វើ</li>
+        <li>រាយការណ៍ភ្លាមៗប្រសិនបើគណនីរបស់អ្នកត្រូវបានប្រើប្រាស់ដោយមិនចេតនា</li>
+        <li>យើងប្រើប្រាស់ការផ្ទៀងផ្ទាត់តាម OTP សម្រាប់ការចូលលើកដំបូង និងការប្រតិបត្តិការសំខាន់ៗ</li>
+      </ul>
+      <h3>2.3 ហាមឃាត់ក្នុងការផ្ទេរគណនី</h3>
+      <p>គណនីរបស់អ្នកគឺជាផ្ទាល់ខ្លួន ហើយមិនអាចផ្ទេរ លក់ ឬឱ្យជួលបានទេ។ ការប្រើប្រាស់គណនីដោយបុគ្គលផ្សេងត្រូវបានហាមឃាត់យ៉ាងតឹងរឹង។</p>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">2</span>用户账户</h2>
+      <h3>2.1 注册要求</h3>
+      <ul>
+        <li>创建雇主账户或培训机构账户，您必须年满<strong>18周岁</strong></li>
+        <li>13-17岁的求职者需要获得家长或监护人同意</li>
+        <li>您提供的所有信息必须<strong>真实、准确、完整</strong></li>
+        <li>每个邮箱/手机号只能创建一个账户</li>
+      </ul>
+      <h3>2.2 账户安全</h3>
+      <ul>
+        <li>您有责任妥善保管您的密码</li>
+        <li>强烈建议开启双重认证（2FA）</li>
+        <li>如发现账户被未经授权使用，请立即报告</li>
+        <li>我们使用OTP验证首次登录和重要操作</li>
+      </ul>
+      <h3>2.3 禁止转让</h3>
+      <p>您的账户仅限个人使用，不得转让、出售或出租给他人。严禁与他人共用账户。</p>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">2</span>User Accounts</h2>
+      <h3>2.1 Registration Requirements</h3>
+      <ul>
+        <li>You must be at least <strong>18 years old</strong> to create an employer or training provider account</li>
+        <li>Job seekers aged 13-17 require parental consent</li>
+        <li>All information you provide must be <strong>true, accurate, and complete</strong></li>
+        <li>One account per email address/phone number only</li>
+      </ul>
+      <h3>2.2 Account Security</h3>
+      <ul>
+        <li>You are responsible for maintaining the confidentiality of your password</li>
+        <li>Two-factor authentication (2FA) is strongly recommended</li>
+        <li>Report any unauthorized use of your account immediately</li>
+        <li>We use OTP verification for first-time logins and important operations</li>
+      </ul>
+      <h3>2.3 Account Transfer Prohibited</h3>
+      <p>Your account is personal and may not be transferred, sold, or leased. Account sharing is strictly prohibited.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Section 3: Job Seeker Terms -->
+<div class="content-card" id="section3">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">3</span>លក្ខខណ្ឌសម្រាប់អ្នកស្វែងរកការងារ</h2>
+      <h3>3.1 ភាពពិតប្រាកដនៃប្រវត្តិរូបសង្ខេប</h3>
+      <ul>
+        <li>អ្នកត្រូវតែធានាថាព័ត៌មានក្នុងប្រវត្តិរូបសង្ខេបរបស់អ្នកពិតប្រាកដ និងត្រឹមត្រូវ</li>
+        <li>ហាមឃាត់ការបន្លំការសិក្សា បទពិសោធន៍ការងារ ឬវិញ្ញាបនបត្រ</li>
+        <li>អ្នកត្រូវទទួលខុសត្រូវចំពោះព័ត៌មានទាំងអស់ដែលអ្នកបានបង្ហោះ</li>
+        <li>ការបង្ហោះប្រវត្តិរូបសង្ខេបបរិយាយមិនសមរម្យនឹងត្រូវបានលុបភ្លាមៗ</li>
+      </ul>
+      <h3>3.2 ឥរិយាបទក្នុងការដាក់ពាក្យ</h3>
+      <ul>
+        <li>ដាក់ពាក្យតែការងារដែលអ្នកមានបំណងពិតប្រាកដក្នុងការធ្វើ</li>
+        <li>កុំដាក់ពាក្យសុំការងារច្រើនដងដោយប្រើប្រវត្តិរូបសង្ខេបខុសគ្នា</li>
+        <li>មិនត្រូវប្រើប្រាស់សេវាកម្មសម្រាប់ការរកការងារដែលមិនច្បាប់</li>
+      </ul>
+      <h3>3.3 ការរៀបចំការសម្ភាសន៍</h3>
+      <ul>
+        <li>បង្ហាញខ្លួនទៅកាន់ការសម្ភាសន៍តាមពេលវេលាដែលបានកំណត់</li>
+        <li>ប្រសិនបើមិនអាចទៅបាន សូមជូនដំណឹងដល់និយោជកយ៉ាងតិច ២៤ ម៉ោងមុន</li>
+        <li>យើងមិនទទួលខុសត្រូវលើការប្រព្រឹត្តរបស់និយោជកក្នុងអំឡុងពេលសម្ភាសន៍ទេ</li>
+      </ul>
+      <div class="highlight-box">
+        <h4>💡 ដំបូន្មានសម្រាប់អ្នកស្វែងរកការងារ</h4>
+        <p>បន្ទាប់ពីការសម្ភាសន៍ សូមពិនិត្យក្រុមហ៊ុនតាមរយៈប្រព័ន្ធផ្សព្វផ្សាយសង្គម និងត្រួតពិនិត្យសេចក្តីពិពណ៌នាការងារសម្រាប់សញ្ញាព្រមានការងារក្លែងក្លាយ។</p>
+      </div>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">3</span>求职者条款</h2>
+      <h3>3.1 简历真实性</h3>
+      <ul>
+        <li>您必须确保简历中的信息真实准确</li>
+        <li>禁止伪造学历、工作经验或证书</li>
+        <li>您对您发布的所有信息负责</li>
+        <li>包含不当内容的简历将被立即删除</li>
+      </ul>
+      <h3>3.2 申请行为</h3>
+      <ul>
+        <li>仅申请您真正感兴趣的职位</li>
+        <li>不要使用不同简历重复申请同一职位</li>
+        <li>不得将服务用于非法就业目的</li>
+      </ul>
+      <h3>3.3 面试安排</h3>
+      <ul>
+        <li>请按时参加面试</li>
+        <li>如无法参加，请至少提前24小时通知雇主</li>
+        <li>我们不对面试过程中雇主的行为负责</li>
+      </ul>
+      <div class="highlight-box">
+        <h4>💡 求职者提示</h4>
+        <p>面试后请通过社交媒体核查公司背景，并仔细阅读职位描述以识别虚假招聘的警示信号。</p>
+      </div>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">3</span>Job Seeker Terms</h2>
+      <h3>3.1 Resume Truthfulness</h3>
+      <ul>
+        <li>You must ensure all information in your resume is true and accurate</li>
+        <li>Falsifying education, work experience, or certifications is prohibited</li>
+        <li>You are responsible for all information you post</li>
+        <li>Resumes with inappropriate content will be removed immediately</li>
+      </ul>
+      <h3>3.2 Application Conduct</h3>
+      <ul>
+        <li>Only apply for jobs you are genuinely interested in</li>
+        <li>Do not submit multiple applications with different resumes for the same position</li>
+        <li>The service must not be used for illegal employment purposes</li>
+      </ul>
+      <h3>3.3 Interview Arrangements</h3>
+      <ul>
+        <li>Attend interviews at the scheduled time</li>
+        <li>If unable to attend, notify the employer at least 24 hours in advance</li>
+        <li>We are not responsible for employer conduct during interviews</li>
+      </ul>
+      <div class="highlight-box">
+        <h4>💡 Tips for Job Seekers</h4>
+        <p>After interviews, verify companies through social media and carefully read job descriptions to identify warning signs of fake recruitment.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section 4: Employer Terms -->
+<div class="content-card" id="section4">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">4</span>លក្ខខណ្ឌសម្រាប់និយោជក</h2>
+      <h3>4.1 ភាពពិតប្រាកដនៃព័ត៌មានការងារ</h3>
+      <ul>
+        <li>ការងារទាំងអស់ត្រូវបានប្រកាសត្រឹមត្រូវជាមួយប្រាក់ខែ ទីតាំង និងលក្ខខណ្ឌការងារពិតប្រាកដ</li>
+        <li>ប្រាក់ខែអប្បបរមាត្រូវតែអនុលោមតាមច្បាប់កម្ពុជា (២១០ ដុល្លារ/ខែសម្រាប់វិស័យកាត់ដេរ ឆ្នាំ ២០២៦)</li>
+        <li>ហាមឃាត់ការប្រកាសការងារក្លែងក្លាយ ឬការងារដែលមិនមានវត្តមានពិតប្រាកដ</li>
+        <li>ត្រូវធ្វើបច្ចុប្បន្នភាពស្ថានភាពការងារប្រសិនបើតំណែងបានបំពេញ</li>
+      </ul>
+      <h3>4.2 គោលការណ៍ប្រឆាំងការរើសអើង</h3>
+      <div class="info-box warning">
+        <span class="info-box-icon">🤝</span>
+        <div><strong>គោលការណ៍ស្មើភាព៖</strong> និយោជកហាមឃាត់ការរើសអើងដោយផ្អែកលើពូជសាសន៍ ភេទ សាសនា អាយុ វិជ្ជាជីវៈ ឬស្ថានភាពពិការ។ ការប្រកាសការងារដែលមានលក្ខខណ្ឌរើសអើងនឹងត្រូវបានលុបដោយមិនមានការជូនដំណឹងជាមុន។</div>
+      </div>
+      <ul>
+        <li>ការប្រកាសការងារត្រូវបើកចំហសម្រាប់បុគ្គលិកគ្រប់រូបដែលមានលក្ខណៈសម្បត្តិ</li>
+        <li>ការសម្ភាសន៍ត្រូវបានធ្វើឡើងដោយយុត្តិធម៌ និងស្មើភាព</li>
+        <li>ការលើកលែងត្រឹមត្រូវច្បាប់ប៉ុណ្ណោះត្រូវបានអនុញ្ញាត (ឧទាហរណ៖ ការងារដែលត្រូវការសមត្ថភាពរាងកាយជាក់លាក់)</li>
+      </ul>
+      <h3>4.3 ថ្លៃសេវាក្រុមហ៊ុន</h3>
+      <table class="fee-table">
+        <thead><tr><th>ប្រភេទសេវាកម្ម</th><th>ថ្លៃ</th><th>កំណត់សម្គាល់</th></tr></thead>
+        <tbody>
+          <tr><td>ការប្រកាសការងារមូលដ្ឋាន</td><td class="fee-amount">ឥតគិតថ្លៃ</td><td>១ ប្រកាស/ខែ សម្រាប់និយោជកថ្មី</td></tr>
+          <tr><td>ការប្រកាសការងារស្តង់ដារ</td><td class="fee-amount">២៥ ដុល្លារ/ប្រកាស</td><td>បង្ហាញលើទំព័រដើម ៣០ ថ្ងៃ</td></tr>
+          <tr><td>ការប្រកាសការងាើពិសេស</td><td class="fee-amount">៧៥ ដុល្លារ/ប្រកាស</td><td>បង្ហាញលើកំពូល + ស្លាកពិសេស</td></tr>
+          <tr><td>កញ្ចប់ជ្រើសរើសបុគ្គលិក</td><td class="fee-amount">ចាប់ពី ២០០ ដុល្លារ</td><td>សម្ភាសន៍ + ការផ្ទៀងផ្ទាត់បរិយាណ</td></tr>
+          <tr><td>ការចូលប្រើប្រាស់មូលដ្ឋានប្រវត្តិរូបសង្ខេប</td><td class="fee-amount">ឥតគិតថ្លៃ</td><td>មើលប្រវត្តិរូបសង្ខេប ៥ ក្នុងមួយខែ</td></tr>
+        </tbody>
+      </table>
+      <p><em>តម្លៃទាំងអស់ត្រូវបានកំណត់ជាដុល្លារអាមេរិក និងមិនរាប់បញ្ចូលពន្ធអាករទេ។ ពន្ធ VAT ១០% នឹងត្រូវបានបន្ថែម។</em></p>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">4</span>雇主条款</h2>
+      <h3>4.1 职位信息真实性</h3>
+      <ul>
+        <li>所有职位必须如实发布，包括真实薪资、地点和工作条件</li>
+        <li>最低工资必须符合柬埔寨法律规定（2026年制衣行业正式工210美元/月）</li>
+        <li>禁止发布虚假或不存在的职位</li>
+        <li>职位已招满时必须及时更新状态</li>
+      </ul>
+      <h3>4.2 反歧视政策</h3>
+      <div class="info-box warning">
+        <span class="info-box-icon">🤝</span>
+        <div><strong>平等原则：</strong>雇主禁止基于种族、性别、宗教、年龄、职业或残疾状况进行歧视。包含歧视性条件的职位将被直接删除。</div>
+      </div>
+      <ul>
+        <li>职位向所有符合条件的候选人开放</li>
+        <li>面试必须公平、平等地进行</li>
+        <li>仅法律允许的合理例外情况可获豁免（如需特定体能的工作）</li>
+      </ul>
+      <h3>4.3 招聘费用</h3>
+      <table class="fee-table">
+        <thead><tr><th>服务类型</th><th>费用</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>基础职位发布</td><td class="fee-amount">免费</td><td>新雇主每月1条</td></tr>
+          <tr><td>标准职位发布</td><td class="fee-amount">$25/条</td><td>首页展示30天</td></tr>
+          <tr><td>精选职位发布</td><td class="fee-amount">$75/条</td><td>置顶展示+精选标签</td></tr>
+          <tr><td>招聘套餐</td><td class="fee-amount">$200起</td><td>面试+背景调查</td></tr>
+          <tr><td>基础简历查看</td><td class="fee-amount">免费</td><td>每月查看5份简历</td></tr>
+        </tbody>
+      </table>
+      <p><em>以上价格以美元计，不含税。需另加10%增值税（VAT）。</em></p>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">4</span>Employer Terms</h2>
+      <h3>4.1 Job Posting Truthfulness</h3>
+      <ul>
+        <li>All jobs must be posted truthfully with accurate salary, location, and working conditions</li>
+        <li>Minimum wage must comply with Cambodian law (USD $210/month for garment workers in 2026)</li>
+        <li>Fake or non-existent job postings are prohibited</li>
+        <li>Job status must be updated promptly when positions are filled</li>
+      </ul>
+      <h3>4.2 Anti-Discrimination Policy</h3>
+      <div class="info-box warning">
+        <span class="info-box-icon">🤝</span>
+        <div><strong>Equality Principle:</strong> Employers are prohibited from discriminating based on race, gender, religion, age, profession, or disability status. Job postings with discriminatory conditions will be removed without prior notice.</div>
+      </div>
+      <ul>
+        <li>Jobs must be open to all qualified candidates</li>
+        <li>Interviews must be conducted fairly and equitably</li>
+        <li>Only legally justified exceptions are permitted (e.g., jobs requiring specific physical abilities)</li>
+      </ul>
+      <h3>4.3 Recruitment Fees</h3>
+      <table class="fee-table">
+        <thead><tr><th>Service Type</th><th>Fee</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Basic Job Post</td><td class="fee-amount">Free</td><td>1 post/month for new employers</td></tr>
+          <tr><td>Standard Job Post</td><td class="fee-amount">$25/post</td><td>Featured on homepage for 30 days</td></tr>
+          <tr><td>Premium Job Post</td><td class="fee-amount">$75/post</td><td>Top placement + premium badge</td></tr>
+          <tr><td>Recruitment Package</td><td class="fee-amount">From $200</td><td>Interviewing + background checks</td></tr>
+          <tr><td>Basic Resume Access</td><td class="fee-amount">Free</td><td>View 5 resumes/month</td></tr>
+        </tbody>
+      </table>
+      <p><em>All prices are in USD and exclude taxes. 10% VAT will be added.</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- Section 5: Training Provider Terms -->
+<div class="content-card" id="section5">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">5</span>លក្ខខណ្ឌសម្រាប់វិទ្យាស្ថានបណ្តុះបណ្តាល</h2>
+      <h3>5.1 លក្ខខណ្ឌខ្លឹមសារវគ្គបណ្តុះបណ្តាល</h3>
+      <ul>
+        <li>មាតិកាវគ្គបណ្តុះបណ្តាលត្រូវតែឆបគ្នានឹងច្បាប់កម្ពុជា និងស្តង់ដារក្រសួងពាក់ព័ន្ធ</li>
+        <li>ព័ត៌មានវគ្គសិក្សា (រយៈពេល ថ្លៃចូលរៀន លក្ខណៈវិនិច្ឆ័យ) ត្រូវតែពិតប្រាកដ និងគ្រប់ជ្រុងជ្រោយ</li>
+        <li>មិនអនុញ្ញាតការបណ្តុះបណ្តាលដែលផ្សព្វផ្សាយគំនិតហិង្សា ឬសកម្មភាពប្រឆាំងច្បាប់</li>
+        <li>វិទ្យាស្ថានត្រូវមានអាជ្ញាបណ្ណឬការទទួលស្គាល់ពីក្រសួងពាក់ព័ន្ធ</li>
+      </ul>
+      <h3>5.2 កម្មសិទ្ធិបញ្ញា</h3>
+      <ul>
+        <li>វិទ្យាស្ថានរក្សាសិទ្ធិកម្មសិទ្ធិបញ្ញាលើមាតិកាវគ្គបណ្តុះបណ្តាលរបស់ខ្លួន</li>
+        <li>ការប្រើប្រាស់មាតិកានៅលើវេទិការបស់យើងត្រូវបានផ្តល់ជាអាជ្ញាប័ណ្ណមិនផ្ដាច់មុខ និងមិនអាចផ្ទេរបាន</li>
+        <li>ហាមឃាត់ការទាញយក ចម្លង ឬបែងចែកមាតិកាដោយមិនបានរក្សាសិទ្ធ</li>
+      </ul>
+      <h3>5.3 គោលការណ៍សងប្រាក់វិញ</h3>
+      <table class="fee-table">
+        <thead><tr><th>ករណី</th><th>គោលការណ៍សងប្រាក់វិញ</th></tr></thead>
+        <tbody>
+          <tr><td>វគ្គមិនបានចាប់ផ្តើម</td><td>សង ១០០% ប្រសិនបើសុំក្នុងរយៈពេល ៧ ថ្ងៃ</td></tr>
+          <tr><td>វគ្គបានចាប់ផ្តើមតិចជាង ៣០%</td><td>សង ៥០%</td></tr>
+          <tr><td>វគ្គបានចាប់ផ្តើមលើស ៣០%</td><td>មិនសង</td></tr>
+          <tr><td>ការលុបចោលវគ្គដោយវិទ្យាស្ថាន</td><td>សង ១០០% + សំណងបន្ថែម ១០%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">5</span>培训机构条款</h2>
+      <h3>5.1 课程内容合规</h3>
+      <ul>
+        <li>培训课程内容必须符合柬埔寨法律和相关部委标准</li>
+        <li>课程信息（时长、费用、入学条件）必须真实完整</li>
+        <li>禁止宣传暴力思想或非法活动的培训</li>
+        <li>培训机构必须持有相关部门的牌照或认证</li>
+      </ul>
+      <h3>5.2 知识产权</h3>
+      <ul>
+        <li>培训机构保留其课程内容的知识产权</li>
+        <li>在我们的平台上使用内容授予我们非独占、不可转让的许可</li>
+        <li>禁止未经授权下载、复制或分发内容</li>
+      </ul>
+      <h3>5.3 退款政策</h3>
+      <table class="fee-table">
+        <thead><tr><th>情况</th><th>退款政策</th></tr></thead>
+        <tbody>
+          <tr><td>课程未开始</td><td>7天内申请退还100%</td></tr>
+          <tr><td>课程进度不足30%</td><td>退还50%</td></tr>
+          <tr><td>课程进度超过30%</td><td>不予退款</td></tr>
+          <tr><td>培训机构取消课程</td><td>退还100% + 10%赔偿金</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">5</span>Training Provider Terms</h2>
+      <h3>5.1 Course Content Compliance</h3>
+      <ul>
+        <li>Training content must comply with Cambodian law and relevant ministry standards</li>
+        <li>Course information (duration, fees, prerequisites) must be truthful and complete</li>
+        <li>Training promoting violence or illegal activities is prohibited</li>
+        <li>Training institutes must hold licenses or certifications from relevant ministries</li>
+      </ul>
+      <h3>5.2 Intellectual Property</h3>
+      <ul>
+        <li>Training providers retain IP rights to their course content</li>
+        <li>Use of content on our platform grants us a non-exclusive, non-transferable license</li>
+        <li>Unauthorized downloading, copying, or distribution of content is prohibited</li>
+      </ul>
+      <h3>5.3 Refund Policy</h3>
+      <table class="fee-table">
+        <thead><tr><th>Scenario</th><th>Refund Policy</th></tr></thead>
+        <tbody>
+          <tr><td>Course not started</td><td>100% refund if requested within 7 days</td></tr>
+          <tr><td>Less than 30% completed</td><td>50% refund</td></tr>
+          <tr><td>More than 30% completed</td><td>No refund</td></tr>
+          <tr><td>Institute cancels course</td><td>100% refund + 10% compensation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Section 6: Payment Terms -->
+<div class="content-card" id="section6">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">6</span>លក្ខខណ្ឌបង់ប្រាក់</h2>
+      <h3>6.1 សេវាកម្មបង់ប្រាក់</h3>
+      <div class="info-box notice">
+        <span class="info-box-icon">💳</span>
+        <div><strong>សេវាកម្មបង់ប្រាក់តែប៉ុណ្ណោះ៖</strong> យើងផ្តល់តែសេវាកម្មបង់ប្រាក់សម្រាប់ការប្រើប្រាស់វេទិកាប៉ុណ្ណោះ។ យើងមិនមានអាជ្ញាបណ្ណ MFI ទេ ហើយ<strong>មិនផ្តល់កម្ចី ឬសេវាឥណទានដោយផ្ទាល់</strong>ឡើយ។</div>
+      </div>
+      <h3>6.2 វិធីបង់ប្រាក់</h3>
+      <ul>
+        <li><strong>វេទិកាទូទាត់ក្នុងស្រុក៖</strong> Pi Pay, Wing, TrueMoney, ABA Bank</li>
+        <li><strong>កាតឥណទាន/ឥណពន្ធ៖</strong> Visa, MasterCard, UnionPay</li>
+        <li><strong>ផ្ទេរប្រាក់តាមធនាគារ៖</strong> ធនាគារពាណិជ្ជកម្មកម្ពុជា (អេធីម)</li>
+      </ul>
+      <h3>6.3 លក្ខខណ្ឌការសងប្រាក់វិញ</h3>
+      <table class="fee-table">
+        <thead><tr><th>ប្រភេទសេវាកម្ម</th><th>រយៈពេលសុំសងប្រាក់វិញ</th><th>បរិមាណសង</th></tr></thead>
+        <tbody>
+          <tr><td>ការប្រកាសការងារដែលមិនបានប្រើ</td><td>១៤ ថ្ងៃ</td><td>១០០%</td></tr>
+          <tr><td>កញ្ចប់ជ្រើសរើសដែលមិនបានចាប់ផ្តើម</td><td>៧ ថ្ងៃ</td><td>១០០%</td></tr>
+          <tr><td>ការបង្ហាញលើកំពូលដែលបានប្រើប្រាស់ពាក់កណ្តាល</td><td>៧ ថ្ងៃ</td><td>៥០%</td></tr>
+          <tr><td>សេវាប្រចាំខែ (ប៉ុន្តែមិនបានប្រើ)</td><td>៣០ ថ្ងៃ</td><td>ការគណនាតាមភាគរយ</td></tr>
+        </tbody>
+      </table>
+      <h3>6.4 សុវត្ថិភាពបង់ប្រាក់</h3>
+      <ul>
+        <li>ការបង់ប្រាក់ទាំងអស់ត្រូវបានអ៊ិនគ្រីបតាម TLS 1.3</li>
+        <li>យើងមិនរក្សាទុកលេខកាតឥណទានលើម៉ាស៊ីនមេរបស់យើងទេ</li>
+        <li>ការបង់ប្រាក់ត្រូវបានដំណើរការដោយអ្នកផ្តល់សេវាដែលបានទទួលស្គាល់ក្នុងប្រទេសកម្ពុជា</li>
+        <li>ការចោទប្រកាន់ដែលមិនបានទទួលស្គាល់ត្រូវតែត្រូវបានរាយការណ៍ក្នុងរយៈពេល ៣០ ថ្ងៃ</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">6</span>支付条款</h2>
+      <h3>6.1 支付服务</h3>
+      <div class="info-box notice">
+        <span class="info-box-icon">💳</span>
+        <div><strong>仅提供支付服务：</strong>我们仅提供平台使用费支付服务。我们不持有MFI牌照，<strong>不直接提供贷款或信贷服务</strong>。</div>
+      </div>
+      <h3>6.2 支付方式</h3>
+      <ul>
+        <li><strong>本地支付平台：</strong>Pi Pay、Wing、TrueMoney、ABA Bank</li>
+        <li><strong>信用卡/借记卡：</strong>Visa、MasterCard、UnionPay</li>
+        <li><strong>银行转账：</strong>柬埔寨商业银行</li>
+      </ul>
+      <h3>6.3 退款条件</h3>
+      <table class="fee-table">
+        <thead><tr><th>服务类型</th><th>退款申请期限</th><th>退款金额</th></tr></thead>
+        <tbody>
+          <tr><td>未使用的职位发布</td><td>14天</td><td>100%</td></tr>
+          <tr><td>未开始的招聘套餐</td><td>7天</td><td>100%</td></tr>
+          <tr><td>已使用一半的置顶服务</td><td>7天</td><td>50%</td></tr>
+          <tr><td>月度订阅（未使用）</td><td>30天</td><td>按比例</td></tr>
+        </tbody>
+      </table>
+      <h3>6.4 支付安全</h3>
+      <ul>
+        <li>所有支付通过TLS 1.3加密</li>
+        <li>我们不在服务器上存储信用卡号</li>
+        <li>支付由柬埔寨境内持牌服务提供商处理</li>
+        <li>未授权扣款须在30天内报告</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">6</span>Payment Terms</h2>
+      <h3>6.1 Payment Services</h3>
+      <div class="info-box notice">
+        <span class="info-box-icon">💳</span>
+        <div><strong>Payment Services Only:</strong> We only provide payment services for platform usage fees. We do not hold an MFI license and <strong>do not directly provide loans or credit services</strong>.</div>
+      </div>
+      <h3>6.2 Payment Methods</h3>
+      <ul>
+        <li><strong>Local Payment Platforms:</strong> Pi Pay, Wing, TrueMoney, ABA Bank</li>
+        <li><strong>Credit/Debit Cards:</strong> Visa, MasterCard, UnionPay</li>
+        <li><strong>Bank Transfer:</strong> Commercial banks in Cambodia</li>
+      </ul>
+      <h3>6.3 Refund Conditions</h3>
+      <table class="fee-table">
+        <thead><tr><th>Service Type</th><th>Refund Request Period</th><th>Refund Amount</th></tr></thead>
+        <tbody>
+          <tr><td>Unused job posting</td><td>14 days</td><td>100%</td></tr>
+          <tr><td>Unstarted recruitment package</td><td>7 days</td><td>100%</td></tr>
+          <tr><td>Partially used featured listing</td><td>7 days</td><td>50%</td></tr>
+          <tr><td>Monthly subscription (unused)</td><td>30 days</td><td>Pro-rata</td></tr>
+        </tbody>
+      </table>
+      <h3>6.4 Payment Security</h3>
+      <ul>
+        <li>All payments encrypted via TLS 1.3</li>
+        <li>We do not store credit card numbers on our servers</li>
+        <li>Payments processed by licensed providers within Cambodia</li>
+        <li>Unauthorized charges must be reported within 30 days</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 7: Prohibited Conduct -->
+<div class="content-card" id="section7">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">7</span>ឥរិយាបទដែលត្រូវហាមឃាត់</h2>
+      <p>ឥរិយាបទខាងក្រោមត្រូវបានហាមឃាត់យ៉ាងតឹងរឹង ហើយអាចនាំឱ្យបញ្ឈប់គណនីភ្លាមៗ៖</p>
+      <div class="prohibited-list">
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">ការងារក្លែងក្លាយ / ការបោកប្រាស់</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">ការរើសអើង / ការរំលោភបំពាន</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">សាររំខាន / ការគមរាគ</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">មាតិកាខុសច្បាប់</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">ការជ្រើសរើសបុគ្គលិកស្នូល</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">ការបំផ្លាញប្រព័ន្ធ</span>
+        </div>
+      </div>
+      <h3>7.1 ការបោកប្រាស់ក្នុងការជ្រើសរើសបុគ្គលិក</h3>
+      <ul>
+        <li>ប្រកាសការងារដែលមិនមានវត្តមានពិតប្រាកដ</li>
+        <li>ទាមទារប្រាក់ពីអ្នកស្វែងរកការងារសម្រាប់ការដាក់ពាក្យ ឬការសម្ភាសន៍</li>
+        <li>ប្រើប្រាស់ព័ត៌មានបុគ្គលិកសម្រាប់គោលបំណងក្រៅពីការជ្រើសរើសបុគ្គលិក</li>
+        <li>បង្ហាញព័ត៌មានប្រាក់ខែ ឬលក្ខខណ្ឌការងារមិនពិត</li>
+      </ul>
+      <h3>7.2 ការគមរាគ និងការរំលោភបំពាន</h3>
+      <ul>
+        <li>ការគមរាគរូបវិទ្យា ឬភាពផ្លូវចិត្តចំពោះអ្នកប្រើប្រាស់ដទៃ</li>
+        <li>ការគមរាគតាមអ៊ីនធឺណិត (cyberbullying)</li>
+        <li>ការបង្ហោះមាតិកាបង្ហាញភាពរើសអើង ឬការស្អប់</li>
+      </ul>
+      <div class="info-box warning">
+        <span class="info-box-icon">⚠️</span>
+        <div><strong>វិធានការសង្គតិភាព៖</strong> ការរំលោភបំពានលើលក្ខខណ្ឌទាំងនេះនឹងនាំឱ្យមានការបញ្ឈប់គណនីភ្លាមៗ ការបាត់បង់ប្រាក់ដែលបានបង់ ហើយប្រសិនបើចាំបាច់ យើងនឹងរាយការណ៍ទៅសមត្ថកិច្ច។</div>
+      </div>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">7</span>禁止行为</h2>
+      <p>以下行为被严格禁止，违者将立即被封禁账户：</p>
+      <div class="prohibited-list">
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">虚假招聘/欺诈</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">歧视/骚扰</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">垃圾信息/骚扰</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">非法内容</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">挖角行为</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">破坏系统</span>
+        </div>
+      </div>
+      <h3>7.1 招聘欺诈</h3>
+      <ul>
+        <li>发布不存在的虚假职位</li>
+        <li>向求职者收取申请费或面试费</li>
+        <li>将求职者信息用于招聘以外的目的</li>
+        <li>提供虚假的薪资或工作条件信息</li>
+      </ul>
+      <h3>7.2 骚扰和歧视</h3>
+      <ul>
+        <li>对其他用户进行身体或精神骚扰</li>
+        <li>网络霸凌（cyberbullying）</li>
+        <li>发布歧视性或仇恨内容</li>
+      </ul>
+      <div class="info-box warning">
+        <span class="info-box-icon">⚠️</span>
+        <div><strong>处罚措施：</strong>违反上述条款将导致立即封禁账户、没收已支付费用，必要时我们将向执法机关报告。</div>
+      </div>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">7</span>Prohibited Conduct</h2>
+      <p>The following conduct is strictly prohibited and will result in immediate account termination:</p>
+      <div class="prohibited-list">
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">Fake Jobs / Fraud</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">Discrimination / Harassment</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">Spam / Abuse</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">Illegal Content</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">Poaching</span>
+        </div>
+        <div class="prohibited-item">
+          <span class="prohibited-icon">🚫</span>
+          <span class="prohibited-text">System Abuse</span>
+        </div>
+      </div>
+      <h3>7.1 Recruitment Fraud</h3>
+      <ul>
+        <li>Posting non-existent job positions</li>
+        <li>Charging job seekers application or interview fees</li>
+        <li>Using job seeker information for purposes other than recruitment</li>
+        <li>Providing false salary or working condition information</li>
+      </ul>
+      <h3>7.2 Harassment and Discrimination</h3>
+      <ul>
+        <li>Physical or mental harassment of other users</li>
+        <li>Cyberbullying</li>
+        <li>Posting discriminatory or hateful content</li>
+      </ul>
+      <div class="info-box warning">
+        <span class="info-box-icon">⚠️</span>
+        <div><strong>Enforcement:</strong> Violations of these terms will result in immediate account termination, forfeiture of fees paid, and if necessary, reporting to law enforcement authorities.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section 8: Content Policy -->
+<div class="content-card" id="section8">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">8</span>នយោបាយខ្លឹមសារ</h2>
+      <h3>8.1 ការត្រួតពិនិត្យមាតិកា</h3>
+      <ul>
+        <li>យើងប្រើប្រាស់បច្ចេកវិទ្យា AI និងការត្រួតពិនិត្យដោយមនុស្សសម្រាប់ការត្រួតពិនិត្យមាតិកា</li>
+        <li>ការប្រកាសដំបូងត្រូវបានពិនិត្យក្នុងរយៈពេល ២៤ ម៉ោង</li>
+        <li>អ្នកប្រើប្រាស់អាចរាយការណ៍មាតិកាដែលមិនសមរម្យតាមរយៈប៊ូតុង "រាយការណ៍"</li>
+      </ul>
+      <h3>8.2 កម្មសិទ្ធិបញ្ញា</h3>
+      <ul>
+        <li>អ្នកប្រើប្រាស់រក្សាសិទ្ធិកម្មសិទ្ធិបញ្ញាលើមាតិកាដែលខ្លួនបង្ហោះ</li>
+        <li>ការបង្ហោះប្រវត្តិរូបសង្ខេបប្រគល់ជាអាជ្ញាប័ណ្ណមិនផ្ដាច់មុខដល់យើងសម្រាប់បង្ហាញនៅលើវេទិកា</li>
+        <li>ហាមឃាត់ការបង្ហោះមាតិកាដែលលួចចម្លងកម្មសិទ្ធិបញ្ញារបស់អ្នកដទៃ</li>
+        <li>ការរំលោភបំពានលើ IP នឹងនាំឱ្យគណនីត្រូវបានបិទ ហើយអាចប្រឈមនឹងសំណងខូចខាត</li>
+      </ul>
+      <h3>8.3 ការប្រើប្រាស់ត្រឹមត្រូវ</h3>
+      <ul>
+        <li>ហាមបង្ហោះមាតិកាអាសអាភាស ហិង្សា ឬប្រឆាំងសាសនា</li>
+        <li>ហាមបង្ហោះព័ត៌មានផ្ទាល់ខ្លួនរបស់បុគ្គលទីបីដោយមិនបានរក្សាសិទ្ធ</li>
+        <li>ហាមបង្ហោះមាតិកាដែលមានវីរុស ឬបំផ្លិចបំផ្លាញប្រព័ន្ធ</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">8</span>内容政策</h2>
+      <h3>8.1 内容审核</h3>
+      <ul>
+        <li>我们使用AI技术和人工审核相结合的方式审核内容</li>
+        <li>首次发布的职位将在24小时内完成审核</li>
+        <li>用户可通过"举报"按钮举报不当内容</li>
+      </ul>
+      <h3>8.2 知识产权</h3>
+      <ul>
+        <li>用户保留其发布内容的知识产权</li>
+        <li>发布简历即授予我们在平台上展示的非独占许可</li>
+        <li>禁止发布侵犯他人知识产权的内容</li>
+        <li>知识产权侵权将导致账户被封禁并可能面临损害赔偿</li>
+      </ul>
+      <h3>8.3 适当使用</h3>
+      <ul>
+        <li>禁止发布淫秽、暴力或反宗教内容</li>
+        <li>禁止未经授权发布第三方个人信息</li>
+        <li>禁止发布包含恶意软件或破坏系统的文件</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">8</span>Content Policy</h2>
+      <h3>8.1 Content Moderation</h3>
+      <ul>
+        <li>We use AI technology combined with human review to moderate content</li>
+        <li>Initial job postings are reviewed within 24 hours</li>
+        <li>Users can report inappropriate content via the "Report" button</li>
+      </ul>
+      <h3>8.2 Intellectual Property</h3>
+      <ul>
+        <li>Users retain IP rights to content they post</li>
+        <li>Posting a resume grants us a non-exclusive license to display it on the platform</li>
+        <li>Posting content that infringes on others' IP rights is prohibited</li>
+        <li>IP infringement will result in account suspension and potential damages</li>
+      </ul>
+      <h3>8.3 Appropriate Use</h3>
+      <ul>
+        <li>Obscene, violent, or anti-religious content is prohibited</li>
+        <li>Posting third-party personal information without authorization is prohibited</li>
+        <li>Uploading files containing malware or designed to harm systems is prohibited</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 9: Liability Limitations -->
+<div class="content-card" id="section9">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">9</span>ការដាក់កម្រិតទំនួលខុសត្រូវ</h2>
+      <h3>9.1 ទំនួលខុសត្រូវរបស់ក្រុមហ៊ុន</h3>
+      <ul>
+        <li>យើងផ្តល់តែវេទិកាប្រភេទ "ដូចដែលមាន" និង "តាមដែលអាចបាន"</li>
+        <li>យើងមិនធានាថាអ្នកនឹងរកឃើញការងារ ឬជួលបុគ្គលិកតាមរយៈវេទិការបស់យើងទេ</li>
+        <li>យើងមិនទទួលខុសត្រូវលើការសម្ភាសន៍ ឬការវាយតម្លៃបុគ្គលិកដោយនិយោជកទេ</li>
+      </ul>
+      <h3>9.2 ការដាក់កម្រិតការសងសំណង</h3>
+      <div class="info-box tip">
+        <span class="info-box-icon">📋</span>
+        <div>ការសងសំណងរបស់យើងចំពោះការខូចខាតដែលបណ្តាលមកពីការប្រើប្រាស់សេវាកម្មរបស់យើងត្រូវបានកំណត់ត្រឹម<strong>ចំនួនប្រាក់ដែលអ្នកបានបង់ក្នុងរយៈពេល ៣ ខែចុងក្រោយ</strong>។ ការដាក់កម្រិតនេះមិនអនុវត្តលើការខូចខាតដែលបណ្តាលមកពីចេតនាអាក្រក់ ឬការធ្វេសប្រហែសធ្ងន់ធ្ងរទេ។</div>
+      </div>
+      <h3>9.3 ការមិនទទួលខុសត្រូវ</h3>
+      <ul>
+        <li>ការសម្ភាសន៍ និងការជួលជាទំនួលខុសត្រូវរវាងនិយោជក និងអ្នកស្វែងរកការងារ</li>
+        <li>វគ្គបណ្តុះបណ្តាលជាទំនួលខុសត្រូវរវាងវិទ្យាស្ថាន និងអ្នកសិក្សា</li>
+        <li>បញ្ហាបច្ចេកទេសដោយភាគីទីបី (ឧទាហរណ៖ ការដំណើរការបង់ប្រាក់)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">9</span>责任限制</h2>
+      <h3>9.1 公司责任</h3>
+      <ul>
+        <li>我们提供"按现状"（as-is）和"可用性"（as-available）的平台服务</li>
+        <li>我们不保证您一定能够通过平台找到工作或招到员工</li>
+        <li>我们不对面试或雇主评估员工的行为负责</li>
+      </ul>
+      <h3>9.2 赔偿限额</h3>
+      <div class="info-box tip">
+        <span class="info-box-icon">📋</span>
+        <div>因使用我们服务导致的损害赔偿金额，以您在过去<strong>3个月内支付的金额</strong>为上限。此限额不适用于因故意不当行为或重大过失造成的损害。</div>
+      </div>
+      <h3>9.3 免责事项</h3>
+      <ul>
+        <li>面试和录用决定由雇主和求职者自行负责</li>
+        <li>培训课程质量由培训机构和学员自行负责</li>
+        <li>第三方技术问题（如支付处理故障）不在我们控制范围内</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">9</span>Liability Limitations</h2>
+      <h3>9.1 Company Liability</h3>
+      <ul>
+        <li>We provide the platform on an "as-is" and "as-available" basis</li>
+        <li>We do not guarantee that you will find a job or hire an employee through our platform</li>
+        <li>We are not responsible for interview conduct or employer evaluations</li>
+      </ul>
+      <h3>9.2 Compensation Cap</h3>
+      <div class="info-box tip">
+        <span class="info-box-icon">📋</span>
+        <div>Our liability for damages arising from the use of our services is limited to <strong>the amount you paid in the past 3 months</strong>. This limit does not apply to damages caused by intentional misconduct or gross negligence.</div>
+      </div>
+      <h3>9.3 Disclaimers</h3>
+      <ul>
+        <li>Interviews and hiring decisions are the responsibility of employers and job seekers</li>
+        <li>Training course quality is the responsibility of training providers and students</li>
+        <li>Third-party technical issues (e.g., payment processing failures) are outside our control</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 10: Dispute Resolution -->
+<div class="content-card" id="section10">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">10</span>ការដោះស្រាយវិវាទ</h2>
+      <h3>10.1 ច្បាប់ដែលប្រើប្រាស់</h3>
+      <div class="info-box law">
+        <span class="info-box-icon">⚖️</span>
+        <div><strong>ច្បាប់ដែលប្រើប្រាស់៖</strong> លក្ខខណ្ឌនេះត្រូវបានបកប្រែ និងអនុវត្តតាម<strong>ច្បាប់ព្រះរាជាណាចក្រកម្ពុជា</strong> ជាពិសេសច្បាប់ពាណិជ្ជកម្ម និងច្បាប់ការពារទិន្នន័យផ្ទាល់ខ្លួន (PDPL)។</div>
+      </div>
+      <h3>10.2 នីតិវិធីដោះស្រាយវិវាទ</h3>
+      <p>ក្នុងករណីមានវិវាទ ភាគីទាំងពីរត្រូវតែអនុវត្តតាមជំហានខាងក្រោម៖</p>
+      <ul>
+        <li><strong>ជំហានទី១ - ចរចារគ្នា៖</strong> ភាគីទាំងពីរត្រូវព្យាយាមដោះស្រាយវិវាទតាមរយៈការចរចារដោយផ្ទាល់ក្នុងរយៈពេល ៣០ ថ្ងៃ</li>
+        <li><strong>ជំហានទី២ - អនុវត្តតាមច្បាប់៖</strong> ប្រសិនបើការចរចារបរាជ័យ ភាគីអាចប្តឹងទៅ<strong>តុលាការកម្ពុជា</strong>តាមច្បាប់</li>
+        <li><strong>ជំហានទី៣ - សន្ធិសញ្ញា៖</strong> ប្រសិនបើបានយល់ព្រមជាលាយលក្ខណ៍អក្សរ អាចប្រើសន្ធិសញ្ញាដែលបានទទួលស្គាល់ក្នុងប្រទេសកម្ពុជា</li>
+      </ul>
+      <h3>10.3 សន្ធិសញ្ញាអន្តរជាតិ</h3>
+      <p>វិវាទដែលពាក់ព័ន្ធនឹងក្រុមហ៊ុនអន្តរជាតិអាចត្រូវបានបញ្ជូនទៅ<strong>មជ្ឈមណ្ឌលសន្ធិសញ្ញា ICC</strong> ដែលមានទីតាំងនៅសិង្ហបុរី ឬក្រុងប៉ារីស។</p>
+      <h3>10.4 យុត្តាធិការដែលប្រើប្រាស់</h3>
+      <p>វិវាទទាំងអស់ត្រូវដោះស្រាយនៅក្នុង<strong>ខណ្ឌចំការមន រាជធានីភ្នំពេញ ប្រទេសកម្ពុជា</strong>។</p>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">10</span>争议解决</h2>
+      <h3>10.1 适用法律</h3>
+      <div class="info-box law">
+        <span class="info-box-icon">⚖️</span>
+        <div><strong>管辖法律：</strong>本条款受<strong>柬埔寨王国法律</strong>管辖和解释，特别是商业法和个人数据保护法（PDPL）。</div>
+      </div>
+      <h3>10.2 争议解决程序</h3>
+      <p>如发生争议，双方应遵循以下步骤：</p>
+      <ul>
+        <li><strong>第一步 - 协商：</strong>双方应首先尝试通过直接协商在30天内解决争议</li>
+        <li><strong>第二步 - 法律诉讼：</strong>如协商失败，任何一方可向<strong>柬埔寨法院</strong>提起诉讼</li>
+        <li><strong>第三步 - 仲裁（如适用）：</strong>如双方书面同意，可提交柬埔寨认可的仲裁机构</li>
+      </ul>
+      <h3>10.3 国际仲裁</h3>
+      <p>涉及国际公司的争议可提交至位于新加坡或巴黎的<strong>国际商会仲裁院（ICC）</strong>。</p>
+      <h3>10.4 管辖地</h3>
+      <p>所有争议应在<strong>柬埔寨金边市占卡蒙区</strong>解决。</p>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">10</span>Dispute Resolution</h2>
+      <h3>10.1 Governing Law</h3>
+      <div class="info-box law">
+        <span class="info-box-icon">⚖️</span>
+        <div><strong>Governing Law:</strong> These terms are governed by and construed in accordance with the laws of the <strong>Kingdom of Cambodia</strong>, particularly the Commercial Law and the Personal Data Protection Law (PDPL).</div>
+      </div>
+      <h3>10.2 Dispute Resolution Procedure</h3>
+      <p>In case of a dispute, both parties must follow these steps:</p>
+      <ul>
+        <li><strong>Step 1 - Negotiation:</strong> Both parties shall first attempt to resolve the dispute through direct negotiation within 30 days</li>
+        <li><strong>Step 2 - Legal Action:</strong> If negotiation fails, either party may file a lawsuit with <strong>Cambodian courts</strong></li>
+        <li><strong>Step 3 - Arbitration (if applicable):</strong> If both parties agree in writing, the dispute may be submitted to a recognized Cambodian arbitration institution</li>
+      </ul>
+      <h3>10.3 International Arbitration</h3>
+      <p>Disputes involving international companies may be submitted to the <strong>ICC Arbitration Center</strong> in Singapore or Paris.</p>
+      <h3>10.4 Jurisdiction</h3>
+      <p>All disputes shall be resolved in <strong>Khan Chamkarmon, Phnom Penh, Cambodia</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Section 11: Termination -->
+<div class="content-card" id="section11">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">11</span>ការបញ្ឈប់សេវាកម្ម</h2>
+      <h3>11.1 ការបញ្ឈប់ដោយអ្នកប្រើប្រាស់</h3>
+      <ul>
+        <li>អ្នកអាចបិទគណនីរបស់អ្នកគ្រប់ពេលតាមរយៈការកំណត់គណនី</li>
+        <li>ការបិទគណនីបន្ទាប់ពីការសុំ ទិន្នន័យរបស់អ្នកនឹងត្រូវលុបក្នុងរយៈពេល ៣០ ថ្ងៃ</li>
+        <li>ការបិទគណនីមិនបញ្ចេញសិទ្ធិសម្រាប់សំណងដែលបានបង់រួចទេ</li>
+      </ul>
+      <h3>11.2 ការបញ្ឈប់ដោយក្រុមហ៊ុន</h3>
+      <ul>
+        <li><strong>បញ្ឈប់ភ្លាមៗ៖</strong> សម្រាប់ការរំលោភបំពានធ្ងន់ធ្ងរលើលក្ខខណ្ឌ (ការបោកប្រាស់ ការគមរាគ ការបំផ្លាញប្រព័ន្ធ)</li>
+        <li><strong>បញ្ឈប់ដោយការជូនដំណឹង ៣០ ថ្ងៃ៖</strong> សម្រាប់ការរំលោភបំពានធម្មតា ឬការអសកម្មរយៈពេលវែង</li>
+      </ul>
+      <h3>11.3 ផលប៉ះពាល់ក្រោយការបញ្ឈប់</h3>
+      <ul>
+        <li>ការចូលប្រើប្រាស់ទិន្នន័យរបស់អ្នកនឹងត្រូវបានបិទ</li>
+        <li>ប្រវត្តិរូបសង្ខេបដែលបានបង្ហោះនឹងត្រូវបានលុបចេញពីវេទិកា</li>
+        <li>ការបង់ប្រាក់ដែលបានបង់មិនត្រូវបានសងវិញទេ (លើកលែងតែមានការកំណត់)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">11</span>服务终止</h2>
+      <h3>11.1 用户主动终止</h3>
+      <ul>
+        <li>您可以随时通过账户设置关闭账户</li>
+        <li>关闭请求提交后，您的数据将在30天内删除</li>
+        <li>主动关闭账户不影响已支付费用的退款权利</li>
+      </ul>
+      <h3>11.2 公司终止</h3>
+      <ul>
+        <li><strong>立即终止：</strong>严重违反条款（欺诈、骚扰、破坏系统）</li>
+        <li><strong>提前30天通知终止：</strong>一般违规或长期不活跃</li>
+      </ul>
+      <h3>11.3 终止后的影响</h3>
+      <ul>
+        <li>您的数据访问权限将被关闭</li>
+        <li>已发布的简历将从平台删除</li>
+        <li>已支付费用不予退还（另有规定除外）</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">11</span>Termination</h2>
+      <h3>11.1 Termination by User</h3>
+      <ul>
+        <li>You may close your account at any time via account settings</li>
+        <li>Upon closure request, your data will be deleted within 30 days</li>
+        <li>Voluntary closure does not affect your right to refunds for fees already paid</li>
+      </ul>
+      <h3>11.2 Termination by Company</h3>
+      <ul>
+        <li><strong>Immediate Termination:</strong> For serious violations of terms (fraud, harassment, system abuse)</li>
+        <li><strong>30-Day Notice Termination:</strong> For general violations or prolonged inactivity</li>
+      </ul>
+      <h3>11.3 Effects of Termination</h3>
+      <ul>
+        <li>Your access to data will be revoked</li>
+        <li>Published resumes will be removed from the platform</li>
+        <li>Fees paid are not refundable (unless otherwise specified)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 12: Changes to Terms -->
+<div class="content-card" id="section12">
+  <div class="lang-section" data-lang="km">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">12</span>ការផ្លាស់ប្តូរលក្ខខណ្ឌ</h2>
+      <p>យើងអាចធ្វើបច្ចុប្បន្នភាពលក្ខខណ្ឌនេះពេលណាមួយ។ ការផ្លាស់ប្តូរសារៈសំខាន់នឹងត្រូវបានជូនដំណឹងតាមរយៈ៖</p>
+      <ul>
+        <li>អ៊ីមែលជូនដំណឹងទៅកាន់អាសយដ្ឋានដែលបានកំណត់</li>
+        <li>ការជូនដំណឹងក្នុងកម្មវិធី ឬលើទំព័រដំបូង</li>
+        <li>ការបង្ហាញបង្អួចលក្ខខណ្ឌថ្មីនៅពេលចូលប្រើប្រាស់លើកបន្ទាប់</li>
+      </ul>
+      <p><strong>កាលបរិច្ឆេទប្រសិទ្ធភាពចុងក្រោយ៖</strong> ១ មករា ២០២៦</p>
+      <p style="margin-top:24px; padding-top:24px; border-top:1px solid var(--border);"><em>ការបន្តប្រើប្រាស់សេវាកម្មបន្ទាប់ពីការផ្លាស់ប្តូរលក្ខខណ្ឌបញ្ជាក់ថាអ្នកបានទទួលយល់ព្រមជាមួយលក្ខខណ្ឌថ្មី។ ប្រសិនបើអ្នកមិនយល់ស្រប សូមបិទគណនីរបស់អ្នក។</em></p>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">12</span>条款变更</h2>
+      <p>我们可能随时更新本条款。重大变更将通过以下方式通知：</p>
+      <ul>
+        <li>发送至您注册邮箱的电子邮件通知</li>
+        <li>应用内通知或首页公告</li>
+        <li>下次登录时显示新条款弹窗</li>
+      </ul>
+      <p><strong>最后生效日期：</strong>2026年1月1日</p>
+      <p style="margin-top:24px; padding-top:24px; border-top:1px solid var(--border);"><em>在条款变更后继续使用服务即表示您同意新条款。如不同意，请关闭您的账户。</em></p>
+    </div>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="section">
+      <h2 class="section-title"><span class="section-num">12</span>Changes to Terms</h2>
+      <p>We may update these terms at any time. Material changes will be notified via:</p>
+      <ul>
+        <li>Email notification to your registered email address</li>
+        <li>In-app notification or homepage announcement</li>
+        <li>Terms acceptance popup upon next login</li>
+      </ul>
+      <p><strong>Last Effective Date:</strong> January 1, 2026</p>
+      <p style="margin-top:24px; padding-top:24px; border-top:1px solid var(--border);"><em>Continued use of our services after changes to these terms indicates your agreement with the new terms. If you do not agree, please close your account.</em></p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="lang-section" data-lang="km">
+    <div class="footer-logo">🚀 Khmer Career Express</div>
+    <p class="footer-text">សម្រាប់អនាគតការងាររបស់ប្រជាជនកម្ពុជា | រក្សាសិទ្ធិ © ២០២៦ ដោយ Khmer Career Express Co., Ltd.</p>
+  </div>
+  <div class="lang-section" data-lang="zh">
+    <div class="footer-logo">🚀 高棉职通车 Khmer Career Express</div>
+    <p class="footer-text">助力柬埔寨人民就业未来 | © 2026 Khmer Career Express Co., Ltd. 版权所有</p>
+  </div>
+  <div class="lang-section" data-lang="en">
+    <div class="footer-logo">🚀 Khmer Career Express</div>
+    <p class="footer-text">Empowering Cambodia's Workforce | © 2026 Khmer Career Express Co., Ltd. All Rights Reserved</p>
+  </div>
+</div>
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+function switchLang(lang) {
+  document.body.setAttribute('data-lang', lang);
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>

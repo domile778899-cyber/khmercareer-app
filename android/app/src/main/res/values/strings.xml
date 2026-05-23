@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">高棉职通车</string>
+    <string name="title_activity_main">高棉职通车</string>
+    <string name="package_name">com.khmercareer.app</string>
+    <string name="custom_url_scheme">com.khmercareer.app</string>
+</resources>

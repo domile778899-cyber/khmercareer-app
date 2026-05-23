@@ -1,0 +1,836 @@
+import { useState, useCallback, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  UserPlus,
+  ArrowRight,
+  UserCircle,
+  Phone,
+  Building2,
+  Briefcase,
+  ChevronRight,
+  ChevronLeft,
+  CheckCircle,
+  Shield,
+  FileText,
+  Award,
+  Users,
+} from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import type { UserRole } from '../context/AuthContext';
+import FormField from '../components/FormField';
+import { useToast } from '../components/Toast';
+import { cn } from '@/lib/utils';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_REGEX = /^[0-9+]{9,15}$/;
+
+interface RegisterFormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  companyName: string;
+  industry: string;
+}
+
+interface FormErrors {
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  password?: string;
+  confirmPassword?: string;
+  companyName?: string;
+  industry?: string;
+  agreed?: string;
+}
+
+const STORAGE_KEY = 'khmer_register_form';
+
+function loadSavedForm(): Partial<RegisterFormData & { role: UserRole }> {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch {
+    // ignore
+  }
+  return {};
+}
+
+function saveForm(data: RegisterFormData & { role: UserRole }) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch {
+    // ignore
+  }
+}
+
+function clearSavedForm() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+export default function Register() {
+  const navigate = useNavigate();
+  const { register } = useAuth();
+  const { success, error: showError, ToastContainer } = useToast();
+
+  const saved = loadSavedForm();
+  const [step, setStep] = useState(1);
+  const [role, setRole] = useState<UserRole>(saved.role || 'jobseeker');
+  const [fullName, setFullName] = useState(saved.fullName || '');
+  const [email, setEmail] = useState(saved.email || '');
+  const [phone, setPhone] = useState(saved.phone || '');
+  const [password, setPassword] = useState(saved.password || '');
+  const [confirmPassword, setConfirmPassword] = useState(saved.confirmPassword || '');
+  const [companyName, setCompanyName] = useState(saved.companyName || '');
+  const [industry, setIndustry] = useState(saved.industry || '');
+  const [showPassword, setShowPassword] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Persist form data to localStorage
+  useEffect(() => {
+    saveForm({ fullName, email, phone, password, confirmPassword, companyName, industry, role });
+  }, [fullName, email, phone, password, confirmPassword, companyName, industry, role]);
+
+  // Validation functions
+  const validateFullName = useCallback(
+    (value: string): string | undefined => {
+      if (!value || !value.trim()) return 'Full name is required';
+      if (value.trim().length < 2) return 'Full name must be at least 2 characters';
+      return undefined;
+    },
+    []
+  );
+
+  const validateEmail = useCallback((value: string): string | undefined => {
+    if (!value || !value.trim()) return 'Email is required';
+    if (!EMAIL_REGEX.test(value.trim())) return 'Please enter a valid email address';
+    return undefined;
+  }, []);
+
+  const validatePhone = useCallback((value: string): string | undefined => {
+    if (!value || !value.trim()) return 'Phone number is required';
+    if (!PHONE_REGEX.test(value.replace(/\s/g, ''))) return 'Please enter a valid phone number (9-15 digits)';
+    return undefined;
+  }, []);
+
+  const validatePassword = useCallback((value: string): string | undefined => {
+    if (!value) return 'Password is required';
+    if (value.length < 6) return 'Password must be at least 6 characters';
+    return undefined;
+  }, []);
+
+  const validateConfirmPassword = useCallback(
+    (value: string, pwd: string = password): string | undefined => {
+      if (!value) return 'Please confirm your password';
+      if (value !== pwd) return 'Passwords do not match';
+      return undefined;
+    },
+    [password]
+  );
+
+  const validateCompanyName = useCallback(
+    (value: string, isEmployer: boolean = role === 'employer'): string | undefined => {
+      if (isEmployer && (!value || !value.trim())) return 'Company name is required for employers';
+      return undefined;
+    },
+    [role]
+  );
+
+  const validateField = useCallback(
+    (field: keyof FormErrors, value: string, extraArg?: string) => {
+      let error: string | undefined;
+      switch (field) {
+        case 'fullName':
+          error = validateFullName(value);
+          break;
+        case 'email':
+          error = validateEmail(value);
+          break;
+        case 'phone':
+          error = validatePhone(value);
+          break;
+        case 'password':
+          error = validatePassword(value);
+          break;
+        case 'confirmPassword':
+          error = validateConfirmPassword(value, extraArg || password);
+          break;
+        case 'companyName':
+          error = validateCompanyName(value);
+          break;
+        default:
+          break;
+      }
+      setErrors((prev) => {
+        const next = { ...prev };
+        if (error) {
+          next[field] = error;
+        } else {
+          delete next[field];
+        }
+        return next;
+      });
+      return error;
+    },
+    [validateFullName, validateEmail, validatePhone, validatePassword, validateConfirmPassword, validateCompanyName, password]
+  );
+
+  const validateStep1 = useCallback(() => {
+    const newErrors: FormErrors = {};
+    const fnError = validateFullName(fullName);
+    const emError = validateEmail(email);
+    const phError = validatePhone(phone);
+    const cnError = validateCompanyName(companyName);
+    if (fnError) newErrors.fullName = fnError;
+    if (emError) newErrors.email = emError;
+    if (phError) newErrors.phone = phError;
+    if (cnError) newErrors.companyName = cnError;
+    setErrors(newErrors);
+    setTouched({ fullName: true, email: true, phone: true, companyName: true });
+    return Object.keys(newErrors).length === 0;
+  }, [fullName, email, phone, companyName, validateFullName, validateEmail, validatePhone, validateCompanyName]);
+
+  const validateStep2 = useCallback(() => {
+    const newErrors: FormErrors = {};
+    const pwError = validatePassword(password);
+    const cpError = validateConfirmPassword(confirmPassword);
+    if (pwError) newErrors.password = pwError;
+    if (cpError) newErrors.confirmPassword = cpError;
+    if (!agreed) newErrors.agreed = 'Please agree to the Terms of Service';
+    setErrors(newErrors);
+    setTouched({ password: true, confirmPassword: true, agreed: true });
+    return Object.keys(newErrors).length === 0;
+  }, [password, confirmPassword, agreed, validatePassword, validateConfirmPassword]);
+
+  const handleNext = () => {
+    if (validateStep1()) {
+      setErrors({});
+      setStep(2);
+    }
+  };
+
+  const handleBack = () => {
+    setErrors({});
+    setStep(step - 1);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateStep2()) return;
+
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    const successReg = register({
+      email,
+      fullName,
+      role,
+      avatar: undefined,
+      password,
+    });
+
+    if (successReg) {
+      clearSavedForm();
+      success('Account created successfully! Welcome aboard');
+      setTimeout(() => navigate('/'), 800);
+    } else {
+      showError('Registration failed. Please try again.');
+    }
+
+    setIsLoading(false);
+  };
+
+  const industries = [
+    'Technology',
+    'Finance',
+    'Healthcare',
+    'Education',
+    'Manufacturing',
+    'Hospitality',
+    'Retail',
+    'Construction',
+    'Agriculture',
+    'Other',
+  ];
+
+  const benefits = [
+    { icon: FileText, title: 'AI Resume Builder', desc: 'Create professional resumes in minutes' },
+    { icon: Award, title: 'Skills Assessment', desc: 'Validate your expertise with tests' },
+    { icon: Users, title: 'Network', desc: 'Connect with 50,000+ professionals' },
+    { icon: Shield, title: 'Verified Profiles', desc: 'Build trust with employers' },
+  ];
+
+  const steps = [
+    { num: 1, label: 'Personal Info' },
+    { num: 2, label: 'Account Setup' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-warm-white">
+      <ToastContainer />
+
+      {/* Header */}
+      <div className="bg-charcoal relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-72 h-72 bg-gold rounded-full blur-3xl translate-x-1/3 -translate-y-1/2" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald rounded-full blur-3xl -translate-x-1/4 translate-y-1/4" />
+        </div>
+        <div className="max-w-container-desktop mx-auto px-4 py-12 md:py-20 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <h1 className="font-display text-3xl md:text-5xl font-bold text-warm-white mb-3">
+              Create Your Account
+            </h1>
+            <p className="text-warm-gray text-base md:text-lg max-w-lg mx-auto">
+              Join Cambodia&apos;s fastest growing professional network and unlock your career
+              potential
+            </p>
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="max-w-container-desktop mx-auto px-4 py-8 md:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16">
+          {/* Registration form */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-3"
+          >
+            <div className="bg-warm-white border border-sand rounded-2xl p-6 md:p-10 shadow-card">
+              {/* Step indicator */}
+              <div className="flex items-center gap-2 mb-8">
+                {steps.map((s, i) => (
+                  <div key={s.num} className="flex items-center gap-2 flex-1">
+                    <div
+                      className={cn(
+                        'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors',
+                        step >= s.num
+                          ? 'bg-gold text-deep-brown'
+                          : 'bg-sand text-warm-gray'
+                      )}
+                    >
+                      {s.num}
+                    </div>
+                    <span
+                      className={cn(
+                        'text-xs font-medium hidden sm:block',
+                        step >= s.num ? 'text-charcoal' : 'text-warm-gray'
+                      )}
+                    >
+                      {s.label}
+                    </span>
+                    {i < steps.length - 1 && (
+                      <div
+                        className={cn(
+                          'flex-1 h-0.5 rounded',
+                          step > s.num ? 'bg-gold' : 'bg-sand'
+                        )}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-12 h-12 rounded-xl bg-emerald/10 flex items-center justify-center">
+                  <UserPlus className="w-6 h-6 text-emerald" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-charcoal">
+                    {step === 1 ? 'Personal Information' : 'Create Password'}
+                  </h2>
+                  <p className="text-warm-gray text-sm">
+                    {step === 1 ? 'Tell us about yourself' : 'Secure your account'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Role selection - always visible */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-charcoal mb-2">I am a</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setRole('jobseeker')}
+                    className={cn(
+                      'flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left',
+                      role === 'jobseeker'
+                        ? 'border-gold bg-gold/5'
+                        : 'border-sand hover:border-gold/30'
+                    )}
+                  >
+                    <UserCircle
+                      className={cn(
+                        'w-6 h-6',
+                        role === 'jobseeker' ? 'text-gold' : 'text-warm-gray'
+                      )}
+                    />
+                    <div>
+                      <p className="font-medium text-charcoal text-sm">Job Seeker</p>
+                      <p className="text-xs text-warm-gray">Looking for jobs</p>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRole('employer')}
+                    className={cn(
+                      'flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left',
+                      role === 'employer'
+                        ? 'border-gold bg-gold/5'
+                        : 'border-sand hover:border-gold/30'
+                    )}
+                  >
+                    <Building2
+                      className={cn(
+                        'w-6 h-6',
+                        role === 'employer' ? 'text-gold' : 'text-warm-gray'
+                      )}
+                    />
+                    <div>
+                      <p className="font-medium text-charcoal text-sm">Employer</p>
+                      <p className="text-xs text-warm-gray">Hiring talent</p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <AnimatePresence mode="wait">
+                {step === 1 ? (
+                  <motion.div
+                    key="step1"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="space-y-5"
+                  >
+                    <FormField
+                      label="Full Name"
+                      name="fullName"
+                      type="text"
+                      value={fullName}
+                      onChange={setFullName}
+                      validate={validateFullName}
+                      required
+                      placeholder="John Doe"
+                      error={touched.fullName ? errors.fullName : undefined}
+                      touched={touched.fullName}
+                      icon={<UserCircle className="w-[18px] h-[18px]" />}
+                      autoComplete="name"
+                    />
+
+                    <FormField
+                      label="Email Address"
+                      name="email"
+                      type="email"
+                      value={email}
+                      onChange={setEmail}
+                      validate={validateEmail}
+                      required
+                      placeholder="you@example.com"
+                      error={touched.email ? errors.email : undefined}
+                      touched={touched.email}
+                      icon={<Mail className="w-[18px] h-[18px]" />}
+                      autoComplete="email"
+                    />
+
+                    <FormField
+                      label="Phone Number"
+                      name="phone"
+                      type="tel"
+                      value={phone}
+                      onChange={setPhone}
+                      validate={validatePhone}
+                      required
+                      placeholder="+855 12 345 678"
+                      error={touched.phone ? errors.phone : undefined}
+                      touched={touched.phone}
+                      icon={<Phone className="w-[18px] h-[18px]" />}
+                      autoComplete="tel"
+                    />
+
+                    {role === 'employer' && (
+                      <FormField
+                        label="Company Name"
+                        name="companyName"
+                        type="text"
+                        value={companyName}
+                        onChange={setCompanyName}
+                        validate={(v) => validateCompanyName(v)}
+                        required
+                        placeholder="Your company name"
+                        error={touched.companyName ? errors.companyName : undefined}
+                        touched={touched.companyName}
+                        icon={<Building2 className="w-[18px] h-[18px]" />}
+                      />
+                    )}
+
+                    {role === 'employer' && (
+                      <div>
+                        <label className="block text-sm font-medium text-charcoal mb-1.5">
+                          Industry
+                        </label>
+                        <select
+                          value={industry}
+                          onChange={(e) => setIndustry(e.target.value)}
+                          className="w-full px-4 py-3 border border-sand rounded-lg text-charcoal focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-all bg-cream/50"
+                        >
+                          <option value="">Select an industry</option>
+                          {industries.map((ind) => (
+                            <option key={ind} value={ind}>
+                              {ind}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    <motion.button
+                      type="button"
+                      onClick={handleNext}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                      className="w-full py-3.5 bg-gold hover:bg-gold-dark text-deep-brown font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                    >
+                      Continue
+                      <ChevronRight className="w-4 h-4" />
+                    </motion.button>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="step2"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    onSubmit={handleSubmit}
+                    className="space-y-5"
+                    noValidate
+                  >
+                    {/* Password field with show/hide toggle */}
+                    <div>
+                      <label className="block text-sm font-medium text-charcoal mb-1.5">
+                        Password
+                        <span className="text-coral ml-0.5">*</span>
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-warm-gray" />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (touched.password) {
+                              validateField('password', e.target.value);
+                              if (confirmPassword) {
+                                validateField('confirmPassword', confirmPassword, e.target.value);
+                              }
+                            }
+                          }}
+                          onBlur={() => {
+                            setTouched((prev) => ({ ...prev, password: true }));
+                            validateField('password', password);
+                            if (confirmPassword) {
+                              validateField('confirmPassword', confirmPassword);
+                            }
+                          }}
+                          placeholder="Min 6 characters"
+                          autoComplete="new-password"
+                          className={`
+                            w-full pl-11 pr-11 py-3 rounded-lg text-charcoal
+                            placeholder:text-warm-gray/60 transition-all duration-200 outline-none
+                            border bg-cream/50
+                            ${
+                              touched.password && errors.password
+                                ? 'border-coral focus:border-coral focus:ring-coral/20'
+                                : touched.password && password && !errors.password
+                                ? 'border-emerald focus:border-emerald focus:ring-emerald/20'
+                                : 'border-sand focus:border-gold focus:ring-gold/30'
+                            }
+                            focus:ring-2
+                          `}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-warm-gray hover:text-charcoal transition-colors"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="w-[18px] h-[18px]" />
+                          ) : (
+                            <Eye className="w-[18px] h-[18px]" />
+                          )}
+                        </button>
+                      </div>
+                      {touched.password && errors.password && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-coral text-xs mt-1.5 flex items-center gap-1"
+                        >
+                          {errors.password}
+                        </motion.p>
+                      )}
+                      {touched.password && password && !errors.password && password.length >= 6 && (
+                        <motion.p
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="text-emerald text-xs mt-1.5 flex items-center gap-1"
+                        >
+                          <CheckCircle className="w-3 h-3" /> Password looks good
+                        </motion.p>
+                      )}
+                    </div>
+
+                    {/* Confirm Password */}
+                    <div>
+                      <label className="block text-sm font-medium text-charcoal mb-1.5">
+                        Confirm Password
+                        <span className="text-coral ml-0.5">*</span>
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-warm-gray" />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={confirmPassword}
+                          onChange={(e) => {
+                            setConfirmPassword(e.target.value);
+                            if (touched.confirmPassword) {
+                              validateField('confirmPassword', e.target.value);
+                            }
+                          }}
+                          onBlur={() => {
+                            setTouched((prev) => ({ ...prev, confirmPassword: true }));
+                            validateField('confirmPassword', confirmPassword);
+                          }}
+                          placeholder="Repeat your password"
+                          autoComplete="new-password"
+                          className={`
+                            w-full pl-11 pr-10 py-3 rounded-lg text-charcoal
+                            placeholder:text-warm-gray/60 transition-all duration-200 outline-none
+                            border bg-cream/50
+                            ${
+                              touched.confirmPassword && errors.confirmPassword
+                                ? 'border-coral focus:border-coral focus:ring-coral/20'
+                                : touched.confirmPassword && confirmPassword && password === confirmPassword && !errors.confirmPassword
+                                ? 'border-emerald focus:border-emerald focus:ring-emerald/20'
+                                : 'border-sand focus:border-gold focus:ring-gold/30'
+                            }
+                            focus:ring-2
+                          `}
+                        />
+                        {touched.confirmPassword && confirmPassword && password === confirmPassword && !errors.confirmPassword && (
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="absolute right-3.5 top-1/2 -translate-y-1/2"
+                          >
+                            <div className="w-5 h-5 rounded-full bg-emerald flex items-center justify-center">
+                              <CheckCircle className="w-3 h-3 text-white" />
+                            </div>
+                          </motion.div>
+                        )}
+                      </div>
+                      {touched.confirmPassword && errors.confirmPassword && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-coral text-xs mt-1.5 flex items-center gap-1"
+                        >
+                          {errors.confirmPassword}
+                        </motion.p>
+                      )}
+                      {password && confirmPassword && password === confirmPassword && (
+                        <motion.p
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="text-emerald text-xs mt-1.5 flex items-center gap-1"
+                        >
+                          <CheckCircle className="w-3 h-3" /> Passwords match
+                        </motion.p>
+                      )}
+                    </div>
+
+                    {/* Terms agreement */}
+                    <div className="flex items-start gap-2 py-2">
+                      <input
+                        type="checkbox"
+                        checked={agreed}
+                        onChange={(e) => {
+                          setAgreed(e.target.checked);
+                          if (errors.agreed) {
+                            setErrors((prev) => {
+                              const next = { ...prev };
+                              delete next.agreed;
+                              return next;
+                            });
+                          }
+                        }}
+                        className="w-4 h-4 rounded border-sand text-gold focus:ring-gold/30 mt-0.5"
+                      />
+                      <label className="text-sm text-charcoal leading-relaxed">
+                        I agree to the{' '}
+                        <Link
+                          to="/terms"
+                          className="text-gold hover:text-gold-dark underline"
+                        >
+                          Terms of Service
+                        </Link>{' '}
+                        and{' '}
+                        <Link
+                          to="/privacy"
+                          className="text-gold hover:text-gold-dark underline"
+                        >
+                          Privacy Policy
+                        </Link>
+                        . I consent to receiving job alerts and career tips via email.
+                      </label>
+                    </div>
+                    {touched.agreed && errors.agreed && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-coral text-xs flex items-center gap-1 -mt-3"
+                      >
+                        {errors.agreed}
+                      </motion.p>
+                    )}
+
+                    <div className="flex gap-3">
+                      <motion.button
+                        type="button"
+                        onClick={handleBack}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        className="flex-1 py-3.5 border-2 border-sand text-charcoal hover:border-charcoal font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        Back
+                      </motion.button>
+                      <motion.button
+                        type="submit"
+                        disabled={isLoading}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        className="flex-[2] py-3.5 bg-gold hover:bg-gold-dark text-deep-brown font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
+                      >
+                        {isLoading ? (
+                          <div className="w-5 h-5 border-2 border-deep-brown/30 border-t-deep-brown rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            Create Account
+                            <ArrowRight className="w-4 h-4" />
+                          </>
+                        )}
+                      </motion.button>
+                    </div>
+                  </motion.form>
+                )}
+              </AnimatePresence>
+
+              <p className="text-center text-sm text-warm-gray mt-6">
+                Already have an account?{' '}
+                <Link
+                  to="/login"
+                  className="text-gold hover:text-gold-dark font-medium transition-colors"
+                >
+                  Sign in
+                </Link>
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Side panel */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="lg:col-span-2 space-y-6"
+          >
+            <div className="bg-cream rounded-2xl p-6 border border-sand">
+              <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-gold" />
+                Why Join Us?
+              </h3>
+              <div className="space-y-4">
+                {benefits.map((b, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + i * 0.1 }}
+                    className="flex gap-3"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-emerald/10 flex items-center justify-center flex-shrink-0">
+                      <b.icon className="w-5 h-5 text-emerald" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-charcoal text-sm">{b.title}</p>
+                      <p className="text-xs text-warm-gray">{b.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="bg-gradient-to-br from-charcoal to-deep-brown rounded-2xl p-6 text-center"
+            >
+              <div className="text-4xl font-display font-bold text-gold mb-1">Free</div>
+              <p className="text-warm-white text-sm mb-4">Forever free for job seekers</p>
+              <ul className="text-left space-y-2 mb-6">
+                {[
+                  'Unlimited job applications',
+                  'AI resume builder',
+                  'Interview coaching',
+                  'Skills assessments',
+                  'Career guidance',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm text-warm-gray">
+                    <CheckCircle className="w-4 h-4 text-emerald flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="pt-4 border-t border-warm-white/10">
+                <p className="text-xs text-warm-gray">
+                  Need employer features?{' '}
+                  <Link
+                    to="/pricing"
+                    className="text-gold hover:text-gold-light underline"
+                  >
+                    View pricing
+                  </Link>
+                </p>
+              </div>
+            </motion.div>
+
+            <div className="bg-sand/30 rounded-xl p-4">
+              <p className="text-xs text-warm-gray text-center">
+                By registering, you agree to our data processing practices as described in our
+                Privacy Policy. Your data is secure with 256-bit encryption.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  );
+}

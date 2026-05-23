@@ -1,0 +1,401 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=Noto+Sans+Khmer:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gold: #D4AF37;
+    --gold-light: #F5E6A3;
+    --gold-dark: #B8941F;
+    --emerald: #059669;
+    --emerald-light: #D1FAE5;
+    --coral: #E85D3E;
+    --coral-dark: #C44B2F;
+    --warm-white: #FAF8F3;
+    --cream: #F5F0E8;
+    --sand: #E8E0D0;
+    --warm-gray: #9C9588;
+    --charcoal: #2D2926;
+    --deep-brown: #1A1714;
+    --success: #059669;
+    --warning: #F59E0B;
+    --error: #DC2626;
+    --info: #2563EB;
+
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.625rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: #D4AF37;
+    color: #1A1714;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-warm-white text-charcoal font-body;
+    overflow-x: hidden;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* ============================================
+     iOS Safe Area & Mobile Adaptation
+     ============================================ */
+
+  /* Enable safe area support */
+  @supports (padding-top: env(safe-area-inset-top)) {
+    html {
+      --safe-area-top: env(safe-area-inset-top);
+      --safe-area-bottom: env(safe-area-inset-bottom);
+      --safe-area-left: env(safe-area-inset-left);
+      --safe-area-right: env(safe-area-inset-right);
+    }
+  }
+
+  /* Default safe area values for non-iOS */
+  html {
+    --safe-area-top: 0px;
+    --safe-area-bottom: 0px;
+    --safe-area-left: 0px;
+    --safe-area-right: 0px;
+  }
+
+  /* Prevent iOS tap highlight */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent callout on long press (iOS) */
+  * {
+    -webkit-touch-callout: none;
+  }
+
+  /* Enable touch callout only on links */
+  a, button {
+    -webkit-touch-callout: default;
+  }
+
+  /* iOS: Prevent text size adjustment on orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* ============================================
+     iOS Input Zoom Prevention
+     ============================================ */
+
+  /* Prevent iOS zoom on input focus (font-size must be >= 16px) */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
+  /* ============================================
+     Safe Area Utility Classes
+     ============================================ */
+
+  .safe-area-top {
+    padding-top: var(--safe-area-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: var(--safe-area-bottom);
+  }
+
+  .safe-area-left {
+    padding-left: var(--safe-area-left);
+  }
+
+  .safe-area-right {
+    padding-right: var(--safe-area-right);
+  }
+
+  .safe-area-x {
+    padding-left: var(--safe-area-left);
+    padding-right: var(--safe-area-right);
+  }
+
+  .safe-area-y {
+    padding-top: var(--safe-area-top);
+    padding-bottom: var(--safe-area-bottom);
+  }
+
+  .safe-area-all {
+    padding-top: var(--safe-area-top);
+    padding-bottom: var(--safe-area-bottom);
+    padding-left: var(--safe-area-left);
+    padding-right: var(--safe-area-right);
+  }
+
+  /* Margin variants for safe area */
+  .safe-area-margin-top {
+    margin-top: var(--safe-area-top);
+  }
+
+  .safe-area-margin-bottom {
+    margin-bottom: var(--safe-area-bottom);
+  }
+
+  /* Fixed bottom bar safe area padding */
+  .fixed-bottom-safe {
+    padding-bottom: calc(var(--safe-area-bottom) + 1rem);
+  }
+
+  /* Header safe area padding */
+  .header-safe {
+    padding-top: calc(var(--safe-area-top) + 0.5rem);
+  }
+
+  /* ============================================
+     Scroll Behavior (iOS Momentum Scroll)
+     ============================================ */
+
+  .ios-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+
+  /* ============================================
+     Standalone Mode (PWA Installed) Styles
+     ============================================ */
+
+  @media (display-mode: standalone) {
+    /* Remove default margins in standalone mode */
+    body {
+      overscroll-behavior-y: none;
+    }
+
+    /* Prevent overscroll bounce on the whole page */
+    html {
+      overscroll-behavior-y: none;
+    }
+  }
+
+  /* ============================================
+     Touch Action Utilities
+     ============================================ */
+
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+
+  .touch-pan-x {
+    touch-action: pan-x;
+  }
+
+  .touch-none {
+    touch-action: none;
+  }
+
+  /* ============================================
+     Reduced Motion Support
+     ============================================ */
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* ============================================
+     Dark Mode Support (System Level)
+     ============================================ */
+
+  @media (prefers-color-scheme: dark) {
+    /* Keep our warm theme, just adjust system UI */
+    meta[name="theme-color"] {
+      content: "#B8941F";
+    }
+  }
+
+  /* Khmer text: increase line-height for vowel stacking */
+  [lang="km"],
+  .font-khmer {
+    line-height: 1.8;
+  }
+
+  /* Chinese text: keep words together */
+  [lang="zh"],
+  .font-chinese {
+    word-break: keep-all;
+    letter-spacing: 0.01em;
+  }
+
+  /* Typography scale */
+  .text-hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  @media (min-width: 1024px) {
+    .text-hero-title {
+      font-size: 4.5rem;
+    }
+  }
+
+  .text-h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 1024px) {
+    .text-h1 {
+      font-size: 3rem;
+    }
+  }
+
+  .text-h2 {
+    font-size: 1.625rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  @media (min-width: 1024px) {
+    .text-h2 {
+      font-size: 2.25rem;
+    }
+  }
+
+  .text-h3 {
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  @media (min-width: 1024px) {
+    .text-h3 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .text-h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  @media (min-width: 1024px) {
+    .text-h4 {
+      font-size: 1.25rem;
+    }
+  }
+
+  .text-body-large {
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.65;
+  }
+
+  @media (min-width: 1024px) {
+    .text-body-large {
+      font-size: 1.25rem;
+    }
+  }
+
+  .text-body {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  .text-body-small {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .text-caption {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+  }
+
+  .text-button {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.01em;
+  }
+
+  @media (min-width: 1024px) {
+    .text-button {
+      font-size: 1.125rem;
+    }
+  }
+
+  .text-button-small {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.01em;
+  }
+
+  @media (min-width: 1024px) {
+    .text-button-small {
+      font-size: 1rem;
+    }
+  }
+
+  .text-stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 1024px) {
+    .text-stat-number {
+      font-size: 4rem;
+    }
+  }
+}

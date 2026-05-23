@@ -1,0 +1,83 @@
+{
+  "appId": "com.khmercareer.app",
+  "appName": "高棉职通车",
+  "webDir": "dist",
+  "server": {
+    "url": "https://ttjv3la2fre22.kimi.page",
+    "cleartext": false
+  },
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "launchAutoHide": true,
+      "launchFadeOutDuration": 500,
+      "backgroundColor": "#D4AF37",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": true,
+      "androidSpinnerStyle": "large",
+      "iosSpinnerStyle": "large",
+      "spinnerColor": "#FFFFFF",
+      "splashFullScreen": true,
+      "splashImmersive": true,
+      "layoutName": "launch_screen",
+      "useDialog": false
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon_config_sample",
+      "iconColor": "#D4AF37",
+      "sound": "beep.wav"
+    },
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#D4AF37",
+      "overlaysWebView": false
+    },
+    "Keyboard": {
+      "resize": "body",
+      "style": "light",
+      "hideFormAccessoryBar": false
+    },
+    "App": {
+      "iosScheme": "khmercareer",
+      "androidScheme": "https"
+    },
+    "Camera": {
+      "allowEditing": false,
+      "saveToGallery": true,
+      "source": "PROMPT"
+    },
+    "Geolocation": {
+      "timeout": 10000,
+      "maximumAge": 60000,
+      "enableHighAccuracy": true
+    },
+    "Share": {
+      "dialogTitle": "Share via Khmer Career Express"
+    }
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "release.keystore",
+      "keystoreAlias": "khmercareer",
+      "keystorePassword": "",
+      "keystoreAliasPassword": "",
+      "signingType": "apksigner"
+    },
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "ios": {
+    "contentInset": "always",
+    "allowsLinkPreview": true,
+    "scrollEnabled": true,
+    "webContentsDebuggingEnabled": false,
+    "backgroundColor": "#FAF8F3"
+  },
+  "cordova": {}
+}
