@@ -15,6 +15,7 @@ import {
   Shirt,
   CheckCircle2,
   Clock,
+  Heart,
 } from 'lucide-react'
 import { Slider } from '@/components/ui/slider'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -22,6 +23,9 @@ import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { jobsApi } from '@/api/apiService'
 import type { Job as JobType } from '@/api/db'
+import { useFavorites } from '@/context/FavoritesContext'
+import { useApply } from '@/stores/ApplyContext'
+import OneClickApply from '@/components/OneClickApply'
 
 // ─── Types ───────────────────────────────────────────────
 interface Job {
@@ -47,7 +51,7 @@ interface Job {
 // ─── Mock Data ───────────────────────────────────────────
 const FALLBACK_JOBS: Job[] = [
   {
-    id: 1,
+    id: '1',
     title: 'Senior Garment QC Inspector',
     company: 'Premium Garment Co.',
     verified: true,
@@ -65,7 +69,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Verified',
   },
   {
-    id: 2,
+    id: '2',
     title: 'Chinese-Speaking HR Assistant',
     company: 'Dragon Steel Cambodia',
     verified: true,
@@ -82,7 +86,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Chinese Enterprise',
   },
   {
-    id: 3,
+    id: '3',
     title: 'Hotel Front Office Manager',
     company: 'Raffles Grand Hotel',
     verified: true,
@@ -99,7 +103,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Multinational',
   },
   {
-    id: 4,
+    id: '4',
     title: 'React Native Developer',
     company: 'GrowHub Tech',
     verified: true,
@@ -117,7 +121,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Verified',
   },
   {
-    id: 5,
+    id: '5',
     title: 'Factory Production Supervisor',
     company: 'New Wide Garment',
     verified: true,
@@ -134,7 +138,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Verified',
   },
   {
-    id: 6,
+    id: '6',
     title: 'Tour Guide (Chinese-speaking)',
     company: 'Angkor Wonder Tours',
     verified: true,
@@ -151,7 +155,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Local Company',
   },
   {
-    id: 7,
+    id: '7',
     title: 'Accounting Officer',
     company: 'Chip Mong Bank',
     verified: true,
@@ -168,7 +172,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Verified',
   },
   {
-    id: 8,
+    id: '8',
     title: 'Electrical Engineer',
     company: 'SchneiTec Cambodia',
     verified: true,
@@ -185,7 +189,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Multinational',
   },
   {
-    id: 9,
+    id: '9',
     title: 'English Teacher',
     company: 'Western International School',
     verified: true,
@@ -202,7 +206,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Local Company',
   },
   {
-    id: 10,
+    id: '10',
     title: 'Construction Site Supervisor',
     company: 'OCIC Group',
     verified: true,
@@ -219,7 +223,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Verified',
   },
   {
-    id: 11,
+    id: '11',
     title: 'Front Desk Receptionist',
     company: 'Sokha Beach Resort',
     verified: true,
@@ -236,7 +240,7 @@ const FALLBACK_JOBS: Job[] = [
     employerType: 'Verified',
   },
   {
-    id: 12,
+    id: '12',
     title: 'Agricultural Extension Officer',
     company: 'Cámara Rice Group',
     verified: true,
@@ -522,6 +526,8 @@ export default function Jobs() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+  const { isJobFavorited, toggleJob } = useFavorites()
+  const { hasApplied } = useApply()
 
   // Search/filter state
   const [keyword, setKeyword] = useState('')
@@ -555,11 +561,11 @@ export default function Jobs() {
       const apiJobs = jobsApi.getAll()
       // Map API jobs to the local Job interface
       if (apiJobs && apiJobs.length > 0) {
-        const mapped: Job[] = apiJobs.map((j: JobType, index: number) => ({
+        const mapped: Job[] = apiJobs.map((j: JobType) => ({
           id: j.id,
           title: j.title,
           company: j.company || '',
-          verified: (j as any).verified ?? true,
+          verified: j.verified ?? true,
           location: j.location,
           salaryMin: j.salaryMin || 100,
           salaryMax: j.salaryMax || 2000,
@@ -569,10 +575,10 @@ export default function Jobs() {
           posted: j.createdAt ? `${Math.floor((Date.now() - new Date(j.createdAt).getTime()) / 86400000)} days ago` : 'Recently',
           postedDays: j.createdAt ? Math.floor((Date.now() - new Date(j.createdAt).getTime()) / 86400000) : 0,
           description: j.description || '',
-          requirements: (j as any).requirements || [],
-          urgent: (j as any).urgent || false,
-          featured: (j as any).featured || false,
-          employerType: (j as any).employerType || 'Company',
+          requirements: j.requirements || [],
+          urgent: j.urgent || false,
+          featured: j.featured || false,
+          employerType: j.employerType || 'Company',
         }))
         setAllJobs(mapped)
       } else {
@@ -978,9 +984,25 @@ export default function Jobs() {
                     custom={i}
                     variants={fadeInUp}
                     layout
-                    className="bg-white border border-sand rounded-2xl p-6 shadow-card hover:shadow-card-hover hover:-translate-y-[3px] hover:border-gold transition-all cursor-pointer group"
+                    className="relative bg-white border border-sand rounded-2xl p-6 shadow-card hover:shadow-card-hover hover:-translate-y-[3px] hover:border-gold transition-all cursor-pointer group"
                     onClick={() => navigate(`/jobs/${job.id}`)}
                   >
+                    {/* Favorite Heart Button - Top Right */}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleJob(String(job.id)); }}
+                      className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-sm z-10"
+                      aria-label={isJobFavorited(String(job.id)) ? 'Remove from favorites' : 'Add to favorites'}
+                    >
+                      <Heart
+                        className={cn(
+                          'w-4 h-4 transition-all',
+                          isJobFavorited(String(job.id))
+                            ? 'fill-gold text-gold scale-110'
+                            : 'text-warm-gray hover:text-gold'
+                        )}
+                      />
+                    </button>
+
                     {/* Row 1: Main Info */}
                     <div className="flex flex-col sm:flex-row gap-4">
                       {/* Company Logo */}
@@ -1058,12 +1080,20 @@ export default function Jobs() {
                         >
                           {t('jobs.viewDetails')}
                         </button>
-                        <button
-                          onClick={(e) => e.stopPropagation()}
-                          className="h-10 px-5 bg-coral text-white font-semibold rounded-lg shadow-coral hover:bg-coral-dark hover:scale-[1.03] active:scale-[0.98] transition-all text-button-small"
-                        >
-                          {t('jobs.quickApply')}
-                        </button>
+                        {hasApplied(String(job.id)) ? (
+                          <span className="h-10 px-5 bg-emerald-light text-emerald font-semibold rounded-lg flex items-center gap-2 text-button-small">
+                            <CheckCircle2 className="w-4 h-4" />
+                            {t('jobs.applied') || 'Applied'}
+                          </span>
+                        ) : (
+                          <OneClickApply
+                            jobId={String(job.id)}
+                            job={{ id: String(job.id), title: job.title, company: job.company, location: job.location }}
+                            variant="compact"
+                            size="sm"
+                            className="h-10 px-5 bg-coral text-white hover:bg-coral-dark hover:scale-[1.03] active:scale-[0.98] shadow-coral text-button-small rounded-lg"
+                          />
+                        )}
                       </div>
                     </div>
                   </motion.div>

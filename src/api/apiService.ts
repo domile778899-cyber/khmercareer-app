@@ -7,7 +7,8 @@
  */
 
 import { createCollection } from './db';
-import type { Job, Course, Notification, Application } from './db';
+import type { Job, Course, NotificationData } from './db';
+export interface Application { id: string; createdAt: string; status: string; jobId: string; userId: string; }
 
 // =============================================================================
 // Types
@@ -118,7 +119,7 @@ class HttpClient {
 // LocalStorage-backed Collection Adapter
 // =============================================================================
 
-function createLocalAdapter<T extends { id: string }>(
+function createLocalAdapter<T extends { id: string; createdAt: string }>(
   collectionName: string,
 ): ApiCollection<T> {
   const local = createCollection<T>(collectionName);
@@ -178,8 +179,8 @@ export const jobsApi = {
     return adapter.getAll().filter((j) => {
       if (filters.industry && j.industry !== filters.industry) return false;
       if (filters.location && j.location !== filters.location) return false;
-      if (filters.salaryMin && (j.salaryMin || 0) < filters.salaryMin) return false;
-      if (filters.salaryMax && (j.salaryMax || 0) > filters.salaryMax) return false;
+      if (filters.salaryMin && (j.salaryMin ?? 0) < filters.salaryMin) return false;
+      if (filters.salaryMax && (j.salaryMax ?? 0) > filters.salaryMax) return false;
       if (filters.type && j.type !== filters.type) return false;
       if (filters.experience && j.experience !== filters.experience) return false;
       return true;
@@ -351,36 +352,36 @@ export const coursesApi = {
 // ─── Notifications Module ─────────────────────────────────────────────────────
 export const notificationsApi = {
   getAll: () => {
-    const adapter = createLocalAdapter<Notification>('notifications');
+    const adapter = createLocalAdapter<NotificationData>('notifications');
     return adapter.getAll();
   },
   getUnread: () => {
-    const adapter = createLocalAdapter<Notification>('notifications');
+    const adapter = createLocalAdapter<NotificationData>('notifications');
     return adapter.getAll().filter((n) => !n.read);
   },
   markAsRead: (id: string) => {
-    const adapter = createLocalAdapter<Notification>('notifications');
-    return adapter.update(id, { read: true } as Partial<Notification>);
+    const adapter = createLocalAdapter<NotificationData>('notifications');
+    return adapter.update(id, { read: true } as Partial<NotificationData>);
   },
   markAllAsRead: () => {
-    const adapter = createLocalAdapter<Notification>('notifications');
+    const adapter = createLocalAdapter<NotificationData>('notifications');
     const all = adapter.getAll();
-    all.forEach((n) => adapter.update(n.id, { read: true } as Partial<Notification>));
+    all.forEach((n) => adapter.update(n.id, { read: true } as Partial<NotificationData>));
   },
-  create: (data: Omit<Notification, 'id' | 'createdAt'>) => {
-    const adapter = createLocalAdapter<Notification>('notifications');
+  create: (data: Omit<NotificationData, 'id' | 'createdAt'>) => {
+    const adapter = createLocalAdapter<NotificationData>('notifications');
     return adapter.create(data);
   },
   delete: (id: string) => {
-    const adapter = createLocalAdapter<Notification>('notifications');
+    const adapter = createLocalAdapter<NotificationData>('notifications');
     return adapter.delete(id);
   },
   count: () => {
-    const adapter = createLocalAdapter<Notification>('notifications');
+    const adapter = createLocalAdapter<NotificationData>('notifications');
     return adapter.count();
   },
   unreadCount: () => {
-    const adapter = createLocalAdapter<Notification>('notifications');
+    const adapter = createLocalAdapter<NotificationData>('notifications');
     return adapter.getAll().filter((n) => !n.read).length;
   },
 };

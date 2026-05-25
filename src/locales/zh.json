@@ -32,7 +32,11 @@
       "workers": "已找到工作的工人",
       "hiring": "正在招聘的公司",
       "companies": "合作公司",
-      "talent": "注册专业人才"
+      "talent": "注册专业人才",
+      "jobs": "已发布职位",
+      "employers": "入驻企业",
+      "jobSeekers": "求职者",
+      "satisfaction": "满意度"
     },
     "tagline": "柬埔寨值得信赖的招聘平台",
     "allLocations": "所有地点",
@@ -106,6 +110,8 @@
     "myResume": "我的简历",
     "settings": "设置",
     "editProfile": "编辑资料",
+    "cancel": "取消",
+    "save": "保存",
     "changePassword": "修改密码",
     "notifications": "通知",
     "personalInfo": "个人信息",
@@ -119,7 +125,211 @@
     "memberSince": "注册时间",
     "completedApplications": "已完成申请",
     "savedJobsCount": "已保存职位",
-    "profileViews": "资料浏览量"
+    "profileViews": "资料浏览量",
+    "aboutMe": "关于我",
+    "fullName": "全名",
+    "email": "邮箱",
+    "phone": "电话",
+    "location": "地点",
+    "verified": "已认证",
+    "jobSeeker": "求职者",
+    "employer": "雇主",
+    "myApplications": "我的申请",
+    "total": "总计",
+    "savedJobsTitle": "已保存职位",
+    "apply": "申请",
+    "resumeBuilder": "简历生成器",
+    "resumeDesc": "使用我们的AI简历生成器创建专业简历。选择多种模板并导出为PDF格式。",
+    "modern": "现代",
+    "classic": "经典",
+    "creative": "创意",
+    "editResume": "编辑简历",
+    "downloadPDF": "下载PDF",
+    "accountSettings": "账户设置",
+    "notificationPreferences": "通知偏好",
+    "security": "安全",
+    "twoFactorAuth": "双重认证",
+    "enabled": "已启用",
+    "deleteAccount": "删除账户",
+    "profileUpdated": "资料更新成功！",
+    "profileScore": "资料评分",
+    "workExperience": "工作经验",
+    "status": {
+      "interview": "面试",
+      "applied": "已申请",
+      "reviewing": "审核中",
+      "rejected": "已拒绝"
+    },
+    "stats": {
+      "applications": "申请",
+      "savedJobs": "已保存职位",
+      "profileViews": "资料浏览量",
+      "profileScore": "资料评分"
+    }
+  },
+  "login": {
+    "welcomeBack": "欢迎回来",
+    "subtitle": "登录以访问您的个性化职位仪表板和职业工具",
+    "signIn": "登录",
+    "enterCredentials": "输入您的凭据以继续",
+    "emailAddress": "邮箱地址",
+    "password": "密码",
+    "rememberMe": "记住我",
+    "forgotPassword": "忘记密码？",
+    "or": "或",
+    "orTryDemo": "或尝试演示",
+    "tryDemoAccount": "尝试演示账户",
+    "noAccount": "还没有账户？",
+    "createAccount": "立即创建",
+    "memberBenefits": "会员权益",
+    "accessJobs": "访问10,000+职位列表",
+    "freeCourses": "免费培训课程",
+    "saveFavorites": "收藏喜爱的职位",
+    "aiResume": "AI简历生成器",
+    "activeUsers": "活跃用户",
+    "partnerCompanies": "合作公司",
+    "successRate": "成功率",
+    "secure": "安全",
+    "trustedBy": "受领先企业信赖",
+    "placeholder": {
+      "email": "you@example.com",
+      "password": "输入您的密码"
+    },
+    "error": {
+      "emailRequired": "请输入邮箱",
+      "validEmail": "请输入有效的邮箱地址",
+      "passwordRequired": "请输入密码",
+      "passwordLength": "密码至少6个字符",
+      "invalidCredentials": "邮箱或密码无效"
+    },
+    "toast": {
+      "welcomeBack": "欢迎回来！登录成功",
+      "demoLogin": "欢迎！演示登录成功",
+      "googleLogin": "Google登录成功！"
+    },
+    "testimonial": {
+      "quote": "我在注册后两周内找到了理想的工作。AI简历生成器和面试准备工具太棒了！",
+      "name": "Sokha K.",
+      "role": "TechCorp软件工程师"
+    }
+  },
+  "register": {
+    "createAccount": "创建您的账户",
+    "subtitle": "加入柬埔寨增长最快的职业网络，释放您的职业潜力",
+    "personalInfo": "个人信息",
+    "tellAboutYourself": "告诉我们关于您自己",
+    "createPassword": "创建密码",
+    "secureAccount": "保护您的账户",
+    "iAmA": "我是",
+    "jobSeeker": "求职者",
+    "jobSeekerDesc": "寻找工作",
+    "employer": "雇主",
+    "employerDesc": "招聘人才",
+    "fullName": "全名",
+    "email": "邮箱地址",
+    "phone": "电话号码",
+    "companyName": "公司名称",
+    "industry": "行业",
+    "selectIndustry": "选择行业",
+    "continue": "继续",
+    "back": "返回",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "minChars": "至少6个字符",
+    "repeatPassword": "重复您的密码",
+    "passwordLooksGood": "密码看起来不错",
+    "passwordsMatch": "密码匹配",
+    "termsAgreement": "我同意",
+    "termsOfService": "服务条款",
+    "privacyPolicy": "隐私政策",
+    "consent": "我同意通过邮件接收职位提醒和职业建议。",
+    "createAccountBtn": "创建账户",
+    "alreadyHaveAccount": "已有账户？",
+    "signIn": "登录",
+    "whyJoinUs": "为什么加入我们？",
+    "freeForever": "求职者永久免费",
+    "unlimitedApplications": "无限职位申请",
+    "aiResumeBuilder": "AI简历生成器",
+    "interviewCoaching": "面试辅导",
+    "skillsAssessments": "技能评估",
+    "careerGuidance": "职业指导",
+    "employerFeatures": "需要雇主功能？",
+    "viewPricing": "查看价格",
+    "dataProcessing": "注册即表示您同意我们的数据处理实践，如隐私政策所述。您的数据通过256位加密保护。",
+    "step1": "个人信息",
+    "step2": "账户设置",
+    "error": {
+      "nameRequired": "请输入全名",
+      "nameLength": "全名至少2个字符",
+      "emailRequired": "请输入邮箱",
+      "validEmail": "请输入有效的邮箱地址",
+      "phoneRequired": "请输入电话号码",
+      "validPhone": "请输入有效的电话号码（9-15位数字）",
+      "passwordRequired": "请输入密码",
+      "passwordLength": "密码至少6个字符",
+      "confirmRequired": "请确认您的密码",
+      "passwordsMismatch": "密码不匹配",
+      "companyRequired": "雇主必须提供公司名称",
+      "termsRequired": "请同意服务条款",
+      "registerFailed": "注册失败。请重试。"
+    },
+    "toast": {
+      "registerSuccess": "账户创建成功！欢迎加入"
+    }
+  },
+  "about": {
+    "hero": {
+      "eyebrow": "关于",
+      "title": "一次一份工作，建设柬埔寨的未来",
+      "subtitle": "KhmerHR成立于一个简单信念：每个柬埔寨人都应获得有尊严的就业机会，每个雇主都应获得优秀人才。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "about": "关于"
+    },
+    "mission": {
+      "title": "我们的使命",
+      "description": "通过将70万+工人与正式的、有尊严的工作机会联系起来，改变柬埔寨的非正规就业格局。我们通过尊重当地文化、以人为本的技术，搭建人才与雇主之间的桥梁。",
+      "stat": "88.3%的柬埔寨人非正规就业——我们来改变这一现状。"
+    },
+    "vision": {
+      "title": "我们的愿景",
+      "description": "到2030年，KhmerHR将成为每年100万柬埔寨人找到正式工作的平台。我们设想一个柬埔寨，每个工人都有数字身份，每个雇主都能轻松找到人才，非正规工作与正规工作之间的差距被弥合。",
+      "stat": "30岁以下人口占65%——行动的时刻就是现在。"
+    },
+    "culture": {
+      "eyebrow": "文化",
+      "title": "为柬埔寨设计",
+      "subtitle": "我们的平台建立在对柬埔寨文化、价值观和日常生活的深刻理解之上。",
+      "trustTitle": "信任至上",
+      "trustDesc": "在柬埔寨低信任的在线环境中，我们验证每个雇主并突出显示已验证公司。绿色盾牌徽章不是装饰——这是承诺。",
+      "mobileTitle": "移动优先",
+      "mobileDesc": "随着60.7%的互联网普及率和大多数用户使用智能手机，每个功能都为拇指友好的交互而设计。大按钮、简单流程、离线支持。",
+      "mobileStat": "60.7%互联网普及率 · $0.12/GB数据",
+      "simplicityTitle": "人人可用",
+      "simplicityDesc": "由于只有5%的人具备基本数字技能，我们的3步流程、视觉图标和大触控目标确保每个人都能使用KhmerHR——从工厂车间到大学校园。",
+      "simplicityStat": "高棉语默认 · 视觉图标 · 语音输入支持"
+    },
+    "impact": {
+      "title": "我们的影响",
+      "jobSeekers": "帮助的求职者",
+      "employers": "认证雇主",
+      "placements": "成功入职",
+      "languages": "支持语言"
+    },
+    "team": {
+      "eyebrow": "团队",
+      "title": "KhmerHR背后的团队"
+    },
+    "press": {
+      "title": "新闻报道"
+    },
+    "cta": {
+      "title": "加入柬埔寨的就业革命",
+      "subtitle": "无论您在寻找工作还是招聘人才，KhmerHR都是您共建美好未来的合作伙伴。",
+      "findJob": "找工作",
+      "hireTalent": "招聘人才"
+    }
   },
   "privacy": {
     "title": "隐私政策",
@@ -540,6 +750,24 @@
     "free": "免费",
     "premium": "高级",
     "subscribe": "订阅"
+  },
+  "employers": {
+    "specializedRecruitment": "专业招聘服务",
+    "industryFocusedSolutions": "行业聚焦解决方案",
+    "factoryBatchRecruitment": "工厂批量招聘",
+    "factoryBatchDesc": "专为服装厂、电子厂等制造业企业提供的批量招聘服务。一次性招聘50-500人，7天内到岗。",
+    "factoryStat1": "单次可招聘50-500人",
+    "factoryStat2": "7天内工人到岗",
+    "factoryStat3": "覆盖缝纫、质检、包装等岗位",
+    "factoryStat4": "提供岗前培训和宿舍安排",
+    "goFactoryRecruitment": "前往工厂招聘",
+    "chineseEnterpriseServices": "中资企业服务",
+    "chineseEnterpriseDesc": "专为在柬中资企业提供的中文招聘服务。帮助您找到懂中文的本地人才，解决语言障碍。",
+    "chineseStat1": "懂中文人才库12,480+",
+    "chineseStat2": "中文简历筛选服务",
+    "chineseStat3": "中文面试协助",
+    "chineseStat4": "中资企业专属客服",
+    "chineseEnterpriseCTA": "中资企业入口"
   },
   "cookies": {
     "message": "我们使用Cookie来提升您的浏览体验。",

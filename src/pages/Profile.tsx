@@ -26,9 +26,11 @@ import {
   Download,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 export default function Profile() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'overview' | 'applications' | 'saved' | 'resume' | 'settings'>('overview');
   const [isEditing, setIsEditing] = useState(false);
   const [fullName, setFullName] = useState(user?.fullName || 'Demo User');
@@ -45,11 +47,11 @@ export default function Profile() {
   };
 
   const tabs = [
-    { key: 'overview' as const, label: 'Overview', icon: UserCircle },
-    { key: 'applications' as const, label: 'Applications', icon: FileText },
-    { key: 'saved' as const, label: 'Saved Jobs', icon: Bookmark },
-    { key: 'resume' as const, label: 'My Resume', icon: FileText },
-    { key: 'settings' as const, label: 'Settings', icon: Settings },
+    { key: 'overview' as const, label: t('profile.overview'), icon: UserCircle },
+    { key: 'applications' as const, label: t('profile.applications'), icon: FileText },
+    { key: 'saved' as const, label: t('profile.savedJobs'), icon: Bookmark },
+    { key: 'resume' as const, label: t('profile.myResume'), icon: FileText },
+    { key: 'settings' as const, label: t('profile.settings'), icon: Settings },
   ];
 
   const mockApplications = [
@@ -151,7 +153,7 @@ export default function Profile() {
                 className="px-4 py-2 bg-gold hover:bg-gold-dark text-deep-brown text-sm font-semibold rounded-lg transition-colors flex items-center gap-2"
               >
                 <Edit3 className="w-4 h-4" />
-                {isEditing ? 'Cancel' : 'Edit Profile'}
+                {isEditing ? t('profile.cancel') : t('profile.editProfile')}
               </button>
             </motion.div>
           </div>
@@ -163,10 +165,10 @@ export default function Profile() {
         <div className="max-w-container-desktop mx-auto px-4 py-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: FileText, value: '12', label: 'Applications' },
-              { icon: Bookmark, value: '8', label: 'Saved Jobs' },
-              { icon: Eye, value: '156', label: 'Profile Views' },
-              { icon: TrendingUp, value: '85%', label: 'Profile Score' },
+              { icon: FileText, value: '12', label: t('profile.stats.applications') },
+              { icon: Bookmark, value: '8', label: t('profile.stats.savedJobs') },
+              { icon: Eye, value: '156', label: t('profile.stats.profileViews') },
+              { icon: TrendingUp, value: '85%', label: t('profile.stats.profileScore') },
             ].map((stat, i) => (
               <motion.div
                 key={i}
@@ -196,7 +198,7 @@ export default function Profile() {
             className="bg-emerald/10 border border-emerald/20 rounded-lg p-3 mb-6 flex items-center gap-2"
           >
             <CheckCircle className="w-4 h-4 text-emerald" />
-            <span className="text-sm text-emerald">Profile updated successfully!</span>
+            <span className="text-sm text-emerald">{t('profile.profileUpdated')}</span>
           </motion.div>
         )}
 
@@ -225,11 +227,11 @@ export default function Profile() {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-charcoal flex items-center gap-2">
                   <UserCircle className="w-4 h-4 text-gold" />
-                  About Me
+                  {t('profile.aboutMe')}
                 </h3>
                 {isEditing && (
                   <button onClick={handleSaveProfile} className="text-xs text-emerald font-medium flex items-center gap-1">
-                    <CheckCircle className="w-3 h-3" /> Save
+                    <CheckCircle className="w-3 h-3" /> {t('profile.save')}
                   </button>
                 )}
               </div>
@@ -249,14 +251,14 @@ export default function Profile() {
               <div className="bg-warm-white rounded-xl border border-sand p-6">
                 <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
                   <Settings className="w-4 h-4 text-gold" />
-                  Personal Information
+                  {t('profile.personalInfo')}
                 </h3>
                 <div className="space-y-4">
                   {[
-                    { icon: UserCircle, label: 'Full Name', value: fullName, setter: setFullName },
-                    { icon: Mail, label: 'Email', value: email, setter: null },
-                    { icon: Phone, label: 'Phone', value: phone, setter: setPhone },
-                    { icon: MapPin, label: 'Location', value: location, setter: setLocation },
+                    { icon: UserCircle, label: t('profile.fullName'), value: fullName, setter: setFullName },
+                    { icon: Mail, label: t('profile.email'), value: email, setter: null },
+                    { icon: Phone, label: t('profile.phone'), value: phone, setter: setPhone },
+                    { icon: MapPin, label: t('profile.location'), value: location, setter: setLocation },
                   ].map((field, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <field.icon className="w-4 h-4 text-warm-gray mt-0.5 flex-shrink-0" />
@@ -282,7 +284,7 @@ export default function Profile() {
               <div className="bg-warm-white rounded-xl border border-sand p-6">
                 <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
                   <Award className="w-4 h-4 text-gold" />
-                  Skills
+                  {t('profile.skills')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {mockSkills.map((skill, i) => (
@@ -304,7 +306,7 @@ export default function Profile() {
             <div className="bg-warm-white rounded-xl border border-sand p-6">
               <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-gold" />
-                Work Experience
+                {t('profile.workExperience')}
               </h3>
               <div className="space-y-4">
                 {mockExperiences.map((exp) => (
@@ -329,7 +331,7 @@ export default function Profile() {
             <div className="bg-warm-white rounded-xl border border-sand p-6">
               <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
                 <GraduationCap className="w-4 h-4 text-gold" />
-                Education
+                {t('profile.education')}
               </h3>
               {mockEducation.map((edu) => (
                 <div key={edu.id} className="flex gap-4">
@@ -350,8 +352,8 @@ export default function Profile() {
         {activeTab === 'applications' && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-semibold text-charcoal">My Applications</h2>
-              <span className="text-sm text-warm-gray">{mockApplications.length} total</span>
+              <h2 className="text-lg font-semibold text-charcoal">{t('profile.myApplications')}</h2>
+              <span className="text-sm text-warm-gray">{mockApplications.length} {t('profile.total')}</span>
             </div>
             {mockApplications.map((app, i) => (
               <motion.div
@@ -394,8 +396,8 @@ export default function Profile() {
         {activeTab === 'saved' && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-semibold text-charcoal">Saved Jobs</h2>
-              <span className="text-sm text-warm-gray">{mockSavedJobs.length} jobs</span>
+              <h2 className="text-lg font-semibold text-charcoal">{t('profile.savedJobsTitle')}</h2>
+              <span className="text-sm text-warm-gray">{mockSavedJobs.length} {t('profile.savedJobsTitle')}</span>
             </div>
             {mockSavedJobs.map((job, i) => (
               <motion.div
@@ -427,7 +429,7 @@ export default function Profile() {
                       to={`/jobs/${job.id}`}
                       className="px-4 py-2 bg-gold hover:bg-gold-dark text-deep-brown text-sm font-medium rounded-lg transition-colors"
                     >
-                      Apply
+                      {t('profile.apply')}
                     </Link>
                     <button className="p-2 text-warm-gray hover:text-coral transition-colors">
                       <Trash2 className="w-4 h-4" />
@@ -444,10 +446,10 @@ export default function Profile() {
             <div className="bg-warm-white rounded-xl border border-sand p-6">
               <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-gold" />
-                Resume Builder
+                {t('profile.resumeBuilder')}
               </h3>
               <p className="text-sm text-warm-gray mb-6">
-                Create a professional resume with our AI-powered builder. Choose from multiple templates and export in PDF format.
+                {t('profile.resumeDesc')}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                 {['Modern', 'Classic', 'Creative'].map((template, i) => (
@@ -459,7 +461,7 @@ export default function Profile() {
                     <div className="w-16 h-20 bg-cream rounded mx-auto mb-3 flex items-center justify-center">
                       <FileText className="w-6 h-6 text-warm-gray" />
                     </div>
-                    <p className="text-sm font-medium text-charcoal">{template}</p>
+                    <p className="text-sm font-medium text-charcoal">{t(`profile.${template.toLowerCase()}`)}</p>
                   </motion.div>
                 ))}
               </div>
@@ -469,11 +471,11 @@ export default function Profile() {
                   className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-gold hover:bg-gold-dark text-deep-brown font-semibold rounded-lg transition-colors"
                 >
                   <Edit3 className="w-4 h-4" />
-                  Edit Resume
+                  {t('profile.editResume')}
                 </Link>
                 <button className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 border border-sand hover:border-charcoal text-charcoal font-medium rounded-lg transition-colors">
                   <Download className="w-4 h-4" />
-                  Download PDF
+                  {t('profile.downloadPDF')}
                 </button>
               </div>
             </div>
@@ -486,7 +488,7 @@ export default function Profile() {
             <div className="bg-warm-white rounded-xl border border-sand p-6">
               <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
                 <Settings className="w-4 h-4 text-gold" />
-                Account Settings
+                {t('profile.accountSettings')}
               </h3>
               <div className="space-y-4">
                 {['Email notifications for new jobs', 'Push notifications for messages', 'Weekly job digest', 'Profile visibility to employers'].map((label, i) => (
@@ -501,7 +503,7 @@ export default function Profile() {
             <div className="bg-warm-white rounded-xl border border-sand p-6">
               <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
                 <Bell className="w-4 h-4 text-gold" />
-                Notification Preferences
+                {t('profile.notificationPreferences')}
               </h3>
               <div className="space-y-4">
                 {['Application status updates', 'Interview reminders', 'New matching jobs', 'Course recommendations'].map((label, i) => (
@@ -516,19 +518,19 @@ export default function Profile() {
             <div className="bg-warm-white rounded-xl border border-sand p-6">
               <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
                 <Lock className="w-4 h-4 text-gold" />
-                Security
+                {t('profile.security')}
               </h3>
               <div className="space-y-3">
                 <button className="w-full text-left px-4 py-3 border border-sand rounded-lg hover:border-gold/30 transition-colors flex items-center justify-between group">
-                  <span className="text-sm text-charcoal">Change Password</span>
+                  <span className="text-sm text-charcoal">{t('profile.changePassword')}</span>
                   <ChevronRight className="w-4 h-4 text-warm-gray group-hover:text-gold transition-colors" />
                 </button>
                 <button className="w-full text-left px-4 py-3 border border-sand rounded-lg hover:border-gold/30 transition-colors flex items-center justify-between group">
-                  <span className="text-sm text-charcoal">Two-Factor Authentication</span>
-                  <span className="text-xs text-emerald bg-emerald/10 px-2 py-0.5 rounded-full">Enabled</span>
+                  <span className="text-sm text-charcoal">{t('profile.twoFactorAuth')}</span>
+                  <span className="text-xs text-emerald bg-emerald/10 px-2 py-0.5 rounded-full">{t('profile.enabled')}</span>
                 </button>
                 <button className="w-full text-left px-4 py-3 border border-sand rounded-lg hover:border-coral/30 transition-colors flex items-center justify-between group">
-                  <span className="text-sm text-coral">Delete Account</span>
+                  <span className="text-sm text-coral">{t('profile.deleteAccount')}</span>
                   <Trash2 className="w-4 h-4 text-coral" />
                 </button>
               </div>

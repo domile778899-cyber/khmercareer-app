@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   Search, MapPin, Users, TrendingUp, Building2, Code,
   Shirt, Hotel, Laptop, CheckCircle, UserPlus, Bookmark,
   Star, ChevronDown, CheckCircle2, Facebook, MessageCircle, Send, Link as LinkIcon,
-  Briefcase, Clock, DollarSign
+  Briefcase, Clock, DollarSign, HardHat, Factory, GraduationCap, Truck, 
+  Landmark, Stethoscope, Home, Film, Zap, Wheat, PhoneCall
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -51,6 +53,116 @@ const sectors = [
     description: "Cambodia's fastest-growing sector. 600,000 IT positions to fill. Developers, designers, digital marketers, and tech leads.",
     stat: '600K IT talent gap',
     tags: ['Web Developer', 'UI Designer', 'Digital Marketing', 'IT Manager'],
+  },
+  {
+    image: '/construction-site.jpg',
+    icon: HardHat,
+    title: 'Construction',
+    titleKm: 'សំណង់',
+    titleZh: '建筑工程',
+    description: 'Rapidly growing with infrastructure investment. Civil engineers, site supervisors, skilled trades, and project managers.',
+    stat: '12% annual sector growth',
+    tags: ['Civil Engineer', 'Site Supervisor', 'Surveyor', 'Safety Officer'],
+  },
+  {
+    image: '/manufacturing-plant.jpg',
+    icon: Factory,
+    title: 'Manufacturing',
+    titleKm: 'ឧស្សាហកម្ម',
+    titleZh: '制造业',
+    description: 'Beyond garments — electronics, food processing, automotive parts. Production operators, maintenance techs, and quality engineers.',
+    stat: '200+ factories hiring',
+    tags: ['Production Operator', 'Maintenance Tech', 'QA Inspector', 'Factory Manager'],
+  },
+  {
+    image: '/finance-banking.jpg',
+    icon: Landmark,
+    title: 'Finance & Banking',
+    titleKm: 'ិរញ្ញវត្ថុ',
+    titleZh: '金融银行',
+    description: 'Banks, microfinance, insurance, and fintech. Accountants, loan officers, financial analysts, and bank tellers.',
+    stat: '50+ financial institutions',
+    tags: ['Accountant', 'Loan Officer', 'Bank Teller', 'Risk Manager'],
+  },
+  {
+    image: '/education-school.jpg',
+    icon: GraduationCap,
+    title: 'Education',
+    titleKm: 'អប់រំ',
+    titleZh: '教育培训',
+    description: 'Schools, language centers, and training institutes. Teachers, administrators, academic coordinators, and curriculum developers.',
+    stat: '1,200+ schools nationwide',
+    tags: ['English Teacher', 'Chinese Teacher', 'School Principal', 'IT Instructor'],
+  },
+  {
+    image: '/agriculture-farm.jpg',
+    icon: Wheat,
+    title: 'Agriculture',
+    titleKm: 'កសិកម្ម',
+    titleZh: '农业',
+    description: 'Cambodia\'s economic backbone. Farm managers, agricultural technicians, plantation supervisors, and product sales.',
+    stat: '30% of workforce in agriculture',
+    tags: ['Farm Worker', 'Agricultural Tech', 'Plantation Manager', 'QA Inspector'],
+  },
+  {
+    image: '/logistics-warehouse.jpg',
+    icon: Truck,
+    title: 'Logistics',
+    titleKm: 'ដឹកជញ្ជូន',
+    titleZh: '物流运输',
+    description: 'Ports, warehouses, delivery, and freight. Truck drivers, warehouse managers, freight forwarders, and logistics coordinators.',
+    stat: 'Major ports in PP & Sihanoukville',
+    tags: ['Truck Driver', 'Warehouse Manager', 'Freight Forwarder', 'Delivery Courier'],
+  },
+  {
+    image: '/business-office.jpg',
+    icon: PhoneCall,
+    title: 'Business Services',
+    titleKm: 'សេវាកម្មអាជីវកម្ម',
+    titleZh: '商业服务',
+    description: 'Translation, consulting, sales, marketing, and legal services. Bilingual professionals, account managers, and business consultants.',
+    stat: 'Bilingual talent in high demand',
+    tags: ['Chinese Translator', 'Sales Rep', 'Marketing Specialist', 'Legal Advisor'],
+  },
+  {
+    image: '/healthcare-hospital.jpg',
+    icon: Stethoscope,
+    title: 'Healthcare',
+    titleKm: 'សុខាភិបាល',
+    titleZh: '医疗健康',
+    description: 'Hospitals, clinics, pharmacies, and elder care. Nurses, doctors, pharmacy managers, and health coordinators.',
+    stat: 'Rapidly expanding sector',
+    tags: ['Registered Nurse', 'Medical Doctor', 'Pharmacy Manager', 'Caregiver'],
+  },
+  {
+    image: '/real-estate.jpg',
+    icon: Home,
+    title: 'Real Estate',
+    titleKm: 'អចលនទ្រព្យ',
+    titleZh: '房地产',
+    description: 'Property development, sales, and management. Real estate agents, property managers, appraisers, and interior designers.',
+    stat: 'Booming property market',
+    tags: ['Real Estate Agent', 'Property Manager', 'Interior Designer', 'Project Manager'],
+  },
+  {
+    image: '/media-studio.jpg',
+    icon: Film,
+    title: 'Media & Entertainment',
+    titleKm: 'ព័ត៌មាននិងកម្សាន្ត',
+    titleZh: '传媒娱乐',
+    description: 'TV, digital content, live streaming, and social media. Photographers, video editors, content creators, and performers.',
+    stat: 'Digital economy growing 15% annually',
+    tags: ['Photographer', 'Video Editor', 'Social Media Manager', 'Streamer'],
+  },
+  {
+    image: '/energy-solar.jpg',
+    icon: Zap,
+    title: 'Energy',
+    titleKm: 'ថាមពល',
+    titleZh: '能源电力',
+    description: 'Power generation, solar energy, mining, and environmental engineering. Electrical engineers, technicians, and solar specialists.',
+    stat: 'Solar energy investment surging',
+    tags: ['Power Engineer', 'Electrical Tech', 'Solar Specialist', 'Environmental Engineer'],
   },
 ];
 
@@ -222,7 +334,7 @@ export default function Home() {
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="overflow-x-hidden">
       {/* ═══════════════ SECTION 1: HERO ═══════════════ */}
       <section
         className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden"
@@ -245,7 +357,7 @@ export default function Home() {
           </p>
 
           {/* Headline */}
-          <h1 className="hero-headline text-hero-title font-display text-[#FAF8F3] mb-6" style={{ textShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
+          <h1 className="hero-headline text-hero-title font-display text-[#FAF8F3] mb-6 break-words" style={{ textShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
             {t('hero.headline')}
           </h1>
 
@@ -559,7 +671,7 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-8 gap-y-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-6">
             {employers.map((name, i) => (
               <div
                 key={i}
@@ -711,7 +823,52 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 9: CTA / NEWSLETTER ═══════════════ */}
+      {/* ═══════════════ SECTION 9: PLATFORM STATS ═══════════════ */}
+      <section className="bg-warm-white py-12 md:py-16 lg:py-20">
+        <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
+          <div className="text-center mb-10 reveal-section">
+            <p className="reveal-item text-caption uppercase tracking-[0.1em] text-gold mb-2">
+              {t('hero.tagline')}
+            </p>
+            <h2 className="reveal-item text-h2 font-display text-charcoal">
+              {t('home.trustedEmployers')}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4 reveal-section">
+            {[
+              { value: '113+', label: t('hero.stats.jobs'), icon: Briefcase, color: 'gold' as const },
+              { value: '186+', label: t('hero.stats.employers'), icon: Building2, color: 'emerald' as const },
+              { value: '12,480+', label: t('hero.stats.jobSeekers'), icon: Users, color: 'coral' as const },
+              { value: '98%', label: t('hero.stats.satisfaction'), icon: Star, color: 'gold' as const },
+            ].map((stat, i) => {
+              const IconComp = stat.icon;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ delay: i * 0.15, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
+                  className={`flex flex-col items-center text-center relative ${i < 3 ? 'lg:border-r lg:border-sand' : ''}`}
+                >
+                  <IconComp size={28} className={stat.color === 'coral' ? 'text-coral' : stat.color === 'emerald' ? 'text-emerald' : 'text-gold'} />
+                  <div className="flex items-baseline gap-0.5 mt-3">
+                    <span className={`text-stat-number font-mono ${stat.color === 'coral' ? 'text-coral' : stat.color === 'emerald' ? 'text-emerald' : 'text-gold'}`}>
+                      {stat.value}
+                    </span>
+                  </div>
+                  <p className="text-body-small text-warm-gray max-w-[160px] mt-2">
+                    {stat.label}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════ SECTION 10: CTA / NEWSLETTER ═══════════════ */}
       <section
         className="cta-section relative py-16 md:py-20 lg:py-24"
         style={{

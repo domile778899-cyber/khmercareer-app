@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Khmer Career Express - PWA Utilities
  * Service Worker registration, install prompt handling,
@@ -69,7 +68,7 @@ export function getPWAState(): PWAState {
  */
 export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
   if (!('serviceWorker' in navigator)) {
-    console.log('[PWA] Service Worker not supported');
+    if (import.meta.env.DEV) console.log('[PWA] Service Worker not supported'); // DEBUG
     return null;
   }
 
@@ -79,7 +78,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
       updateViaCache: 'imports',
     });
 
-    console.log('[PWA] Service Worker registered:', registration.scope);
+    if (import.meta.env.DEV) console.log('[PWA] Service Worker registered:', registration.scope); // DEBUG
     pwaState.swRegistered = true;
     notifyListeners();
 
@@ -90,7 +89,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 
       newWorker.addEventListener('statechange', () => {
         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-          console.log('[PWA] New version available');
+          if (import.meta.env.DEV) console.log('[PWA] New version available'); // DEBUG
           pwaState.swUpdateAvailable = true;
           notifyListeners();
         }
@@ -99,7 +98,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 
     // Listen for messages from SW
     navigator.serviceWorker.addEventListener('message', (event) => {
-      console.log('[PWA] Message from SW:', event.data);
+      if (import.meta.env.DEV) console.log('[PWA] Message from SW:', event.data); // DEBUG
     });
 
     return registration;
@@ -117,7 +116,7 @@ export async function updateServiceWorker(): Promise<void> {
 
   const registration = await navigator.serviceWorker.ready;
   await registration.update();
-  console.log('[PWA] Service Worker update check triggered');
+  if (import.meta.env.DEV) console.log('[PWA] Service Worker update check triggered'); // DEBUG
 }
 
 /**
@@ -149,7 +148,7 @@ export function initInstallPrompt(): void {
   }
 
   window.addEventListener('beforeinstallprompt', (e) => {
-    console.log('[PWA] beforeinstallprompt fired');
+    if (import.meta.env.DEV) console.log('[PWA] beforeinstallprompt fired'); // DEBUG
     e.preventDefault();
     deferredPrompt = e as BeforeInstallPromptEvent;
     pwaState.isInstallable = true;
@@ -157,7 +156,7 @@ export function initInstallPrompt(): void {
   });
 
   window.addEventListener('appinstalled', () => {
-    console.log('[PWA] App installed');
+    if (import.meta.env.DEV) console.log('[PWA] App installed'); // DEBUG
     deferredPrompt = null;
     pwaState.isInstallable = false;
     pwaState.isInstalled = true;
@@ -170,7 +169,7 @@ export function initInstallPrompt(): void {
  */
 export async function showInstallPrompt(): Promise<boolean> {
   if (!deferredPrompt) {
-    console.log('[PWA] No deferred prompt available');
+    if (import.meta.env.DEV) console.log('[PWA] No deferred prompt available'); // DEBUG
     return false;
   }
 
@@ -205,7 +204,7 @@ export function canInstall(): boolean {
  */
 export function initNetworkListeners(): void {
   const handleOnline = () => {
-    console.log('[PWA] Device is online');
+    if (import.meta.env.DEV) console.log('[PWA] Device is online'); // DEBUG
     pwaState.isOnline = true;
     notifyListeners();
     
@@ -214,7 +213,7 @@ export function initNetworkListeners(): void {
   };
 
   const handleOffline = () => {
-    console.log('[PWA] Device is offline');
+    if (import.meta.env.DEV) console.log('[PWA] Device is offline'); // DEBUG
     pwaState.isOnline = false;
     notifyListeners();
     
@@ -245,13 +244,13 @@ export function isOnline(): boolean {
  */
 export async function requestNotificationPermission(): Promise<NotificationPermission> {
   if (!('Notification' in window)) {
-    console.log('[PWA] Notifications not supported');
+    if (import.meta.env.DEV) console.log('[PWA] Notifications not supported'); // DEBUG
     return 'denied';
   }
 
   try {
     const permission = await Notification.requestPermission();
-    console.log('[PWA] Notification permission:', permission);
+    if (import.meta.env.DEV) console.log('[PWA] Notification permission:', permission); // DEBUG
     return permission;
   } catch (error) {
     console.error('[PWA] Notification permission error:', error);
@@ -266,7 +265,7 @@ export async function subscribeToPush(
   applicationServerKey?: string
 ): Promise<PushSubscription | null> {
   if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-    console.log('[PWA] Push notifications not supported');
+    if (import.meta.env.DEV) console.log('[PWA] Push notifications not supported'); // DEBUG
     return null;
   }
 
@@ -274,7 +273,7 @@ export async function subscribeToPush(
     // Request permission first
     const permission = await requestNotificationPermission();
     if (permission !== 'granted') {
-      console.log('[PWA] Notification permission denied');
+      if (import.meta.env.DEV) console.log('[PWA] Notification permission denied'); // DEBUG
       return null;
     }
 
@@ -283,7 +282,7 @@ export async function subscribeToPush(
     // Check existing subscription
     const existingSub = await registration.pushManager.getSubscription();
     if (existingSub) {
-      console.log('[PWA] Already subscribed to push');
+      if (import.meta.env.DEV) console.log('[PWA] Already subscribed to push'); // DEBUG
       pwaState.pushSubscribed = true;
       notifyListeners();
       return existingSub;
@@ -296,10 +295,10 @@ export async function subscribeToPush(
 
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: vapidKey,
+      applicationServerKey: (vapidKey as unknown) as ArrayBuffer,
     });
 
-    console.log('[PWA] Push subscription created:', subscription);
+    if (import.meta.env.DEV) console.log('[PWA] Push subscription created:', subscription); // DEBUG
     pwaState.pushSubscribed = true;
     notifyListeners();
 
@@ -325,7 +324,7 @@ export async function unsubscribeFromPush(): Promise<boolean> {
     
     if (subscription) {
       await subscription.unsubscribe();
-      console.log('[PWA] Push unsubscribed');
+      if (import.meta.env.DEV) console.log('[PWA] Push unsubscribed'); // DEBUG
       // TODO: Remove subscription from server
     }
     
@@ -366,14 +365,14 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
  */
 export async function registerBackgroundSync(tag: string = 'sync-submissions'): Promise<boolean> {
   if (!('serviceWorker' in navigator) || !('sync' in ServiceWorkerRegistration.prototype)) {
-    console.log('[PWA] Background sync not supported');
+    if (import.meta.env.DEV) console.log('[PWA] Background sync not supported'); // DEBUG
     return false;
   }
 
   try {
     const registration = await navigator.serviceWorker.ready;
-    await registration.sync.register(tag);
-    console.log('[PWA] Background sync registered:', tag);
+    await (registration as any).sync.register(tag);
+    if (import.meta.env.DEV) console.log('[PWA] Background sync registered:', tag); // DEBUG
     return true;
   } catch (error) {
     console.error('[PWA] Background sync registration failed:', error);
@@ -395,7 +394,7 @@ export async function clearAllCaches(): Promise<void> {
   const appCaches = cacheNames.filter((name) => name.startsWith('khmer-career-'));
   
   await Promise.all(appCaches.map((name) => caches.delete(name)));
-  console.log('[PWA] All caches cleared');
+  if (import.meta.env.DEV) console.log('[PWA] All caches cleared'); // DEBUG
 }
 
 /**
@@ -427,7 +426,7 @@ export async function getCacheInfo(): Promise<{ name: string; size: number }[]> 
  * Call this once at app startup
  */
 export function initPWA(): void {
-  console.log('[PWA] Initializing PWA...');
+  if (import.meta.env.DEV) console.log('[PWA] Initializing PWA...'); // DEBUG
 
   // Register service worker
   registerServiceWorker();
@@ -438,7 +437,7 @@ export function initPWA(): void {
   // Listen for network changes
   initNetworkListeners();
 
-  console.log('[PWA] PWA initialized');
+  if (import.meta.env.DEV) console.log('[PWA] PWA initialized'); // DEBUG
 }
 
 // Auto-initialize when imported

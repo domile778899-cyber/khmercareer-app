@@ -1,11 +1,9 @@
-import { Component } from 'react';
-import type { ReactNode, ErrorInfo } from 'react';
-import { Link } from 'react-router-dom';
-import { RefreshCw, Home, AlertTriangle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Component, ErrorInfo, ReactNode } from 'react';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 interface Props {
   children: ReactNode;
+  fallback?: ReactNode;
 }
 
 interface State {
@@ -14,79 +12,44 @@ interface State {
 }
 
 export default class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { hasError: false };
-  }
+  state: State = { hasError: false };
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // eslint-disable-next-line no-console
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error('ErrorBoundary caught:', error, errorInfo);
+    // 这里可以发送到错误追踪服务
   }
 
-  handleReload = () => {
+  handleReset = () => {
+    this.setState({ hasError: false, error: undefined });
     window.location.reload();
   };
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-deep-brown flex items-center justify-center px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-lg w-full text-center"
-          >
-            <div className="mb-8">
-              <div className="w-20 h-20 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-6">
-                <AlertTriangle className="w-10 h-10 text-gold" />
-              </div>
-              <h1 className="font-display text-3xl md:text-4xl font-bold text-warm-white mb-2">
-                Something went wrong
-              </h1>
-              <p className="text-warm-gray font-khmer text-base md:text-lg mt-4">
-                មានបញ្ហាបានកើតឡើង
-              </p>
-              <p className="text-warm-gray text-sm mt-2">
-                出了点问题
-              </p>
+      return this.props.fallback || (
+        <div className="min-h-[60vh] flex items-center justify-center bg-warm-white px-4">
+          <div className="text-center max-w-md">
+            <div className="w-16 h-16 rounded-2xl bg-coral/10 flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="w-8 h-8 text-coral" />
             </div>
-
-            {this.state.error && (
-              <div className="bg-charcoal/60 border border-gold/20 rounded-lg p-4 mb-8 text-left overflow-auto">
-                <p className="text-coral text-sm font-mono">
-                  {this.state.error.name}: {this.state.error.message}
-                </p>
-              </div>
-            )}
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={this.handleReload}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gold hover:bg-gold-dark text-deep-brown font-semibold rounded-lg transition-colors"
-              >
-                <RefreshCw className="w-4 h-4" />
-                Reload Page
-              </motion.button>
-              <Link to="/">
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-gold/40 text-gold hover:bg-gold/10 font-semibold rounded-lg transition-colors w-full"
-                >
-                  <Home className="w-4 h-4" />
-                  Go Home
-                </motion.button>
-              </Link>
-            </div>
-          </motion.div>
+            <h2 className="text-h3 font-display text-charcoal mb-2">
+              页面出现了一些问题
+            </h2>
+            <p className="text-body text-warm-gray mb-6">
+              我们已记录此错误，请刷新页面重试。如果问题持续存在，请联系客服。
+            </p>
+            <button
+              onClick={this.handleReset}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gold text-white rounded-xl hover:bg-gold-dark transition-colors"
+            >
+              <RefreshCw className="w-4 h-4" />
+              刷新页面
+            </button>
+          </div>
         </div>
       );
     }

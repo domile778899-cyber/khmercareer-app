@@ -25,6 +25,7 @@ import type { UserRole } from '../context/AuthContext';
 import FormField from '../components/FormField';
 import { useToast } from '../components/Toast';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^[0-9+]{9,15}$/;
@@ -79,7 +80,8 @@ function clearSavedForm() {
 export default function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
-  const { success, error: showError, ToastContainer } = useToast();
+  const { success, error: showError } = useToast();
+  const { t } = useTranslation();
 
   const saved = loadSavedForm();
   const [step, setStep] = useState(1);
@@ -105,46 +107,46 @@ export default function Register() {
   // Validation functions
   const validateFullName = useCallback(
     (value: string): string | undefined => {
-      if (!value || !value.trim()) return 'Full name is required';
-      if (value.trim().length < 2) return 'Full name must be at least 2 characters';
+      if (!value || !value.trim()) return t('register.error.nameRequired');
+      if (value.trim().length < 2) return t('register.error.nameLength');
       return undefined;
     },
-    []
+    [t]
   );
 
   const validateEmail = useCallback((value: string): string | undefined => {
-    if (!value || !value.trim()) return 'Email is required';
-    if (!EMAIL_REGEX.test(value.trim())) return 'Please enter a valid email address';
+    if (!value || !value.trim()) return t('register.error.emailRequired');
+    if (!EMAIL_REGEX.test(value.trim())) return t('register.error.validEmail');
     return undefined;
-  }, []);
+  }, [t]);
 
   const validatePhone = useCallback((value: string): string | undefined => {
-    if (!value || !value.trim()) return 'Phone number is required';
-    if (!PHONE_REGEX.test(value.replace(/\s/g, ''))) return 'Please enter a valid phone number (9-15 digits)';
+    if (!value || !value.trim()) return t('register.error.phoneRequired');
+    if (!PHONE_REGEX.test(value.replace(/\s/g, ''))) return t('register.error.validPhone');
     return undefined;
-  }, []);
+  }, [t]);
 
   const validatePassword = useCallback((value: string): string | undefined => {
-    if (!value) return 'Password is required';
-    if (value.length < 6) return 'Password must be at least 6 characters';
+    if (!value) return t('register.error.passwordRequired');
+    if (value.length < 6) return t('register.error.passwordLength');
     return undefined;
-  }, []);
+  }, [t]);
 
   const validateConfirmPassword = useCallback(
     (value: string, pwd: string = password): string | undefined => {
-      if (!value) return 'Please confirm your password';
-      if (value !== pwd) return 'Passwords do not match';
+      if (!value) return t('register.error.confirmRequired');
+      if (value !== pwd) return t('register.error.passwordsMismatch');
       return undefined;
     },
-    [password]
+    [password, t]
   );
 
   const validateCompanyName = useCallback(
     (value: string, isEmployer: boolean = role === 'employer'): string | undefined => {
-      if (isEmployer && (!value || !value.trim())) return 'Company name is required for employers';
+      if (isEmployer && (!value || !value.trim())) return t('register.error.companyRequired');
       return undefined;
     },
-    [role]
+    [role, t]
   );
 
   const validateField = useCallback(
@@ -207,7 +209,7 @@ export default function Register() {
     const cpError = validateConfirmPassword(confirmPassword);
     if (pwError) newErrors.password = pwError;
     if (cpError) newErrors.confirmPassword = cpError;
-    if (!agreed) newErrors.agreed = 'Please agree to the Terms of Service';
+    if (!agreed) newErrors.agreed = t('register.error.termsRequired');
     setErrors(newErrors);
     setTouched({ password: true, confirmPassword: true, agreed: true });
     return Object.keys(newErrors).length === 0;
@@ -242,10 +244,10 @@ export default function Register() {
 
     if (successReg) {
       clearSavedForm();
-      success('Account created successfully! Welcome aboard');
+      success(t('register.toast.registerSuccess'));
       setTimeout(() => navigate('/'), 800);
     } else {
-      showError('Registration failed. Please try again.');
+      showError(t('register.error.registerFailed'));
     }
 
     setIsLoading(false);
@@ -265,21 +267,20 @@ export default function Register() {
   ];
 
   const benefits = [
-    { icon: FileText, title: 'AI Resume Builder', desc: 'Create professional resumes in minutes' },
-    { icon: Award, title: 'Skills Assessment', desc: 'Validate your expertise with tests' },
-    { icon: Users, title: 'Network', desc: 'Connect with 50,000+ professionals' },
-    { icon: Shield, title: 'Verified Profiles', desc: 'Build trust with employers' },
+    { icon: FileText, title: t('register.aiResumeBuilder'), desc: t('register.aiResumeBuilder') },
+    { icon: Award, title: t('register.skillsAssessments'), desc: t('register.skillsAssessments') },
+    { icon: Users, title: t('register.careerGuidance'), desc: t('register.careerGuidance') },
+    { icon: Shield, title: t('register.verified'), desc: t('register.verified') },
   ];
 
   const steps = [
-    { num: 1, label: 'Personal Info' },
-    { num: 2, label: 'Account Setup' },
+    { num: 1, label: t('register.step1') },
+    { num: 2, label: t('register.step2') },
   ];
 
   return (
-    <div className="min-h-screen bg-warm-white">
-      <ToastContainer />
-
+    <div className="min-h-screen bg-warm-white overflow-x-hidden">
+      
       {/* Header */}
       <div className="bg-charcoal relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -293,18 +294,17 @@ export default function Register() {
             className="text-center"
           >
             <h1 className="font-display text-3xl md:text-5xl font-bold text-warm-white mb-3">
-              Create Your Account
+              {t('register.createAccount')}
             </h1>
             <p className="text-warm-gray text-base md:text-lg max-w-lg mx-auto">
-              Join Cambodia&apos;s fastest growing professional network and unlock your career
-              potential
+              {t('register.subtitle')}
             </p>
           </motion.div>
         </div>
       </div>
 
       <div className="max-w-container-desktop mx-auto px-4 py-8 md:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-8 xl:gap-16">
           {/* Registration form */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -353,17 +353,17 @@ export default function Register() {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-charcoal">
-                    {step === 1 ? 'Personal Information' : 'Create Password'}
+                    {step === 1 ? t('register.personalInfo') : t('register.createPassword')}
                   </h2>
                   <p className="text-warm-gray text-sm">
-                    {step === 1 ? 'Tell us about yourself' : 'Secure your account'}
+                    {step === 1 ? t('register.tellAboutYourself') : t('register.secureAccount')}
                   </p>
                 </div>
               </div>
 
               {/* Role selection - always visible */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-charcoal mb-2">I am a</label>
+                <label className="block text-sm font-medium text-charcoal mb-2">{t('register.iAmA')}</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -382,8 +382,8 @@ export default function Register() {
                       )}
                     />
                     <div>
-                      <p className="font-medium text-charcoal text-sm">Job Seeker</p>
-                      <p className="text-xs text-warm-gray">Looking for jobs</p>
+                      <p className="font-medium text-charcoal text-sm">{t('register.jobSeeker')}</p>
+                      <p className="text-xs text-warm-gray">{t('register.jobSeekerDesc')}</p>
                     </div>
                   </button>
                   <button
@@ -403,8 +403,8 @@ export default function Register() {
                       )}
                     />
                     <div>
-                      <p className="font-medium text-charcoal text-sm">Employer</p>
-                      <p className="text-xs text-warm-gray">Hiring talent</p>
+                      <p className="font-medium text-charcoal text-sm">{t('register.employer')}</p>
+                      <p className="text-xs text-warm-gray">{t('register.employerDesc')}</p>
                     </div>
                   </button>
                 </div>
@@ -420,14 +420,14 @@ export default function Register() {
                     className="space-y-5"
                   >
                     <FormField
-                      label="Full Name"
+                      label={t('register.fullName')}
                       name="fullName"
                       type="text"
                       value={fullName}
                       onChange={setFullName}
                       validate={validateFullName}
                       required
-                      placeholder="John Doe"
+                      placeholder={t('register.fullName')}
                       error={touched.fullName ? errors.fullName : undefined}
                       touched={touched.fullName}
                       icon={<UserCircle className="w-[18px] h-[18px]" />}
@@ -435,14 +435,14 @@ export default function Register() {
                     />
 
                     <FormField
-                      label="Email Address"
+                      label={t('register.email')}
                       name="email"
                       type="email"
                       value={email}
                       onChange={setEmail}
                       validate={validateEmail}
                       required
-                      placeholder="you@example.com"
+                      placeholder={t('register.email')}
                       error={touched.email ? errors.email : undefined}
                       touched={touched.email}
                       icon={<Mail className="w-[18px] h-[18px]" />}
@@ -450,7 +450,7 @@ export default function Register() {
                     />
 
                     <FormField
-                      label="Phone Number"
+                      label={t('register.phone')}
                       name="phone"
                       type="tel"
                       value={phone}
@@ -466,14 +466,14 @@ export default function Register() {
 
                     {role === 'employer' && (
                       <FormField
-                        label="Company Name"
+                        label={t('register.companyName')}
                         name="companyName"
                         type="text"
                         value={companyName}
                         onChange={setCompanyName}
                         validate={(v) => validateCompanyName(v)}
                         required
-                        placeholder="Your company name"
+                        placeholder={t('register.companyName')}
                         error={touched.companyName ? errors.companyName : undefined}
                         touched={touched.companyName}
                         icon={<Building2 className="w-[18px] h-[18px]" />}
@@ -483,14 +483,14 @@ export default function Register() {
                     {role === 'employer' && (
                       <div>
                         <label className="block text-sm font-medium text-charcoal mb-1.5">
-                          Industry
+                          {t('register.industry')}
                         </label>
                         <select
                           value={industry}
                           onChange={(e) => setIndustry(e.target.value)}
                           className="w-full px-4 py-3 border border-sand rounded-lg text-charcoal focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-all bg-cream/50"
                         >
-                          <option value="">Select an industry</option>
+                          <option value="">{t('register.selectIndustry')}</option>
                           {industries.map((ind) => (
                             <option key={ind} value={ind}>
                               {ind}
@@ -507,7 +507,7 @@ export default function Register() {
                       whileTap={{ scale: 0.99 }}
                       className="w-full py-3.5 bg-gold hover:bg-gold-dark text-deep-brown font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
                     >
-                      Continue
+                      {t('register.continue')}
                       <ChevronRight className="w-4 h-4" />
                     </motion.button>
                   </motion.div>
@@ -524,7 +524,7 @@ export default function Register() {
                     {/* Password field with show/hide toggle */}
                     <div>
                       <label className="block text-sm font-medium text-charcoal mb-1.5">
-                        Password
+                        {t('register.password')}
                         <span className="text-coral ml-0.5">*</span>
                       </label>
                       <div className="relative">
@@ -548,7 +548,7 @@ export default function Register() {
                               validateField('confirmPassword', confirmPassword);
                             }
                           }}
-                          placeholder="Min 6 characters"
+                          placeholder={t('register.minChars')}
                           autoComplete="new-password"
                           className={`
                             w-full pl-11 pr-11 py-3 rounded-lg text-charcoal
@@ -591,7 +591,7 @@ export default function Register() {
                           animate={{ opacity: 1 }}
                           className="text-emerald text-xs mt-1.5 flex items-center gap-1"
                         >
-                          <CheckCircle className="w-3 h-3" /> Password looks good
+                          <CheckCircle className="w-3 h-3" /> {t('register.passwordLooksGood')}
                         </motion.p>
                       )}
                     </div>
@@ -599,7 +599,7 @@ export default function Register() {
                     {/* Confirm Password */}
                     <div>
                       <label className="block text-sm font-medium text-charcoal mb-1.5">
-                        Confirm Password
+                        {t('register.confirmPassword')}
                         <span className="text-coral ml-0.5">*</span>
                       </label>
                       <div className="relative">
@@ -617,7 +617,7 @@ export default function Register() {
                             setTouched((prev) => ({ ...prev, confirmPassword: true }));
                             validateField('confirmPassword', confirmPassword);
                           }}
-                          placeholder="Repeat your password"
+                          placeholder={t('register.repeatPassword')}
                           autoComplete="new-password"
                           className={`
                             w-full pl-11 pr-10 py-3 rounded-lg text-charcoal
@@ -660,7 +660,7 @@ export default function Register() {
                           animate={{ opacity: 1 }}
                           className="text-emerald text-xs mt-1.5 flex items-center gap-1"
                         >
-                          <CheckCircle className="w-3 h-3" /> Passwords match
+                          <CheckCircle className="w-3 h-3" /> {t('register.passwordsMatch')}
                         </motion.p>
                       )}
                     </div>
@@ -697,7 +697,7 @@ export default function Register() {
                         >
                           Privacy Policy
                         </Link>
-                        . I consent to receiving job alerts and career tips via email.
+                        . {t('register.consent')}
                       </label>
                     </div>
                     {touched.agreed && errors.agreed && (
@@ -732,7 +732,7 @@ export default function Register() {
                           <div className="w-5 h-5 border-2 border-deep-brown/30 border-t-deep-brown rounded-full animate-spin" />
                         ) : (
                           <>
-                            Create Account
+                            {t('register.createAccountBtn')}
                             <ArrowRight className="w-4 h-4" />
                           </>
                         )}
@@ -764,7 +764,7 @@ export default function Register() {
             <div className="bg-cream rounded-2xl p-6 border border-sand">
               <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-gold" />
-                Why Join Us?
+                {t('register.whyJoinUs')}
               </h3>
               <div className="space-y-4">
                 {benefits.map((b, i) => (
@@ -773,14 +773,14 @@ export default function Register() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 + i * 0.1 }}
-                    className="flex gap-3"
+                    className="flex gap-3 min-w-0"
                   >
                     <div className="w-10 h-10 rounded-lg bg-emerald/10 flex items-center justify-center flex-shrink-0">
                       <b.icon className="w-5 h-5 text-emerald" />
                     </div>
-                    <div>
-                      <p className="font-medium text-charcoal text-sm">{b.title}</p>
-                      <p className="text-xs text-warm-gray">{b.desc}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-charcoal text-sm break-words">{b.title}</p>
+                      <p className="text-xs text-warm-gray break-words">{b.desc}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -793,8 +793,8 @@ export default function Register() {
               transition={{ delay: 0.6 }}
               className="bg-gradient-to-br from-charcoal to-deep-brown rounded-2xl p-6 text-center"
             >
-              <div className="text-4xl font-display font-bold text-gold mb-1">Free</div>
-              <p className="text-warm-white text-sm mb-4">Forever free for job seekers</p>
+              <div className="text-4xl font-display font-bold text-gold mb-1">{t('common.free')}</div>
+              <p className="text-warm-white text-sm mb-4">{t('register.freeForever')}</p>
               <ul className="text-left space-y-2 mb-6">
                 {[
                   'Unlimited job applications',
@@ -824,8 +824,7 @@ export default function Register() {
 
             <div className="bg-sand/30 rounded-xl p-4">
               <p className="text-xs text-warm-gray text-center">
-                By registering, you agree to our data processing practices as described in our
-                Privacy Policy. Your data is secure with 256-bit encryption.
+                {t('register.dataProcessing')}
               </p>
             </div>
           </motion.div>

@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { FavoritesProvider } from './context/FavoritesContext'
 import { ChatProvider } from './context/ChatContext'
+import { ApplyProvider } from './stores/ApplyContext'
 import Layout from './components/Layout'
 import { Suspense, lazy } from 'react'
 import Home from './pages/Home'
@@ -15,6 +16,7 @@ const Pricing = lazy(() => import('./pages/Pricing'))
 const About = lazy(() => import('./pages/About'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Interview = lazy(() => import('./pages/Interview'))
+const VideoInterview = lazy(() => import('./pages/VideoInterview'))
 const Live = lazy(() => import('./pages/Live'))
 const Training = lazy(() => import('./pages/Training'))
 const Business = lazy(() => import('./pages/Business'))
@@ -38,6 +40,7 @@ const FactoryJobs = lazy(() => import('./pages/FactoryJobs'))
 const ChineseEnterprise = lazy(() => import('./pages/ChineseEnterprise'))
 const ChatList = lazy(() => import('./pages/ChatList'))
 const ChatDetail = lazy(() => import('./pages/ChatDetail'))
+const AIMatch = lazy(() => import('./pages/AIMatch'))
 
 /* ── Admin pages ── */
 const AdminLayout = lazy(() => import('./admin/AdminLayout'))
@@ -45,6 +48,15 @@ const AdminDashboard = lazy(() => import('./admin/AdminDashboard'))
 const AdminUsers = lazy(() => import('./admin/AdminUsers'))
 const AdminCourses = lazy(() => import('./admin/AdminCourses'))
 const AdminJobs = lazy(() => import('./admin/AdminJobs'))
+
+/* ── Super Admin pages ── */
+const SuperAdminLayout = lazy(() => import('./admin/SuperAdminLayout'))
+const SuperAdminDashboard = lazy(() => import('./admin/SuperAdminDashboard'))
+const AIPromotionCenter = lazy(() => import('./admin/AIPromotionCenter'))
+const VideoFactory = lazy(() => import('./admin/VideoFactory'))
+const GrowthEngine = lazy(() => import('./admin/GrowthEngine'))
+const SocialMatrix = lazy(() => import('./admin/SocialMatrix'))
+const AnalyticsCenter = lazy(() => import('./admin/AnalyticsCenter'))
 
 const LazyFallback = () => (
   <div className="min-h-[60vh] flex items-center justify-center bg-warm-white">
@@ -64,6 +76,7 @@ export default function App() {
     <AuthProvider>
       <FavoritesProvider>
         <ChatProvider>
+        <ApplyProvider>
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
@@ -72,6 +85,7 @@ export default function App() {
             <Route path="/employers" element={<SuspenseWrapper><Employers /></SuspenseWrapper>} />
             <Route path="/resume" element={<SuspenseWrapper><Resume /></SuspenseWrapper>} />
             <Route path="/interview" element={<SuspenseWrapper><Interview /></SuspenseWrapper>} />
+            <Route path="/video-interview" element={<SuspenseWrapper><VideoInterview /></SuspenseWrapper>} />
             <Route path="/live" element={<SuspenseWrapper><Live /></SuspenseWrapper>} />
             <Route path="/pricing" element={<SuspenseWrapper><Pricing /></SuspenseWrapper>} />
             <Route path="/about" element={<SuspenseWrapper><About /></SuspenseWrapper>} />
@@ -97,6 +111,7 @@ export default function App() {
             <Route path="/chinese-enterprise" element={<SuspenseWrapper><ChineseEnterprise /></SuspenseWrapper>} />
             <Route path="/chat" element={<SuspenseWrapper><ChatList /></SuspenseWrapper>} />
             <Route path="/chat/:id" element={<SuspenseWrapper><ChatDetail /></SuspenseWrapper>} />
+            <Route path="/ai-match" element={<SuspenseWrapper><AIMatch /></SuspenseWrapper>} />
             <Route path="*" element={<SuspenseWrapper><NotFound /></SuspenseWrapper>} />
           </Route>
           <Route path="/admin" element={<SuspenseWrapper><AdminLayout /></SuspenseWrapper>}>
@@ -105,7 +120,16 @@ export default function App() {
             <Route path="courses" element={<SuspenseWrapper><AdminCourses /></SuspenseWrapper>} />
             <Route path="jobs" element={<SuspenseWrapper><AdminJobs /></SuspenseWrapper>} />
           </Route>
+          <Route path="/superadmin" element={<SuspenseWrapper><SuperAdminLayout /></SuspenseWrapper>}>
+            <Route index element={<SuspenseWrapper><SuperAdminDashboard /></SuspenseWrapper>} />
+            <Route path="promotion" element={<SuspenseWrapper><AIPromotionCenter /></SuspenseWrapper>} />
+            <Route path="video-factory" element={<SuspenseWrapper><VideoFactory /></SuspenseWrapper>} />
+            <Route path="growth" element={<SuspenseWrapper><GrowthEngine /></SuspenseWrapper>} />
+            <Route path="social" element={<SuspenseWrapper><SocialMatrix /></SuspenseWrapper>} />
+            <Route path="analytics" element={<SuspenseWrapper><AnalyticsCenter /></SuspenseWrapper>} />
+          </Route>
         </Routes>
+        </ApplyProvider>
         </ChatProvider>
       </FavoritesProvider>
     </AuthProvider>

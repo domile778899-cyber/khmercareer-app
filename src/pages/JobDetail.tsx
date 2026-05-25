@@ -28,6 +28,8 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { useApply } from '@/stores/ApplyContext'
+import OneClickApply from '@/components/OneClickApply'
 
 // ─── Types ───────────────────────────────────────────────
 interface Job {
@@ -710,9 +712,11 @@ export default function JobDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+  const { hasApplied } = useApply()
 
   const jobId = Number(id) || 1
   const job = getJob(jobId)
+  const isApplied = hasApplied(String(jobId))
 
   const [savedJobs, setSavedJobs] = useState<number[]>(() => {
     const stored = localStorage.getItem('khmerhr-saved-jobs')
@@ -846,13 +850,29 @@ export default function JobDetail() {
             transition={{ duration: 0.5, delay: 0.3, ease: [0.19, 1, 0.22, 1] as [number, number, number, number] }}
             className="flex flex-wrap gap-3"
           >
-            <button
-              onClick={() => setApplyOpen(true)}
-              className="h-14 px-8 bg-coral text-white font-semibold rounded-xl shadow-coral hover:bg-coral-dark hover:scale-[1.03] active:scale-[0.98] transition-all text-button flex items-center gap-2"
-            >
-              <Send className="w-5 h-5" />
-              Apply Now
-            </button>
+            {isApplied ? (
+              <span className="h-14 px-8 bg-emerald-light text-emerald font-semibold rounded-xl flex items-center gap-2 text-button">
+                <CheckCircle2 className="w-5 h-5" />
+                Applied
+              </span>
+            ) : (
+              <>
+                <button
+                  onClick={() => setApplyOpen(true)}
+                  className="h-14 px-8 bg-coral text-white font-semibold rounded-xl shadow-coral hover:bg-coral-dark hover:scale-[1.03] active:scale-[0.98] transition-all text-button flex items-center gap-2"
+                >
+                  <Send className="w-5 h-5" />
+                  Apply Now
+                </button>
+                <OneClickApply
+                  jobId={String(jobId)}
+                  job={{ id: String(jobId), title: job.title, company: job.company, location: job.location }}
+                  variant="outline"
+                  size="lg"
+                  className="h-14 px-6 border-2 border-gold text-gold hover:bg-gold/10 font-semibold rounded-xl text-button flex items-center gap-2"
+                />
+              </>
+            )}
             <button
               onClick={toggleSave}
               className="h-14 px-6 border-2 border-gold text-gold font-semibold rounded-xl hover:bg-gold/10 transition-all text-button flex items-center gap-2"

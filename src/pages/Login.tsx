@@ -23,6 +23,7 @@ import { useAuth } from '../hooks/useAuth';
 import FormField from '../components/FormField';
 import { useToast } from '../components/Toast';
 import GoogleSignInButton from '../components/GoogleSignInButton';
+import { useTranslation } from 'react-i18next';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -38,21 +39,26 @@ interface FormErrors {
 
 const STORAGE_KEY = 'khmer_login_form';
 
-function loadSavedForm(): Partial<LoginFormData> {
+function loadSavedEmail(): string | undefined {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      // Return only email, never load password from storage
+      if (parsed && typeof parsed === 'object' && typeof parsed.email === 'string') {
+        return parsed.email;
+      }
     }
   } catch {
     // ignore
   }
-  return {};
+  return undefined;
 }
 
-function saveForm(data: LoginFormData) {
+function saveEmail(email: string) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    // Only store email, never store password
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ email }));
   } catch {
     // ignore
   }
@@ -62,36 +68,60 @@ function clearSavedForm() {
   localStorage.removeItem(STORAGE_KEY);
 }
 
+function sanitizeOldStorage() {
+  // Clean up any previously stored password data
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === 'object' && parsed.password) {
+        // Old data with password found — clear it
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+  } catch {
+    // ignore
+  }
+}
+
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const { success, error: showError, ToastContainer } = useToast();
+  const { success, error: showError } = useToast();
+  const { t } = useTranslation();
 
-  const saved = loadSavedForm();
-  const [email, setEmail] = useState(saved.email || '');
-  const [password, setPassword] = useState(saved.password || '');
+  // Sanitize any old storage data that may contain passwords
+  sanitizeOldStorage();
+
+  const savedEmail = loadSavedEmail();
+  const [email, setEmail] = useState(savedEmail || '');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(!!savedEmail);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Persist form to localStorage
+  // Persist email to localStorage (never persist password)
   useEffect(() => {
-    saveForm({ email, password });
-  }, [email, password]);
+    if (rememberMe && email) {
+      saveEmail(email);
+    } else if (!rememberMe) {
+      clearSavedForm();
+    }
+  }, [email, rememberMe]);
 
   const validateEmail = useCallback((value: string): string | undefined => {
-    if (!value || !value.trim()) return 'Email is required';
-    if (!EMAIL_REGEX.test(value.trim())) return 'Please enter a valid email address';
+    if (!value || !value.trim()) return t('login.error.emailRequired');
+    if (!EMAIL_REGEX.test(value.trim())) return t('login.error.validEmail');
     return undefined;
-  }, []);
+  }, [t]);
 
   const validatePassword = useCallback((value: string): string | undefined => {
-    if (!value) return 'Password is required';
-    if (value.length < 6) return 'Password must be at least 6 characters';
+    if (!value) return t('login.error.passwordRequired');
+    if (value.length < 6) return t('login.error.passwordLength');
     return undefined;
-  }, []);
+  }, [t]);
 
   const validateField = useCallback(
     (field: 'email' | 'password', value: string) => {
@@ -135,11 +165,11 @@ export default function Login() {
     const successLogin = login(email.trim(), password);
     if (successLogin) {
       clearSavedForm();
-      success('Welcome back! Login successful');
+      success(t('login.toast.welcomeBack'));
       setTimeout(() => navigate('/'), 800);
     } else {
-      showError('Invalid email or password. Try password: demo123');
-      setErrors({ email: 'Invalid email or password', password: 'Invalid email or password' });
+      showError(t('login.error.invalidCredentials'));
+      setErrors({ email: t('login.error.invalidCredentials'), password: t('login.error.invalidCredentials') });
     }
 
     setIsLoading(false);
@@ -156,7 +186,7 @@ export default function Login() {
     const successLogin = login('demo@khmerjob.com', 'demo123');
     if (successLogin) {
       clearSavedForm();
-      success('Welcome! Demo login successful');
+      success(t('login.toast.demoLogin'));
       setTimeout(() => navigate('/'), 800);
     }
 
@@ -164,23 +194,22 @@ export default function Login() {
   };
 
   const features = [
-    { icon: Briefcase, text: 'Access 10,000+ job listings' },
-    { icon: GraduationCap, text: 'Free training courses' },
-    { icon: Heart, text: 'Save favorite positions' },
-    { icon: Star, text: 'AI-powered resume builder' },
+    { icon: Briefcase, text: t('login.accessJobs') },
+    { icon: GraduationCap, text: t('login.freeCourses') },
+    { icon: Heart, text: t('login.saveFavorites') },
+    { icon: Star, text: t('login.aiResume') },
   ];
 
   const stats = [
-    { icon: UserCircle, value: '50K+', label: 'Active Users' },
-    { icon: Globe, value: '200+', label: 'Partner Companies' },
-    { icon: Zap, value: '98%', label: 'Success Rate' },
-    { icon: Shield, value: '100%', label: 'Secure' },
+    { icon: UserCircle, value: '50K+', label: t('login.activeUsers') },
+    { icon: Globe, value: '200+', label: t('login.partnerCompanies') },
+    { icon: Zap, value: '98%', label: t('login.successRate') },
+    { icon: Shield, value: '100%', label: t('login.secure') },
   ];
 
   return (
-    <div className="min-h-screen bg-warm-white">
-      <ToastContainer />
-
+    <div className="min-h-screen bg-warm-white overflow-x-hidden">
+      
       {/* Hero banner */}
       <div className="bg-charcoal relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -194,17 +223,17 @@ export default function Login() {
             className="text-center"
           >
             <h1 className="font-display text-3xl md:text-5xl font-bold text-warm-white mb-3">
-              Welcome Back
+              {t('login.welcomeBack')}
             </h1>
             <p className="text-warm-gray text-base md:text-lg max-w-md mx-auto">
-              Sign in to access your personalized job dashboard and career tools
+              {t('login.subtitle')}
             </p>
           </motion.div>
         </div>
       </div>
 
       <div className="max-w-container-desktop mx-auto px-4 py-8 md:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-8 xl:gap-16">
           {/* Login form */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -218,21 +247,21 @@ export default function Login() {
                   <LogIn className="w-6 h-6 text-gold" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-charcoal">Sign In</h2>
-                  <p className="text-warm-gray text-sm">Enter your credentials to continue</p>
+                  <h2 className="text-xl font-bold text-charcoal">{t('login.signIn')}</h2>
+                  <p className="text-warm-gray text-sm">{t('login.enterCredentials')}</p>
                 </div>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                 <FormField
-                  label="Email Address"
+                  label={t('login.emailAddress')}
                   name="email"
                   type="email"
                   value={email}
                   onChange={setEmail}
                   validate={validateEmail}
                   required
-                  placeholder="you@example.com"
+                  placeholder={t('login.placeholder.email')}
                   error={touched.email ? errors.email : undefined}
                   touched={touched.email}
                   icon={<Mail className="w-[18px] h-[18px]" />}
@@ -241,7 +270,7 @@ export default function Login() {
 
                 <div>
                   <label className="block text-sm font-medium text-charcoal mb-1.5">
-                    Password
+                    {t('login.password')}
                     <span className="text-coral ml-0.5">*</span>
                   </label>
                   <div className="relative">
@@ -259,7 +288,7 @@ export default function Login() {
                         setTouched((prev) => ({ ...prev, password: true }));
                         validateField('password', password);
                       }}
-                      placeholder="Enter your password"
+                      placeholder={t('login.placeholder.password')}
                       autoComplete="current-password"
                       aria-invalid={touched.password && !!errors.password ? 'true' : 'false'}
                       className={`
@@ -307,13 +336,13 @@ export default function Login() {
                       onChange={(e) => setRememberMe(e.target.checked)}
                       className="w-4 h-4 rounded border-sand text-gold focus:ring-gold/30"
                     />
-                    <span className="text-sm text-charcoal">Remember me</span>
+                    <span className="text-sm text-charcoal">{t('login.rememberMe')}</span>
                   </label>
                   <Link
                     to="/forgot-password"
                     className="text-sm text-gold hover:text-gold-dark transition-colors"
                   >
-                    Forgot password?
+                    {t('login.forgotPassword')}
                   </Link>
                 </div>
 
@@ -328,7 +357,7 @@ export default function Login() {
                     <div className="w-5 h-5 border-2 border-deep-brown/30 border-t-deep-brown rounded-full animate-spin" />
                   ) : (
                     <>
-                      Sign In
+                      {t('login.signIn')}
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
@@ -339,14 +368,14 @@ export default function Login() {
                     <div className="w-full border-t border-sand" />
                   </div>
                   <div className="relative flex justify-center text-xs">
-                    <span className="px-3 bg-warm-white text-warm-gray">or</span>
+                    <span className="px-3 bg-warm-white text-warm-gray">{t('login.or')}</span>
                   </div>
                 </div>
 
                 {/* Google Sign-In */}
                 <GoogleSignInButton
                   onSuccess={(user) => {
-                    success('Google login successful!');
+                    success(t('login.toast.googleLogin'));
                     // Store Google user info
                     localStorage.setItem(
                       'khmer_auth_user',
@@ -370,7 +399,7 @@ export default function Login() {
                     <div className="w-full border-t border-sand" />
                   </div>
                   <div className="relative flex justify-center text-xs">
-                    <span className="px-3 bg-warm-white text-warm-gray">or try demo</span>
+                    <span className="px-3 bg-warm-white text-warm-gray">{t('login.orTryDemo')}</span>
                   </div>
                 </div>
 
@@ -383,17 +412,17 @@ export default function Login() {
                   className="w-full py-3.5 border-2 border-emerald text-emerald hover:bg-emerald/5 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   <Sparkles className="w-4 h-4" />
-                  Try Demo Account
+                  {t('login.tryDemoAccount')}
                 </motion.button>
               </form>
 
               <p className="text-center text-sm text-warm-gray mt-6">
-                Don&apos;t have an account?{' '}
+                {t('login.noAccount')}{' '}
                 <Link
                   to="/register"
                   className="text-gold hover:text-gold-dark font-medium transition-colors"
                 >
-                  Create one now
+                  {t('login.createAccount')}
                 </Link>
               </p>
             </div>
@@ -410,7 +439,7 @@ export default function Login() {
             <div className="bg-cream rounded-2xl p-6 border border-sand">
               <h3 className="font-semibold text-charcoal mb-4 flex items-center gap-2">
                 <Shield className="w-4 h-4 text-gold" />
-                Member Benefits
+                {t('login.memberBenefits')}
               </h3>
               <div className="space-y-3">
                 {features.map((feature, i) => (
@@ -419,12 +448,12 @@ export default function Login() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 + i * 0.1 }}
-                    className="flex items-center gap-3"
+                    className="flex items-center gap-3 min-w-0"
                   >
                     <div className="w-8 h-8 rounded-lg bg-emerald/10 flex items-center justify-center flex-shrink-0">
                       <feature.icon className="w-4 h-4 text-emerald" />
                     </div>
-                    <span className="text-sm text-charcoal">{feature.text}</span>
+                    <span className="text-sm text-charcoal flex-1 min-w-0 break-words">{feature.text}</span>
                     <CheckCircle className="w-4 h-4 text-emerald ml-auto flex-shrink-0" />
                   </motion.div>
                 ))}
@@ -461,16 +490,15 @@ export default function Login() {
                 ))}
               </div>
               <p className="text-sm text-charcoal italic mb-4">
-                &ldquo;I found my dream job within 2 weeks of signing up. The AI resume builder and
-                interview prep tools are incredible!&rdquo;
+                &ldquo;{t('login.testimonial.quote')}&rdquo;
               </p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
                   <span className="text-sm font-bold text-gold-dark">SK</span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-charcoal">Sokha K.</p>
-                  <p className="text-xs text-warm-gray">Software Engineer at TechCorp</p>
+                  <p className="text-sm font-medium text-charcoal">{t('login.testimonial.name')}</p>
+                  <p className="text-xs text-warm-gray">{t('login.testimonial.role')}</p>
                 </div>
               </div>
             </motion.div>
@@ -478,7 +506,7 @@ export default function Login() {
             {/* Trust badges */}
             <div className="text-center space-y-2">
               <p className="text-xs text-warm-gray uppercase tracking-wide">
-                Trusted by leading companies
+                {t('login.trustedBy')}
               </p>
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 {['ACB', 'ABA', 'Wing', 'Pi Pay'].map((name) => (
@@ -492,8 +520,7 @@ export default function Login() {
               </div>
             </div>
           </motion.div>
-        </div>
-      </div>
+        </div></div>
     </div>
   );
 }

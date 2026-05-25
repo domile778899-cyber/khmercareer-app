@@ -1,5 +1,9 @@
 // localStorage-based database with collections
+import { mockJobs } from '@/data/mockJobs';
+
 const DB_PREFIX = 'khmercareer_';
+const DB_VERSION_KEY = DB_PREFIX + 'db_version';
+const CURRENT_DB_VERSION = 'v2';
 
 export interface DBCollection<T> {
   findAll(): T[];
@@ -55,16 +59,24 @@ export interface Job {
   titleEn: string;
   company: string;
   location: string;
+  /** Kept for backward compatibility — prefer salaryMin/salaryMax */
   salary: string;
+  salaryMin: number;
+  salaryMax: number;
   type: string;
   industry: string;
   level: string;
+  experience: string;
   description: string;
   requirements: string[];
   benefits: string[];
   applicants: number;
   postedAt: string;
   status: string;
+  verified: boolean;
+  urgent: boolean;
+  featured: boolean;
+  employerType: string;
   createdAt: string;
 }
 
@@ -98,19 +110,23 @@ export interface NotificationData {
 }
 
 export function seedDatabase() {
+  // Check version — force refresh if outdated
+  const currentVersion = localStorage.getItem(DB_VERSION_KEY);
+  if (currentVersion !== CURRENT_DB_VERSION) {
+    // Clear old job data so we re-seed with new schema
+    localStorage.removeItem(DB_PREFIX + 'jobs');
+    localStorage.setItem(DB_VERSION_KEY, CURRENT_DB_VERSION);
+  }
+
   // Seed jobs if empty
   const jobsKey = DB_PREFIX + 'jobs';
   if (!localStorage.getItem(jobsKey) || JSON.parse(localStorage.getItem(jobsKey) || '[]').length === 0) {
-    localStorage.setItem(jobsKey, JSON.stringify([
-      { id: '1', title: 'អ្នកថតខារ៉ូទូករ', titleZh: '缝纫工', titleEn: 'Garment Sewing Worker', company: 'CamKo Textile', location: 'Phnom Penh', salary: '$250-$350', type: 'fulltime', industry: 'garment', level: 'entry', description: '操作缝纫机，制作服装。无需经验，提供培训。', requirements: ['无经验要求', '18-45岁', '身体健康'], benefits: ['免费宿舍', '免费午餐', '交通补贴'], applicants: 23, postedAt: '2025-06-15', status: 'active', createdAt: '2025-06-15' },
-      { id: '2', title: 'អ្នកបម្រើតុ', titleZh: '餐厅服务员', titleEn: 'Restaurant Server', company: 'Angkor Paradise Hotel', location: 'Siem Reap', salary: '$300-$450', type: 'fulltime', industry: 'tourism', level: 'entry', description: '为客人提供优质的餐厅服务。', requirements: ['基础英语', '微笑服务', '18-35岁'], benefits: ['小费', '免费住宿', '餐食'], applicants: 12, postedAt: '2025-06-14', status: 'active', createdAt: '2025-06-14' },
-      { id: '3', title: 'សហគ្រិនព័ត៌មានវិទ្យា', titleZh: 'IT开发工程师', titleEn: 'IT Developer', company: 'SinoLink Technology', location: 'Phnom Penh', salary: '$800-$1500', type: 'fulltime', industry: 'ict', level: 'mid', description: '开发Web和移动应用程序。', requirements: ['React/Vue经验', '2年以上', '大学学历'], benefits: ['弹性工作', '健康保险', '培训'], applicants: 8, postedAt: '2025-06-13', status: 'active', createdAt: '2025-06-13' },
-      { id: '4', title: 'ជាងសាងសង់', titleZh: '建筑工人', titleEn: 'Construction Worker', company: 'Mekong Build', location: 'Sihanoukville', salary: '$300-$500', type: 'fulltime', industry: 'construction', level: 'entry', description: '建筑工地各类工作。', requirements: ['体力好', '有经验优先'], benefits: ['包住', '工伤保险'], applicants: 45, postedAt: '2025-06-12', status: 'active', createdAt: '2025-06-12' },
-      { id: '5', title: 'អ្នកបកប្រែភាសាចិន', titleZh: '中文翻译', titleEn: 'Chinese Translator', company: 'Chamkamorn Group', location: 'Phnom Penh', salary: '$500-$800', type: 'fulltime', industry: 'business', level: 'mid', description: '中文-高棉语翻译工作。', requirements: ['中文流利', '高棉语母语', '1年以上经验'], benefits: ['年终奖', '弹性时间'], applicants: 15, postedAt: '2025-06-11', status: 'active', createdAt: '2025-06-11' },
-      { id: '6', title: 'បុគ្គលិកទទួលភ្ញៀវ', titleZh: '酒店前台', titleEn: 'Hotel Receptionist', company: 'Raffles Hotel', location: 'Phnom Penh', salary: '$350-$550', type: 'fulltime', industry: 'tourism', level: 'entry', description: '接待入住客人，处理预订。', requirements: ['基础英语', '电脑操作', '形象好'], benefits: ['制服', '员工餐', '培训'], applicants: 19, postedAt: '2025-06-10', status: 'active', createdAt: '2025-06-10' },
-      { id: '7', title: 'អ្នកបើកបរដឹកជញ្ជូន', titleZh: '货车司机', titleEn: 'Delivery Driver', company: 'Mekong Logistics', location: 'Phnom Penh', salary: '$300-$450', type: 'fulltime', industry: 'logistics', level: 'entry', description: '驾驶货车配送货物。', requirements: ['驾照B/C', '熟悉金边路线', '2年驾龄'], benefits: ['油补', '意外险'], applicants: 31, postedAt: '2025-06-09', status: 'active', createdAt: '2025-06-09' },
-      { id: '8', title: 'អ្នកគ្រប់គ្រងរោងចក្រ', titleZh: '工厂主管', titleEn: 'Factory Supervisor', company: 'Evergreen Garment', location: 'Kampong Speu', salary: '$600-$900', type: 'fulltime', industry: 'garment', level: 'senior', description: '管理生产线工人，确保生产目标。', requirements: ['3年服装厂经验', '管理能力', '高棉语'], benefits: ['奖金', '住房补贴'], applicants: 6, postedAt: '2025-06-08', status: 'active', createdAt: '2025-06-08' },
-    ] as Job[]));
+    // Use mockJobs data with full fields (salaryMin, salaryMax, experience, verified, etc.)
+    const seedJobs: Job[] = mockJobs.map((mj) => ({
+      ...mj,
+      salary: `$${mj.salaryMin}-$${mj.salaryMax}`,
+    }));
+    localStorage.setItem(jobsKey, JSON.stringify(seedJobs));
   }
 
   // Seed courses if empty

@@ -285,12 +285,12 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav Groups */}
-          <div className="hidden lg:flex items-center gap-0.5">
+          <div className="hidden md:flex items-center gap-0.5">
             {navGroups.map(renderDesktopGroupDropdown)}
           </div>
 
           {/* Desktop Right Side */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3">
             {/* Language Switcher */}
             <div
               className="flex items-center rounded-full p-0.5"
@@ -406,7 +406,7 @@ export default function Navbar() {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden p-2 z-10"
+            className="md:hidden p-2 z-10"
             style={{ color: '#D4AF37' }}
             aria-label="Toggle menu"
           >
@@ -417,7 +417,7 @@ export default function Navbar() {
 
       {/* ====== Mobile Menu Drawer ====== */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[100] lg:hidden">
+        <div className="fixed inset-0 z-[100] md:hidden">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/30"
@@ -616,7 +616,7 @@ export default function Navbar() {
       {/* ====== Mobile Floating Chat Button ====== */}
       <Link
         to="/chat"
-        className="lg:hidden fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
+        className="md:hidden fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
         style={{ background: 'linear-gradient(135deg, #D4AF37, #B8962F)' }}
       >
         <MessageCircle size={24} className="text-charcoal" />
@@ -628,21 +628,4 @@ export default function Navbar() {
       </Link>
     </>
   );
-}
-ton */}
-      <Link
-        to="/chat"
-        className="lg:hidden fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
-        style={{ background: 'linear-gradient(135deg, #D4AF37, #B8962F)' }}
-      >
-        <MessageCircle size={24} className="text-charcoal" />
-        {unreadTotal > 0 && (
-          <span className="absolute -top-1 -right-1 w-6 h-6 bg-[#C75B3F] text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-            {unreadTotal > 99 ? '99+' : unreadTotal}
-          </span>
-        )}
-      </Link>
-    </>
-  );
-
 }

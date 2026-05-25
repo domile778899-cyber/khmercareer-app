@@ -32,7 +32,11 @@
       "workers": "Workers Found Jobs",
       "hiring": "Companies Hiring",
       "companies": "Partner Companies",
-      "talent": "Registered Professionals"
+      "talent": "Registered Professionals",
+      "jobs": "Job Postings",
+      "employers": "Employers",
+      "jobSeekers": "Job Seekers",
+      "satisfaction": "Satisfaction Rate"
     },
     "tagline": "Cambodia's Trusted Recruitment Platform",
     "allLocations": "All Locations",
@@ -106,6 +110,8 @@
     "myResume": "My Resume",
     "settings": "Settings",
     "editProfile": "Edit Profile",
+    "cancel": "Cancel",
+    "save": "Save",
     "changePassword": "Change Password",
     "notifications": "Notifications",
     "personalInfo": "Personal Information",
@@ -119,7 +125,211 @@
     "memberSince": "Member since",
     "completedApplications": "Completed Applications",
     "savedJobsCount": "Saved Jobs",
-    "profileViews": "Profile Views"
+    "profileViews": "Profile Views",
+    "aboutMe": "About Me",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "verified": "Verified",
+    "jobSeeker": "Job Seeker",
+    "employer": "Employer",
+    "myApplications": "My Applications",
+    "total": "total",
+    "savedJobsTitle": "Saved Jobs",
+    "apply": "Apply",
+    "resumeBuilder": "Resume Builder",
+    "resumeDesc": "Create a professional resume with our AI-powered builder. Choose from multiple templates and export in PDF format.",
+    "modern": "Modern",
+    "classic": "Classic",
+    "creative": "Creative",
+    "editResume": "Edit Resume",
+    "downloadPDF": "Download PDF",
+    "accountSettings": "Account Settings",
+    "notificationPreferences": "Notification Preferences",
+    "security": "Security",
+    "twoFactorAuth": "Two-Factor Authentication",
+    "enabled": "Enabled",
+    "deleteAccount": "Delete Account",
+    "profileUpdated": "Profile updated successfully!",
+    "profileScore": "Profile Score",
+    "workExperience": "Work Experience",
+    "status": {
+      "interview": "Interview",
+      "applied": "Applied",
+      "reviewing": "Reviewing",
+      "rejected": "Rejected"
+    },
+    "stats": {
+      "applications": "Applications",
+      "savedJobs": "Saved Jobs",
+      "profileViews": "Profile Views",
+      "profileScore": "Profile Score"
+    }
+  },
+  "login": {
+    "welcomeBack": "Welcome Back",
+    "subtitle": "Sign in to access your personalized job dashboard and career tools",
+    "signIn": "Sign In",
+    "enterCredentials": "Enter your credentials to continue",
+    "emailAddress": "Email Address",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "or": "or",
+    "orTryDemo": "or try demo",
+    "tryDemoAccount": "Try Demo Account",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create one now",
+    "memberBenefits": "Member Benefits",
+    "accessJobs": "Access 10,000+ job listings",
+    "freeCourses": "Free training courses",
+    "saveFavorites": "Save favorite positions",
+    "aiResume": "AI-powered resume builder",
+    "activeUsers": "Active Users",
+    "partnerCompanies": "Partner Companies",
+    "successRate": "Success Rate",
+    "secure": "Secure",
+    "trustedBy": "Trusted by leading companies",
+    "placeholder": {
+      "email": "you@example.com",
+      "password": "Enter your password"
+    },
+    "error": {
+      "emailRequired": "Email is required",
+      "validEmail": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordLength": "Password must be at least 6 characters",
+      "invalidCredentials": "Invalid email or password"
+    },
+    "toast": {
+      "welcomeBack": "Welcome back! Login successful",
+      "demoLogin": "Welcome! Demo login successful",
+      "googleLogin": "Google login successful!"
+    },
+    "testimonial": {
+      "quote": "I found my dream job within 2 weeks of signing up. The AI resume builder and interview prep tools are incredible!",
+      "name": "Sokha K.",
+      "role": "Software Engineer at TechCorp"
+    }
+  },
+  "register": {
+    "createAccount": "Create Your Account",
+    "subtitle": "Join Cambodia's fastest growing professional network and unlock your career potential",
+    "personalInfo": "Personal Information",
+    "tellAboutYourself": "Tell us about yourself",
+    "createPassword": "Create Password",
+    "secureAccount": "Secure your account",
+    "iAmA": "I am a",
+    "jobSeeker": "Job Seeker",
+    "jobSeekerDesc": "Looking for jobs",
+    "employer": "Employer",
+    "employerDesc": "Hiring talent",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "companyName": "Company Name",
+    "industry": "Industry",
+    "selectIndustry": "Select an industry",
+    "continue": "Continue",
+    "back": "Back",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "minChars": "Min 6 characters",
+    "repeatPassword": "Repeat your password",
+    "passwordLooksGood": "Password looks good",
+    "passwordsMatch": "Passwords match",
+    "termsAgreement": "I agree to the",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "consent": "I consent to receiving job alerts and career tips via email.",
+    "createAccountBtn": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "whyJoinUs": "Why Join Us?",
+    "freeForever": "Forever free for job seekers",
+    "unlimitedApplications": "Unlimited job applications",
+    "aiResumeBuilder": "AI resume builder",
+    "interviewCoaching": "Interview coaching",
+    "skillsAssessments": "Skills assessments",
+    "careerGuidance": "Career guidance",
+    "employerFeatures": "Need employer features?",
+    "viewPricing": "View pricing",
+    "dataProcessing": "By registering, you agree to our data processing practices as described in our Privacy Policy. Your data is secure with 256-bit encryption.",
+    "step1": "Personal Info",
+    "step2": "Account Setup",
+    "error": {
+      "nameRequired": "Full name is required",
+      "nameLength": "Full name must be at least 2 characters",
+      "emailRequired": "Email is required",
+      "validEmail": "Please enter a valid email address",
+      "phoneRequired": "Phone number is required",
+      "validPhone": "Please enter a valid phone number (9-15 digits)",
+      "passwordRequired": "Password is required",
+      "passwordLength": "Password must be at least 6 characters",
+      "confirmRequired": "Please confirm your password",
+      "passwordsMismatch": "Passwords do not match",
+      "companyRequired": "Company name is required for employers",
+      "termsRequired": "Please agree to the Terms of Service",
+      "registerFailed": "Registration failed. Please try again."
+    },
+    "toast": {
+      "registerSuccess": "Account created successfully! Welcome aboard"
+    }
+  },
+  "about": {
+    "hero": {
+      "eyebrow": "ABOUT",
+      "title": "Building Cambodia's Future, One Job at a Time",
+      "subtitle": "KhmerHR was founded on a simple belief: every Cambodian deserves access to dignified employment, and every employer deserves access to great talent."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "about": "About"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "description": "To transform Cambodia's informal employment landscape by connecting 700,000+ workers with formal, dignified job opportunities. We bridge the gap between talent and employers through technology that respects local culture and meets people where they are.",
+      "stat": "88.3% of Cambodians work informally — we're here to change that."
+    },
+    "vision": {
+      "title": "Our Vision",
+      "description": "By 2030, KhmerHR will be the platform where 1 million Cambodians find formal employment annually. We envision a Cambodia where every worker has a digital identity, every employer finds talent effortlessly, and the gap between informal and formal work is closed.",
+      "stat": "Population under 30: 65% — the time to act is now."
+    },
+    "culture": {
+      "eyebrow": "CULTURE",
+      "title": "Designed for Cambodia",
+      "subtitle": "Our platform is built on deep understanding of Cambodian culture, values, and daily realities.",
+      "trustTitle": "Trust Comes First",
+      "trustDesc": "In Cambodia's low-trust online environment, we verify every employer and highlight verified companies. The green shield badge isn't decoration — it's a promise.",
+      "mobileTitle": "Mobile Is Everything",
+      "mobileDesc": "With 60.7% internet penetration and most users on smartphones, every feature is designed for thumb-friendly interaction. Large buttons, simple flows, offline support.",
+      "mobileStat": "60.7% internet penetration · $0.12/GB data",
+      "simplicityTitle": "Simplicity for Everyone",
+      "simplicityDesc": "With only 5% having basic digital skills, our 3-step processes, visual icons, and large touch targets ensure everyone can use KhmerHR — from factory floors to university campuses.",
+      "simplicityStat": "Khmer default language · Visual icons · Voice input support"
+    },
+    "impact": {
+      "title": "Our Impact",
+      "jobSeekers": "Job Seekers Helped",
+      "employers": "Verified Employers",
+      "placements": "Successful Placements",
+      "languages": "Languages Supported"
+    },
+    "team": {
+      "eyebrow": "TEAM",
+      "title": "The People Behind KhmerHR"
+    },
+    "press": {
+      "title": "In the News"
+    },
+    "cta": {
+      "title": "Be Part of Cambodia's Employment Revolution",
+      "subtitle": "Whether you're looking for work or looking to hire, KhmerHR is your partner in building a better future.",
+      "findJob": "Find a Job",
+      "hireTalent": "Hire Talent"
+    }
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -540,6 +750,24 @@
     "free": "Free",
     "premium": "Premium",
     "subscribe": "Subscribe"
+  },
+  "employers": {
+    "specializedRecruitment": "Specialized Recruitment",
+    "industryFocusedSolutions": "Industry-Focused Solutions",
+    "factoryBatchRecruitment": "Factory Batch Recruitment",
+    "factoryBatchDesc": "Batch recruitment service for garment factories, electronics plants, and manufacturing enterprises. Hire 50-500 workers with 7-day onboarding.",
+    "factoryStat1": "Recruit 50-500 workers per batch",
+    "factoryStat2": "Workers on site within 7 days",
+    "factoryStat3": "Cover sewing, QC, packaging roles",
+    "factoryStat4": "Pre-job training & dormitory arranged",
+    "goFactoryRecruitment": "Go to Factory Recruitment",
+    "chineseEnterpriseServices": "Chinese Enterprise Services",
+    "chineseEnterpriseDesc": "Dedicated Chinese-language recruitment for Chinese-funded enterprises in Cambodia. Find local Chinese-speaking talent and bridge the language gap.",
+    "chineseStat1": "12,480+ Chinese-speaking talents",
+    "chineseStat2": "Chinese resume screening",
+    "chineseStat3": "Chinese interview assistance",
+    "chineseStat4": "Dedicated Chinese enterprise support",
+    "chineseEnterpriseCTA": "Chinese Enterprise Portal"
   },
   "cookies": {
     "message": "We use cookies to enhance your browsing experience.",

@@ -50,7 +50,7 @@ export default function CookieConsent() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4"
+          className="fixed bottom-0 left-0 right-0 z-30 px-4 pb-4 mb-20 md:mb-4"
         >
           <div className="max-w-4xl mx-auto bg-charcoal border border-gold/20 rounded-xl shadow-card-hover p-4 md:p-6">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
@@ -101,7 +101,7 @@ export default function CookieConsent() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleDismiss}
-                  className="hidden md:inline-flex items-center justify-center w-8 h-8 text-warm-gray hover:text-warm-white transition-colors"
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-warm-gray hover:text-warm-white hover:bg-warm-white/10 transition-colors"
                   aria-label={t('common.close') || 'Dismiss'}
                 >
                   <X className="w-4 h-4" />

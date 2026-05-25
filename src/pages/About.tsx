@@ -9,6 +9,7 @@ import {
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { useTranslation } from 'react-i18next';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -108,6 +109,7 @@ function LotusIcon({ size = 48, className = '' }: { size?: number; className?: s
 
 /* ───────────────────── ABOUT PAGE ───────────────────── */
 export default function About() {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentQuote, setCurrentQuote] = useState(0);
 
@@ -228,31 +230,24 @@ export default function About() {
         <div className="relative z-10 max-w-[800px] mx-auto px-4 md:px-8 text-center">
           {/* Breadcrumb */}
           <p className="about-breadcrumb text-caption text-warm-gray mb-4">
-            <Link to="/" className="hover:text-gold transition-colors">Home</Link>
+            <Link to="/" className="hover:text-gold transition-colors">{t('about.breadcrumb.home')}</Link>
             <span className="mx-2">/</span>
-            <span>About</span>
+            <span>{t('about.breadcrumb.about')}</span>
           </p>
 
           {/* Eyebrow */}
           <p className="about-eyebrow text-caption uppercase tracking-[0.15em] text-gold mb-6">
-            អ្ពី / 关于 / ABOUT
+            {t('about.hero.eyebrow')}
           </p>
 
           {/* Title */}
           <h1 className="about-title text-hero-title font-display text-[#FAF8F3] mb-6" style={{ textShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
-            <span className="inline-block">Building</span>{' '}
-            <span className="inline-block">Cambodia&apos;s</span>{' '}
-            <span className="inline-block">Future,</span>{' '}
-            <span className="inline-block">One</span>{' '}
-            <span className="inline-block">Job</span>{' '}
-            <span className="inline-block">at</span>{' '}
-            <span className="inline-block">a</span>{' '}
-            <span className="inline-block">Time</span>
+            <span className="inline-block">{t('about.hero.title')}</span>
           </h1>
 
           {/* Subtitle */}
           <p className="about-subtitle text-body-large text-[rgba(250,248,243,0.8)] max-w-[600px] mx-auto mb-8">
-            KhmerHR was founded on a simple belief: every Cambodian deserves access to dignified employment, and every employer deserves access to great talent.
+            {t('about.hero.subtitle')}
           </p>
 
           {/* Lotus icon */}
@@ -269,7 +264,7 @@ export default function About() {
             {/* Mission Card */}
             <div className="mission-card bg-white border border-sand rounded-2xl p-8 lg:p-10" style={{ borderLeft: '4px solid #D4AF37' }}>
               <Target size={40} className="text-gold mb-4" />
-              <h2 className="text-h2 font-display text-charcoal mb-4">Our Mission</h2>
+              <h2 className="text-h2 font-display text-charcoal mb-4">{t('about.mission.title')}</h2>
               <p className="text-body text-warm-gray leading-relaxed mb-6">
                 To transform Cambodia&apos;s informal employment landscape by connecting 700,000+ workers with formal, dignified job opportunities. We bridge the gap between talent and employers through technology that respects local culture and meets people where they are.
               </p>
@@ -282,13 +277,13 @@ export default function About() {
             {/* Vision Card */}
             <div className="vision-card bg-white border border-sand rounded-2xl p-8 lg:p-10" style={{ borderLeft: '4px solid #059669' }}>
               <Eye size={40} className="text-emerald mb-4" />
-              <h2 className="text-h2 font-display text-charcoal mb-4">Our Vision</h2>
+              <h2 className="text-h2 font-display text-charcoal mb-4">{t('about.vision.title')}</h2>
               <p className="text-body text-warm-gray leading-relaxed mb-6">
-                By 2030, KhmerHR will be the platform where 1 million Cambodians find formal employment annually. We envision a Cambodia where every worker has a digital identity, every employer finds talent effortlessly, and the gap between informal and formal work is closed.
+                {t('about.vision.description')}
               </p>
               <div className="flex items-center gap-2 text-body-small text-emerald">
                 <TrendingUp size={16} />
-                <span>Population under 30: 65% — the time to act is now.</span>
+                <span>{t('about.vision.stat')}</span>
               </div>
             </div>
           </div>
@@ -300,13 +295,13 @@ export default function About() {
         <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
           <div className="text-center mb-12 reveal-section">
             <p className="reveal-item text-caption uppercase tracking-[0.1em] text-gold mb-2">
-              វប្បធម្រ / 文化 / CULTURE
+              {t('about.culture.eyebrow')}
             </p>
             <h2 className="reveal-item text-h2 font-display text-charcoal mb-3">
-              Designed for Cambodia
+              {t('about.culture.title')}
             </h2>
             <p className="reveal-item text-body text-warm-gray max-w-[520px] mx-auto">
-              Our platform is built on deep understanding of Cambodian culture, values, and daily realities.
+              {t('about.culture.subtitle')}
             </p>
           </div>
 
@@ -340,7 +335,7 @@ export default function About() {
       >
         <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
           <div className="text-center mb-12">
-            <h2 className="text-h2 font-display text-[#FAF8F3]">Our Impact</h2>
+            <h2 className="text-h2 font-display text-[#FAF8F3]">{t('about.impact.title')}</h2>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4">
@@ -372,10 +367,10 @@ export default function About() {
         <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
           <div className="text-center mb-12 reveal-section">
             <p className="reveal-item text-caption uppercase tracking-[0.1em] text-gold mb-2">
-              ក្រុម / 团队 / TEAM
+              {t('about.team.eyebrow')}
             </p>
             <h2 className="reveal-item text-h2 font-display text-charcoal">
-              The People Behind KhmerHR
+              {t('about.team.title')}
             </h2>
           </div>
 
@@ -410,7 +405,7 @@ export default function About() {
       {/* ═══════════════ SECTION 6: MEDIA & PRESS ═══════════════ */}
       <section className="press-section bg-cream py-12 md:py-16">
         <div className="mx-auto px-4 md:px-8 lg:max-w-[1200px] xl:max-w-[1320px]">
-          <h3 className="text-h3 font-display text-charcoal text-center mb-8">In the News</h3>
+          <h3 className="text-h3 font-display text-charcoal text-center mb-8">{t('about.press.title')}</h3>
 
           {/* Press Logos */}
           <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-10">
@@ -507,13 +502,13 @@ export default function About() {
                 to="/jobs"
                 className="bg-gold text-deep-brown px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] flex items-center justify-center shadow-gold hover:bg-gold-dark hover:scale-[1.03] hover:shadow-gold-hover transition-all duration-200"
               >
-                <Search size={20} className="mr-2" /> Find a Job
+                <Search size={20} className="mr-2" /> {t('about.cta.findJob')}
               </Link>
               <Link
                 to="/employers"
                 className="px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] flex items-center justify-center border-2 border-gold text-gold hover:bg-gold/10 transition-all duration-200"
               >
-                <Briefcase size={20} className="mr-2" /> Hire Talent
+                <Briefcase size={20} className="mr-2" /> {t('about.cta.hireTalent')}
               </Link>
             </div>
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 import { motion } from 'framer-motion'
 import {
   LayoutDashboard,
@@ -148,14 +149,13 @@ export default function AdminDashboard() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<'overview' | 'revenue' | 'transactions' | 'employers'>('overview')
 
-  // Check admin auth
+  // Check admin auth — use AuthContext instead of localStorage
+  const { user, isAuthenticated } = useAuth()
   useEffect(() => {
-    const isAdmin = localStorage.getItem('khmercareer-admin-auth')
-    if (!isAdmin) {
-      // For demo, auto-set admin
-      localStorage.setItem('khmercareer-admin-auth', 'true')
+    if (!isAuthenticated || user?.role !== 'admin') {
+      navigate('/', { replace: true })
     }
-  }, [])
+  }, [isAuthenticated, user, navigate])
 
   const totalRevenue = REVENUE_BY_SOURCE.reduce((sum, s) => sum + s.value, 0)
 

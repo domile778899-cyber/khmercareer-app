@@ -4,6 +4,7 @@ interface SkeletonProps {
   className?: string;
 }
 
+/* ── Base pulse block ────────────────────────────────────────── */
 export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
@@ -15,6 +16,7 @@ export function Skeleton({ className }: SkeletonProps) {
   );
 }
 
+/* ── Text line skeleton ──────────────────────────────────────── */
 export function SkeletonText({ lines = 1, className }: { lines?: number; className?: string }) {
   return (
     <div className={cn('space-y-2', className)}>
@@ -31,20 +33,51 @@ export function SkeletonText({ lines = 1, className }: { lines?: number; classNa
   );
 }
 
-export function SkeletonCard({ className }: SkeletonProps) {
+/* ── Generic card skeleton (jobs / listings) ────────────────── */
+export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn('rounded-xl border border-sand bg-warm-white p-4 space-y-4', className)}>
-      <Skeleton className="h-40 w-full rounded-lg" />
-      <Skeleton className="h-5 w-3/4" />
-      <SkeletonText lines={2} />
-      <div className="flex items-center gap-2 pt-2">
-        <Skeleton className="h-8 w-8 rounded-full" />
-        <Skeleton className="h-3 w-24" />
+    <div className={cn("bg-white rounded-2xl border border-sand p-5 animate-pulse", className)}>
+      <div className="flex items-start gap-4">
+        <div className="w-12 h-12 rounded-xl bg-cream" />
+        <div className="flex-1 space-y-3">
+          <div className="h-5 bg-cream rounded w-3/4" />
+          <div className="h-4 bg-cream rounded w-1/2" />
+          <div className="flex gap-2 pt-2">
+            <div className="h-6 bg-cream rounded-full w-20" />
+            <div className="h-6 bg-cream rounded-full w-20" />
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
+/* ── Skeleton list (repeating cards) ────────────────────────── */
+export function SkeletonList({ count = 5, className }: { count?: number; className?: string }) {
+  return (
+    <div className={cn("space-y-4", className)}>
+      {Array.from({ length: count }).map((_, i) => (
+        <SkeletonCard key={i} />
+      ))}
+    </div>
+  );
+}
+
+/* ── Stats grid skeleton ────────────────────────────────────── */
+export function SkeletonStats({ className }: SkeletonProps) {
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="bg-white rounded-2xl border border-sand p-6 animate-pulse">
+          <div className="h-8 bg-cream rounded w-16 mb-2" />
+          <div className="h-4 bg-cream rounded w-24" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Detailed job card skeleton ─────────────────────────────── */
 export function SkeletonJobCard({ className }: SkeletonProps) {
   return (
     <div className={cn('rounded-xl border border-sand bg-warm-white p-4 md:p-5 space-y-3', className)}>
@@ -72,19 +105,7 @@ export function SkeletonJobCard({ className }: SkeletonProps) {
   );
 }
 
-export function SkeletonStats({ className }: SkeletonProps) {
-  return (
-    <div className={cn('grid grid-cols-2 md:grid-cols-4 gap-4', className)}>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="rounded-xl border border-sand bg-warm-white p-4 text-center space-y-3">
-          <Skeleton className="h-10 w-20 mx-auto" />
-          <Skeleton className="h-3 w-24 mx-auto" />
-        </div>
-      ))}
-    </div>
-  );
-}
-
+/* ── Course card skeleton ───────────────────────────────────── */
 export function SkeletonCourseCard({ className }: SkeletonProps) {
   return (
     <div className={cn('rounded-xl border border-sand bg-warm-white overflow-hidden space-y-3', className)}>
@@ -105,6 +126,7 @@ export function SkeletonCourseCard({ className }: SkeletonProps) {
   );
 }
 
+/* ── Table skeleton ─────────────────────────────────────────── */
 export function SkeletonTable({ rows = 5, className }: { rows?: number; className?: string }) {
   return (
     <div className={cn('space-y-3', className)}>
@@ -124,6 +146,7 @@ export function SkeletonTable({ rows = 5, className }: { rows?: number; classNam
   );
 }
 
+/* ── Profile page skeleton ──────────────────────────────────── */
 export function SkeletonProfile({ className }: SkeletonProps) {
   return (
     <div className={cn('space-y-6', className)}>
