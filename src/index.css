@@ -9,6 +9,9 @@
     --gold: #D4AF37;
     --gold-light: #F5E6A3;
     --gold-dark: #B8941F;
+    --gold-gradient-start: #D4AF37;
+    --gold-gradient-mid: #F4D03F;
+    --gold-gradient-end: #D4AF37;
     --emerald: #059669;
     --emerald-light: #D1FAE5;
     --coral: #E85D3E;
@@ -73,6 +76,39 @@
 
   html {
     scroll-behavior: smooth;
+  }
+
+  /* ============================================
+     Custom Scrollbar - Elegant Gold Style
+     ============================================ */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #F5F0E8;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #D4AF37, #B8941F);
+    border-radius: 4px;
+    border: 2px solid #F5F0E8;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #E4BF47, #C8A42F);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: #F5F0E8;
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #D4AF37 #F5F0E8;
   }
 
   /* ============================================
@@ -184,6 +220,241 @@
   }
 
   /* ============================================
+     Gold Gradient Utilities
+     ============================================ */
+
+  .gold-gradient {
+    background: linear-gradient(135deg, #D4AF37, #F4D03F, #D4AF37);
+  }
+
+  .gold-gradient-text {
+    background: linear-gradient(135deg, #D4AF37, #F4D03F, #B8960C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gold-gradient-shine {
+    background: linear-gradient(90deg, #D4AF37 0%, #F4D03F 25%, #FFF8DC 50%, #F4D03F 75%, #D4AF37 100%);
+    background-size: 200% auto;
+    animation: goldShine 3s linear infinite;
+  }
+
+  @keyframes goldShine {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+
+  /* ============================================
+     Glassmorphism Effect
+     ============================================ */
+
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .glass-effect-light {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .glass-effect-dark {
+    background: rgba(26, 23, 20, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+  }
+
+  /* ============================================
+     Enhanced Card Hover Effects
+     ============================================ */
+
+  .card-hover-lift {
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                border-color 0.3s ease;
+  }
+
+  .card-hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-color: rgba(212, 175, 55, 0.4);
+  }
+
+  .card-hover-glow {
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .card-hover-glow:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.2), 0 12px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  /* ============================================
+     Enhanced Button Animations
+     ============================================ */
+
+  .btn-gold {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .btn-gold::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .btn-gold:hover::before {
+    left: 100%;
+  }
+
+  .btn-gold:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+  }
+
+  .btn-gold:active {
+    transform: scale(0.98);
+  }
+
+  /* ============================================
+     Page Transition Animations
+     ============================================ */
+
+  .page-enter {
+    animation: pageEnter 0.5s ease-out forwards;
+  }
+
+  @keyframes pageEnter {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .page-fade-in {
+    animation: pageFadeIn 0.6s ease-out forwards;
+  }
+
+  @keyframes pageFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ============================================
+     Floating Animation
+     ============================================ */
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .animate-float-delayed {
+    animation: float 6s ease-in-out 2s infinite;
+  }
+
+  /* ============================================
+     Pulse Glow Animation
+     ============================================ */
+
+  .animate-pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6), 0 0 40px rgba(212, 175, 55, 0.2);
+    }
+  }
+
+  /* ============================================
+     Typewriter Cursor
+     ============================================ */
+
+  .typewriter-cursor::after {
+    content: '|';
+    animation: cursorBlink 0.8s step-end infinite;
+    color: #D4AF37;
+    font-weight: 300;
+  }
+
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ============================================
+     Hero Background Animation
+     ============================================ */
+
+  .hero-bg-animate {
+    background: linear-gradient(135deg, #1A1714 0%, #2D2926 40%, #1A1714 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-animate::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 40%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 70% 60%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
+    animation: heroBgShift 15s ease-in-out infinite;
+  }
+
+  @keyframes heroBgShift {
+    0%, 100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    33% {
+      transform: translate(2%, 1%) rotate(1deg);
+    }
+    66% {
+      transform: translate(-1%, 2%) rotate(-1deg);
+    }
+  }
+
+  /* ============================================
+     Stat Counter Float Animation
+     ============================================ */
+
+  .stat-float {
+    animation: statFloat 4s ease-in-out infinite;
+  }
+
+  @keyframes statFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  /* ============================================
      Scroll Behavior (iOS Momentum Scroll)
      ============================================ */
 
@@ -238,6 +509,11 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
+    }
+
+    .hero-bg-animate::before,
+    .gold-gradient-shine {
+      animation: none !important;
     }
   }
 

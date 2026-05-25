@@ -136,6 +136,14 @@ module.exports = {
           "0%, 100%": { transform: "scale(1)", opacity: "1" },
           "50%": { transform: "scale(1.05)", opacity: "0.9" },
         },
+        "stat-float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-4px)" },
+        },
+        "gold-shine": {
+          "0%": { backgroundPosition: "200% center" },
+          "100%": { backgroundPosition: "-200% center" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -145,6 +153,8 @@ module.exports = {
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "float": "float 4s ease-in-out infinite",
         "lotus-pulse": "lotus-pulse 3s ease-in-out infinite",
+        "stat-float": "stat-float 4s ease-in-out infinite",
+        "gold-shine": "gold-shine 3s linear infinite",
       },
     },
   },

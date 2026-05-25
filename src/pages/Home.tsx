@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -7,7 +7,8 @@ import {
   Shirt, Hotel, Laptop, CheckCircle, UserPlus, Bookmark,
   Star, ChevronDown, CheckCircle2, Facebook, MessageCircle, Send, Link as LinkIcon,
   Briefcase, Clock, DollarSign, HardHat, Factory, GraduationCap, Truck, 
-  Landmark, Stethoscope, Home, Film, Zap, Wheat, PhoneCall
+  Landmark, Stethoscope, Home, Film, Zap, Wheat, PhoneCall,
+  Sparkles, FileText, MessageSquare, Globe
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -241,12 +242,139 @@ const testimonials = [
   },
 ];
 
+/* ───────────────────── AI SHORTCUT BUTTONS DATA ───────────────────── */
+const aiShortcuts = [
+  { icon: Sparkles, label: 'AI智能匹配', labelEn: 'AI Match', path: '/ai-match', color: 'from-amber-400 to-yellow-500' },
+  { icon: FileText, label: '简历优化', labelEn: 'Resume', path: '/resume', color: 'from-emerald-400 to-teal-500' },
+  { icon: MessageSquare, label: 'AI求职助手', labelEn: 'AI Chat', path: '/interview', color: 'from-sky-400 to-blue-500' },
+  { icon: Globe, label: '多语言翻译', labelEn: 'Translate', path: '/ai-generate', color: 'from-rose-400 to-pink-500' },
+];
+
+/* ───────────────────── TYPEWRITER HOOK ───────────────────── */
+function useTypewriter(texts: string[], speed: number = 100, delay: number = 2000) {
+  const [displayText, setDisplayText] = useState('');
+  const [textIndex, setTextIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentText = texts[textIndex];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting && charIndex <= currentText.length) {
+      timeout = setTimeout(() => {
+        setDisplayText(currentText.slice(0, charIndex));
+        setCharIndex(charIndex + 1);
+      }, speed);
+    } else if (!isDeleting && charIndex > currentText.length) {
+      timeout = setTimeout(() => setIsDeleting(true), delay);
+    } else if (isDeleting && charIndex > 0) {
+      timeout = setTimeout(() => {
+        setDisplayText(currentText.slice(0, charIndex - 1));
+        setCharIndex(charIndex - 1);
+      }, speed / 2);
+    } else if (isDeleting && charIndex === 0) {
+      setIsDeleting(false);
+      setTextIndex((textIndex + 1) % texts.length);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, textIndex, texts, speed, delay]);
+
+  return displayText;
+}
+
+/* ───────────────────── FLOATING PARTICLES ───────────────────── */
+function FloatingParticles() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationId: number;
+    const particles: { x: number; y: number; r: number; dx: number; dy: number; alpha: number }[] = [];
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    };
+
+    const createParticles = () => {
+      const count = 25;
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * canvas.offsetWidth,
+          y: Math.random() * canvas.offsetHeight,
+          r: Math.random() * 2 + 0.5,
+          dx: (Math.random() - 0.5) * 0.5,
+          dy: (Math.random() - 0.5) * 0.5 - 0.2,
+          alpha: Math.random() * 0.5 + 0.1,
+        });
+      }
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+      particles.forEach((p) => {
+        p.x += p.dx;
+        p.y += p.dy;
+        p.alpha -= 0.0005;
+
+        if (p.x < 0 || p.x > canvas.offsetWidth) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.offsetHeight) p.dy *= -1;
+        if (p.alpha <= 0) {
+          p.alpha = Math.random() * 0.5 + 0.2;
+          p.x = Math.random() * canvas.offsetWidth;
+          p.y = canvas.offsetHeight + 5;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(212, 175, 55, ${p.alpha})`;
+        ctx.fill();
+      });
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    resize();
+    createParticles();
+    animate();
+
+    window.addEventListener('resize', resize);
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none z-[1]"
+    />
+  );
+}
+
 /* ───────────────────── HOME COMPONENT ───────────────────── */
 export default function Home() {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language || 'km';
   const containerRef = useRef<HTMLDivElement>(null);
   const [savedJobs, setSavedJobs] = useState<Set<number>>(new Set());
+
+  /* Typewriter effect headlines */
+  const typewriterTexts = [
+    currentLang === 'zh' ? 'AI智能匹配理想工作' : currentLang === 'km' ? 'ការងារដែលល្អឥតខ្ចោះ' : 'Find Your Dream Job',
+    currentLang === 'zh' ? '连接柬埔寨与国际机遇' : currentLang === 'km' ? 'តភ្ជាប់កម្ពុជានិងពិភពលោក' : 'Connecting Cambodia to the World',
+    currentLang === 'zh' ? '一键申请，快速入职' : currentLang === 'km' ? 'ដាក់ពាក្យមួយចោលបានការងារ' : 'One-Click Apply & Get Hired',
+  ];
+  const typewriterText = useTypewriter(typewriterTexts, 80, 2500);
 
   const toggleSave = (idx: number) => {
     setSavedJobs(prev => {
@@ -261,10 +389,13 @@ export default function Home() {
     const heroTl = gsap.timeline({ delay: 0.3 });
     heroTl
       .from('.hero-tagline', { opacity: 0, y: 20, duration: 0.4, ease: 'power2.out' })
-      .from('.hero-headline span', { opacity: 0, y: 40, duration: 0.8, stagger: 0.08, ease: 'expo.out' }, '-=0.1')
+      .from('.hero-logo', { opacity: 0, scale: 0.8, duration: 0.6, ease: 'back.out(1.7)' }, '-=0.2')
+      .from('.hero-headline', { opacity: 0, y: 40, duration: 0.8, ease: 'expo.out' }, '-=0.3')
+      .from('.hero-typewriter', { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out' }, '-=0.4')
       .from('.hero-sub', { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out' }, '-=0.3')
-      .from('.hero-search', { opacity: 0, y: 30, duration: 0.7, ease: 'power2.out' }, '-=0.2')
-      .from('.hero-stats-item', { opacity: 0, y: 20, duration: 0.5, stagger: 0.1, ease: 'power2.out' }, '-=0.3');
+      .from('.hero-search', { opacity: 0, y: 30, scale: 0.95, duration: 0.7, ease: 'power2.out' }, '-=0.2')
+      .from('.hero-ai-shortcuts', { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' }, '-=0.2')
+      .from('.hero-stats-item', { opacity: 0, y: 20, duration: 0.5, stagger: 0.1, ease: 'power2.out' }, '-=0.2');
 
     /* Section reveals */
     gsap.utils.toArray<HTMLElement>('.reveal-section').forEach((section) => {
@@ -336,56 +467,74 @@ export default function Home() {
   return (
     <div ref={containerRef} className="overflow-x-hidden">
       {/* ═══════════════ SECTION 1: HERO ═══════════════ */}
-      <section
-        className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #1A1714 0%, #2D2926 40%, #1A1714 100%)',
-        }}
-      >
+      <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden hero-bg-animate">
         {/* Fallback background image */}
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-40"
+          className="absolute inset-0 bg-cover bg-center opacity-30 z-0"
           style={{ backgroundImage: 'url(/hero-fallback.jpg)' }}
         />
         {/* Gold gradient overlay */}
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(26,23,20,0.6) 50%, rgba(212,175,55,0.1) 100%)' }} />
+        <div className="absolute inset-0 z-0" style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(26,23,20,0.7) 50%, rgba(212,175,55,0.08) 100%)' }} />
+        
+        {/* Floating particles */}
+        <FloatingParticles />
 
-        <div className="relative z-10 max-w-[800px] mx-auto px-4 md:px-8 pt-20 pb-12 text-center">
+        <div className="relative z-10 max-w-[860px] mx-auto px-4 md:px-8 pt-20 pb-12 text-center">
           {/* Tagline */}
-          <p className="hero-tagline text-caption uppercase tracking-[0.15em] text-gold mb-6">
+          <p className="hero-tagline text-caption uppercase tracking-[0.2em] text-gold mb-6 font-medium">
             {t('hero.tagline')}
           </p>
 
+          {/* Logo */}
+          <div className="hero-logo mb-6 flex justify-center">
+            <div className="relative">
+              <img 
+                src="/logo-new.png" 
+                alt="KhmerCareer Express" 
+                className="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-2xl animate-float"
+              />
+              <div className="absolute -inset-2 bg-gold/10 rounded-full blur-xl -z-10" />
+            </div>
+          </div>
+
           {/* Headline */}
-          <h1 className="hero-headline text-hero-title font-display text-[#FAF8F3] mb-6 break-words" style={{ textShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
+          <h1 className="hero-headline text-hero-title font-display text-[#FAF8F3] mb-3 break-words" style={{ textShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
             {t('hero.headline')}
           </h1>
+
+          {/* Typewriter Effect */}
+          <div className="hero-typewriter mb-6 h-8">
+            <span className="text-lg md:text-xl font-medium gold-gradient-text typewriter-cursor">
+              {typewriterText}
+            </span>
+          </div>
 
           {/* Subheadline */}
           <p className="hero-sub text-body-large text-[rgba(250,248,243,0.85)] max-w-[560px] mx-auto mb-8">
             {t('hero.subtitle')}
           </p>
 
-          {/* Search Bar */}
-          <div className="hero-search flex flex-col md:flex-row gap-2 md:gap-0 p-2 rounded-2xl max-w-[640px] mx-auto mb-8"
+          {/* Enhanced Search Bar */}
+          <div className="hero-search flex flex-col md:flex-row gap-2 md:gap-0 p-2 md:p-2.5 rounded-3xl max-w-[680px] mx-auto mb-8"
             style={{
-              background: 'rgba(255,255,255,0.95)',
-              backdropFilter: 'blur(8px)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-              minHeight: '64px',
+              background: 'rgba(255,255,255,0.92)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              boxShadow: '0 12px 48px rgba(0,0,0,0.35), 0 0 0 1px rgba(212,175,55,0.15), inset 0 1px 0 rgba(255,255,255,0.5)',
+              minHeight: '68px',
             }}
           >
-            <div className="flex-1 flex items-center gap-2 px-4 min-h-[48px]">
-              <Search size={20} className="text-warm-gray shrink-0" />
+            <div className="flex-1 flex items-center gap-2.5 px-4 min-h-[48px]">
+              <Search size={20} className="text-gold shrink-0" />
               <input
                 type="text"
                 placeholder={t('hero.searchPlaceholder')}
                 className="w-full bg-transparent text-charcoal text-body placeholder:text-warm-gray focus:outline-none"
               />
             </div>
-            <div className="hidden md:block w-px bg-sand self-stretch my-2" />
+            <div className="hidden md:block w-px bg-gradient-to-b from-transparent via-sand to-transparent self-stretch my-2" />
             <div className="flex items-center gap-2 px-4 min-h-[48px] md:w-[180px]">
-              <MapPin size={20} className="text-warm-gray shrink-0" />
+              <MapPin size={20} className="text-gold shrink-0" />
               <select className="bg-transparent text-charcoal text-body focus:outline-none w-full cursor-pointer appearance-none">
                 <option>{t('hero.allLocations')}</option>
                 <option>Phnom Penh</option>
@@ -396,10 +545,32 @@ export default function Home() {
             </div>
             <Link
               to="/jobs"
-              className="bg-gold text-deep-brown px-6 py-3 rounded-xl text-button font-semibold min-h-[48px] md:min-h-[48px] flex items-center justify-center shadow-gold hover:bg-gold-dark hover:scale-[1.03] hover:shadow-gold-hover transition-all duration-200 shrink-0"
+              className="bg-gold text-deep-brown px-6 py-3 rounded-2xl text-button font-semibold min-h-[48px] md:min-h-[48px] flex items-center justify-center shadow-gold btn-gold shrink-0"
             >
               {t('hero.searchJobs')}
             </Link>
+          </div>
+
+          {/* AI Shortcut Buttons */}
+          <div className="hero-ai-shortcuts flex flex-wrap items-center justify-center gap-3 mb-8">
+            {aiShortcuts.map((shortcut, i) => {
+              const IconComp = shortcut.icon;
+              return (
+                <Link
+                  key={i}
+                  to={shortcut.path}
+                  className="group flex items-center gap-2 px-4 py-2.5 rounded-full glass-effect-dark text-[rgba(250,248,243,0.9)] text-sm font-medium hover:bg-gold/20 hover:text-gold transition-all duration-300 hover:scale-105"
+                  style={{
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08)',
+                  }}
+                >
+                  <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${shortcut.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+                    <IconComp size={13} className="text-white" />
+                  </div>
+                  <span className="hidden sm:inline">{currentLang === 'zh' ? shortcut.label : shortcut.labelEn}</span>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Quick Stats Row */}
@@ -409,17 +580,17 @@ export default function Home() {
               { value: '850+', label: t('hero.stats.employers') },
               { value: '50,000+', label: t('hero.stats.jobSeekers') },
             ].map((s, i) => (
-              <div key={i} className="hero-stats-item flex items-center gap-2 md:gap-6">
+              <div key={i} className="hero-stats-item flex items-center gap-2 md:gap-6 stat-float" style={{ animationDelay: `${i * 0.5}s` }}>
                 {i > 0 && <span className="w-1.5 h-1.5 rounded-full bg-gold/60 shrink-0" />}
-                <span className="text-body-small text-[rgba(250,248,243,0.7)]">
-                  {s.value} {s.label}
+                <span className="text-body-small text-[rgba(250,248,243,0.75)]">
+                  <span className="font-semibold text-gold">{s.value}</span> {s.label}
                 </span>
               </div>
             ))}
           </div>
 
           {/* Social Proof */}
-          <p className="hero-stats-item text-caption text-[rgba(250,248,243,0.5)]">
+          <p className="hero-stats-item text-caption text-[rgba(250,248,243,0.45)]">
             {t('hero.trust')}
           </p>
         </div>
@@ -641,7 +812,7 @@ export default function Home() {
                           ? 'bg-emerald-light text-emerald'
                           : 'bg-gold/10 text-gold-dark'
                       }`}>
-                        {step.highlight === 'Takes 3 minutes' && '⏱ '}
+                        {step.highlight === 'Takes 3 minutes' && '\u23F1 '}
                         {step.highlight}
                       </span>
                     )}
@@ -726,7 +897,7 @@ export default function Home() {
               <div className="reveal-item flex flex-col sm:flex-row gap-3">
                 <Link
                   to="/resume"
-                  className="bg-gold text-deep-brown px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] flex items-center justify-center shadow-gold hover:bg-gold-dark hover:scale-[1.03] hover:shadow-gold-hover transition-all duration-200"
+                  className="bg-gold text-deep-brown px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] flex items-center justify-center shadow-gold btn-gold"
                 >
                   {t('home.createMyResume')}
                 </Link>
@@ -902,7 +1073,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
               <Link
                 to="/jobs"
-                className="bg-gold text-deep-brown px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] sm:min-h-[64px] flex items-center justify-center shadow-gold hover:bg-gold-dark hover:scale-[1.03] hover:shadow-gold-hover transition-all duration-200 sm:w-[240px]"
+                className="bg-gold text-deep-brown px-8 py-4 rounded-xl text-button font-semibold min-h-[56px] sm:min-h-[64px] flex items-center justify-center shadow-gold btn-gold sm:w-[240px]"
               >
                 <Search size={20} className="mr-2" /> {t('home.searchJobsBtn')}
               </Link>

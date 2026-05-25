@@ -41,6 +41,8 @@ const ChineseEnterprise = lazy(() => import('./pages/ChineseEnterprise'))
 const ChatList = lazy(() => import('./pages/ChatList'))
 const ChatDetail = lazy(() => import('./pages/ChatDetail'))
 const AIMatch = lazy(() => import('./pages/AIMatch'))
+const VideoResume = lazy(() => import('./pages/VideoResume'))
+const VideoResumeRecord = lazy(() => import('./pages/VideoResumeRecord'))
 
 /* ── Admin pages ── */
 const AdminLayout = lazy(() => import('./admin/AdminLayout'))
@@ -112,6 +114,8 @@ export default function App() {
             <Route path="/chat" element={<SuspenseWrapper><ChatList /></SuspenseWrapper>} />
             <Route path="/chat/:id" element={<SuspenseWrapper><ChatDetail /></SuspenseWrapper>} />
             <Route path="/ai-match" element={<SuspenseWrapper><AIMatch /></SuspenseWrapper>} />
+            <Route path="/video-resume" element={<SuspenseWrapper><VideoResume /></SuspenseWrapper>} />
+            <Route path="/video-resume/record" element={<SuspenseWrapper><VideoResumeRecord /></SuspenseWrapper>} />
             <Route path="*" element={<SuspenseWrapper><NotFound /></SuspenseWrapper>} />
           </Route>
           <Route path="/admin" element={<SuspenseWrapper><AdminLayout /></SuspenseWrapper>}>
