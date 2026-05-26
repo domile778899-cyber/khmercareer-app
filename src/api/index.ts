@@ -43,6 +43,69 @@ export { chatApi, default as chat } from './chatApi';
 export { notificationsApi } from './notificationsApi';
 export type { Notification } from './notificationsApi';
 
+// ── Payments API ─────────────────────────────────────────────────────────────
+export { paymentsApi, default as payments } from './paymentsApi';
+export type {
+  PaymentType,
+  LocalPaymentMethod,
+  PaymentStatus,
+  StripeIntentResponse,
+  CreateStripeIntentRequest,
+  ConfirmPaymentRequest,
+  ConfirmPaymentResponse,
+  CreateLocalPaymentRequest,
+  LocalPaymentResponse,
+  PaymentRecord,
+  PaymentHistoryResponse,
+  SubscriptionPlan,
+  SubscriptionStatus,
+} from './paymentsApi';
+
+// ── Admin API ────────────────────────────────────────────────────────────────
+export { adminApi, default as admin } from './adminApi';
+export type {
+  DashboardStats,
+  AdminUser,
+  AdminUsersResponse,
+  AdminJob,
+  AdminJobsResponse,
+  AdminApplication,
+  AdminApplicationsResponse,
+  AdminPayment,
+  AdminPaymentsResponse,
+  ModerationAction,
+  UserModerationAction,
+  BulkActionRequest,
+  ActivityLogEntry,
+  ActivityLogResponse,
+  AdminSettings,
+} from './adminApi';
+
+// ── AI API ───────────────────────────────────────────────────────────────────
+export { aiApi, default as ai } from './aiApi';
+export type {
+  ResumeSection,
+  OptimizeResumeRequest,
+  OptimizeResumeResponse,
+  AnalyzeSalaryRequest,
+  SalaryRange,
+  AnalyzeSalaryResponse,
+  MatchJobsRequest,
+  MatchedJob,
+  MatchJobsResponse,
+  GenerateVideoPromoRequest,
+  GenerateVideoPromoResponse,
+  ChatMessage as AIChatMessage,
+  ChatWithAIRequest,
+  ChatWithAIResponse,
+  AIUsageRecord,
+  AIUsageResponse,
+  AIFeature,
+  AIFeaturesResponse,
+  ParseResumeRequest,
+  ParseResumeResponse,
+} from './aiApi';
+
 // ── Legacy localStorage DB ───────────────────────────────────────────────────
 export { createCollection, seedDatabase, clearDatabase } from './db';
 export type { DBCollection, Job, Course } from './db';
