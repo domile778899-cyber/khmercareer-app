@@ -9,7 +9,6 @@ import {
   LogIn,
   ArrowRight,
   UserCircle,
-  Sparkles,
   Shield,
   Globe,
   Zap,
@@ -174,28 +173,6 @@ export default function Login() {
         email: t('login.error.invalidCredentials'),
         password: t('login.error.invalidCredentials'),
       });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDemoLogin = async () => {
-    setEmail('demo@khmerjob.com');
-    setPassword('demo123');
-    setErrors({});
-    setIsLoading(true);
-
-    try {
-      const successLogin = await login('demo@khmerjob.com', 'demo123');
-      if (successLogin) {
-        clearSavedForm();
-        success(t('login.toast.demoLogin'));
-        setTimeout(() => navigate('/'), 800);
-      } else {
-        showError('Demo login failed. Please try registering first.');
-      }
-    } catch {
-      showError('Demo login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -406,21 +383,24 @@ export default function Login() {
                     <div className="w-full border-t border-sand" />
                   </div>
                   <div className="relative flex justify-center text-xs">
-                    <span className="px-3 bg-warm-white text-warm-gray">{t('login.orTryDemo')}</span>
+                    <span className="px-3 bg-warm-white text-warm-gray">
+                      {t('login.or')}
+                    </span>
                   </div>
                 </div>
 
-                <motion.button
-                  type="button"
-                  onClick={handleDemoLogin}
-                  disabled={isLoading}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  className="w-full py-3.5 border-2 border-emerald text-emerald hover:bg-emerald/5 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  {t('login.tryDemoAccount')}
-                </motion.button>
+                {/* Google Sign-In repeated for symmetry, can be replaced with another auth provider */}
+                <div className="text-center">
+                  <p className="text-sm text-warm-gray">
+                    {t('login.noAccount')}{' '}
+                    <Link
+                      to="/register"
+                      className="text-gold hover:text-gold-dark font-medium transition-colors"
+                    >
+                      {t('login.createAccount')}
+                    </Link>
+                  </p>
+                </div>
               </form>
 
               <p className="text-center text-sm text-warm-gray mt-6">

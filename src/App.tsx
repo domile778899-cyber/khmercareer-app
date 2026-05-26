@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { FavoritesProvider } from './context/FavoritesContext'
 import { ChatProvider } from './context/ChatContext'
@@ -6,6 +6,8 @@ import { ApplyProvider } from './stores/ApplyContext'
 import Layout from './components/Layout'
 import { Suspense, lazy } from 'react'
 import Home from './pages/Home'
+import ErrorBoundary from './components/ErrorBoundary'
+import { useAuth } from './hooks/useAuth'
 
 /* ── Lazy loaded pages ── */
 const Jobs = lazy(() => import('./pages/Jobs'))
@@ -73,67 +75,135 @@ function SuspenseWrapper({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<LazyFallback />}>{children}</Suspense>
 }
 
+/* ── Authentication guards ── */
+
+/** Require authentication — redirect to login if not authenticated */
+function RequireAuth({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuth()
+
+  if (isLoading) {
+    return <LazyFallback />
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+
+  return <>{children}</>
+}
+
+/** Require admin role — redirect to login if not admin */
+function RequireAdmin({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading, user } = useAuth()
+
+  if (isLoading) {
+    return <LazyFallback />
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+
+  if (user?.role !== 'admin' && user?.role !== 'superadmin') {
+    return <Navigate to="/" replace />
+  }
+
+  return <>{children}</>
+}
+
+/** Require superadmin role — redirect to login if not superadmin */
+function RequireSuperAdmin({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading, user } = useAuth()
+
+  if (isLoading) {
+    return <LazyFallback />
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+
+  if (user?.role !== 'superadmin') {
+    return <Navigate to="/" replace />
+  }
+
+  return <>{children}</>
+}
+
+/* ── Route wrapper with ErrorBoundary ── */
+function SafeRoute({ children }: { children: React.ReactNode }) {
+  return (
+    <ErrorBoundary>
+      {children}
+    </ErrorBoundary>
+  )
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <FavoritesProvider>
         <ChatProvider>
-        <ApplyProvider>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/jobs" element={<SuspenseWrapper><Jobs /></SuspenseWrapper>} />
-            <Route path="/jobs/:id" element={<SuspenseWrapper><JobDetail /></SuspenseWrapper>} />
-            <Route path="/employers" element={<SuspenseWrapper><Employers /></SuspenseWrapper>} />
-            <Route path="/resume" element={<SuspenseWrapper><Resume /></SuspenseWrapper>} />
-            <Route path="/interview" element={<SuspenseWrapper><Interview /></SuspenseWrapper>} />
-            <Route path="/video-interview" element={<SuspenseWrapper><VideoInterview /></SuspenseWrapper>} />
-            <Route path="/live" element={<SuspenseWrapper><Live /></SuspenseWrapper>} />
-            <Route path="/pricing" element={<SuspenseWrapper><Pricing /></SuspenseWrapper>} />
-            <Route path="/about" element={<SuspenseWrapper><About /></SuspenseWrapper>} />
-            <Route path="/contact" element={<SuspenseWrapper><Contact /></SuspenseWrapper>} />
-            <Route path="/training" element={<SuspenseWrapper><Training /></SuspenseWrapper>} />
-            <Route path="/business" element={<SuspenseWrapper><Business /></SuspenseWrapper>} />
-            <Route path="/credit" element={<SuspenseWrapper><Credit /></SuspenseWrapper>} />
-            <Route path="/loan" element={<SuspenseWrapper><Loan /></SuspenseWrapper>} />
-            <Route path="/courses" element={<SuspenseWrapper><CourseMarket /></SuspenseWrapper>} />
-            <Route path="/courses/:id" element={<SuspenseWrapper><CoursePlayer /></SuspenseWrapper>} />
-            <Route path="/courses/:id/detail" element={<SuspenseWrapper><CourseDetail /></SuspenseWrapper>} />
-            <Route path="/teach" element={<SuspenseWrapper><Teach /></SuspenseWrapper>} />
-            <Route path="/course-upload" element={<SuspenseWrapper><CourseUpload /></SuspenseWrapper>} />
-            <Route path="/ai-generate" element={<SuspenseWrapper><AIGenerate /></SuspenseWrapper>} />
-            <Route path="/app" element={<SuspenseWrapper><AppDownload /></SuspenseWrapper>} />
-            <Route path="/teacher-dashboard" element={<SuspenseWrapper><TeacherDashboard /></SuspenseWrapper>} />
-            <Route path="/login" element={<SuspenseWrapper><Login /></SuspenseWrapper>} />
-            <Route path="/register" element={<SuspenseWrapper><Register /></SuspenseWrapper>} />
-            <Route path="/profile" element={<SuspenseWrapper><Profile /></SuspenseWrapper>} />
-            <Route path="/privacy" element={<SuspenseWrapper><Privacy /></SuspenseWrapper>} />
-            <Route path="/terms" element={<SuspenseWrapper><Terms /></SuspenseWrapper>} />
-            <Route path="/factory-jobs" element={<SuspenseWrapper><FactoryJobs /></SuspenseWrapper>} />
-            <Route path="/chinese-enterprise" element={<SuspenseWrapper><ChineseEnterprise /></SuspenseWrapper>} />
-            <Route path="/chat" element={<SuspenseWrapper><ChatList /></SuspenseWrapper>} />
-            <Route path="/chat/:id" element={<SuspenseWrapper><ChatDetail /></SuspenseWrapper>} />
-            <Route path="/ai-match" element={<SuspenseWrapper><AIMatch /></SuspenseWrapper>} />
-            <Route path="/video-resume" element={<SuspenseWrapper><VideoResume /></SuspenseWrapper>} />
-            <Route path="/video-resume/record" element={<SuspenseWrapper><VideoResumeRecord /></SuspenseWrapper>} />
-            <Route path="*" element={<SuspenseWrapper><NotFound /></SuspenseWrapper>} />
-          </Route>
-          <Route path="/admin" element={<SuspenseWrapper><AdminLayout /></SuspenseWrapper>}>
-            <Route index element={<SuspenseWrapper><AdminDashboard /></SuspenseWrapper>} />
-            <Route path="users" element={<SuspenseWrapper><AdminUsers /></SuspenseWrapper>} />
-            <Route path="courses" element={<SuspenseWrapper><AdminCourses /></SuspenseWrapper>} />
-            <Route path="jobs" element={<SuspenseWrapper><AdminJobs /></SuspenseWrapper>} />
-          </Route>
-          <Route path="/superadmin" element={<SuspenseWrapper><SuperAdminLayout /></SuspenseWrapper>}>
-            <Route index element={<SuspenseWrapper><SuperAdminDashboard /></SuspenseWrapper>} />
-            <Route path="promotion" element={<SuspenseWrapper><AIPromotionCenter /></SuspenseWrapper>} />
-            <Route path="video-factory" element={<SuspenseWrapper><VideoFactory /></SuspenseWrapper>} />
-            <Route path="growth" element={<SuspenseWrapper><GrowthEngine /></SuspenseWrapper>} />
-            <Route path="social" element={<SuspenseWrapper><SocialMatrix /></SuspenseWrapper>} />
-            <Route path="analytics" element={<SuspenseWrapper><AnalyticsCenter /></SuspenseWrapper>} />
-          </Route>
-        </Routes>
-        </ApplyProvider>
+          <ApplyProvider>
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/jobs" element={<SafeRoute><SuspenseWrapper><Jobs /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/jobs/:id" element={<SafeRoute><SuspenseWrapper><JobDetail /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/employers" element={<SafeRoute><SuspenseWrapper><Employers /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/resume" element={<SafeRoute><SuspenseWrapper><Resume /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/interview" element={<SafeRoute><SuspenseWrapper><Interview /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/video-interview" element={<SafeRoute><SuspenseWrapper><VideoInterview /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/live" element={<SafeRoute><SuspenseWrapper><Live /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/pricing" element={<SafeRoute><SuspenseWrapper><Pricing /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/about" element={<SafeRoute><SuspenseWrapper><About /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/contact" element={<SafeRoute><SuspenseWrapper><Contact /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/training" element={<SafeRoute><SuspenseWrapper><Training /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/business" element={<SafeRoute><SuspenseWrapper><Business /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/credit" element={<SafeRoute><SuspenseWrapper><Credit /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/loan" element={<SafeRoute><SuspenseWrapper><Loan /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/courses" element={<SafeRoute><SuspenseWrapper><CourseMarket /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/courses/:id" element={<SafeRoute><SuspenseWrapper><CoursePlayer /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/courses/:id/detail" element={<SafeRoute><SuspenseWrapper><CourseDetail /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/teach" element={<SafeRoute><SuspenseWrapper><Teach /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/course-upload" element={<SafeRoute><SuspenseWrapper><CourseUpload /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/ai-generate" element={<SafeRoute><SuspenseWrapper><AIGenerate /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/app" element={<SafeRoute><SuspenseWrapper><AppDownload /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/teacher-dashboard" element={<SafeRoute><SuspenseWrapper><TeacherDashboard /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/login" element={<SafeRoute><SuspenseWrapper><Login /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/register" element={<SafeRoute><SuspenseWrapper><Register /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/profile" element={<RequireAuth><SafeRoute><SuspenseWrapper><Profile /></SuspenseWrapper></SafeRoute></RequireAuth>} />
+                <Route path="/privacy" element={<SafeRoute><SuspenseWrapper><Privacy /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/terms" element={<SafeRoute><SuspenseWrapper><Terms /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/factory-jobs" element={<SafeRoute><SuspenseWrapper><FactoryJobs /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/chinese-enterprise" element={<SafeRoute><SuspenseWrapper><ChineseEnterprise /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/chat" element={<RequireAuth><SafeRoute><SuspenseWrapper><ChatList /></SuspenseWrapper></SafeRoute></RequireAuth>} />
+                <Route path="/chat/:id" element={<RequireAuth><SafeRoute><SuspenseWrapper><ChatDetail /></SuspenseWrapper></SafeRoute></RequireAuth>} />
+                <Route path="/ai-match" element={<SafeRoute><SuspenseWrapper><AIMatch /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/video-resume" element={<SafeRoute><SuspenseWrapper><VideoResume /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/video-resume/record" element={<SafeRoute><SuspenseWrapper><VideoResumeRecord /></SuspenseWrapper></SafeRoute>} />
+                <Route path="*" element={<SafeRoute><SuspenseWrapper><NotFound /></SuspenseWrapper></SafeRoute>} />
+              </Route>
+
+              {/* Admin routes with guards */}
+              <Route path="/admin" element={<RequireAdmin><SafeRoute><SuspenseWrapper><AdminLayout /></SuspenseWrapper></SafeRoute></RequireAdmin>}>
+                <Route index element={<SafeRoute><SuspenseWrapper><AdminDashboard /></SuspenseWrapper></SafeRoute>} />
+                <Route path="users" element={<SafeRoute><SuspenseWrapper><AdminUsers /></SuspenseWrapper></SafeRoute>} />
+                <Route path="courses" element={<SafeRoute><SuspenseWrapper><AdminCourses /></SuspenseWrapper></SafeRoute>} />
+                <Route path="jobs" element={<SafeRoute><SuspenseWrapper><AdminJobs /></SuspenseWrapper></SafeRoute>} />
+              </Route>
+
+              {/* Super Admin routes with guards */}
+              <Route path="/superadmin" element={<RequireSuperAdmin><SafeRoute><SuspenseWrapper><SuperAdminLayout /></SuspenseWrapper></SafeRoute></RequireSuperAdmin>}>
+                <Route index element={<SafeRoute><SuspenseWrapper><SuperAdminDashboard /></SuspenseWrapper></SafeRoute>} />
+                <Route path="promotion" element={<SafeRoute><SuspenseWrapper><AIPromotionCenter /></SuspenseWrapper></SafeRoute>} />
+                <Route path="video-factory" element={<SafeRoute><SuspenseWrapper><VideoFactory /></SuspenseWrapper></SafeRoute>} />
+                <Route path="growth" element={<SafeRoute><SuspenseWrapper><GrowthEngine /></SuspenseWrapper></SafeRoute>} />
+                <Route path="social" element={<SafeRoute><SuspenseWrapper><SocialMatrix /></SuspenseWrapper></SafeRoute>} />
+                <Route path="analytics" element={<SafeRoute><SuspenseWrapper><AnalyticsCenter /></SuspenseWrapper></SafeRoute>} />
+              </Route>
+            </Routes>
+          </ApplyProvider>
         </ChatProvider>
       </FavoritesProvider>
     </AuthProvider>

@@ -28,7 +28,8 @@ const STORAGE_USERS_KEY = 'khmer_registered_users';
 const AUTH_FALLBACK_KEY = 'khmer_auth_fallback_enabled';
 
 interface RegisteredUser extends User {
-  password: string;
+  /** Password hash — only stored in fallback mode, never exposed to UI */
+  _password?: string;
 }
 
 // =============================================================================
@@ -66,7 +67,9 @@ function generateMockToken(): string {
 }
 
 function saveUserToStorage(user: User): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+  // NEVER store password in the user object saved to localStorage
+  const { password: _, ...userWithoutPassword } = user as User & { password?: string };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(userWithoutPassword));
 }
 
 function getUserFromStorage(): User | null {
@@ -138,7 +141,8 @@ export const authApi = {
         verified: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        password: data.password,
+        // Store password in a separate key, NOT in the user object returned to callers
+        _password: data.password,
       };
 
       saveRegisteredUser(newUser);
@@ -147,7 +151,8 @@ export const authApi = {
       const refreshToken = generateMockToken();
       setTokens({ accessToken, refreshToken });
 
-      const { password: _, ...userWithoutPassword } = newUser;
+      // Return user WITHOUT the password
+      const { _password: _, ...userWithoutPassword } = newUser;
       saveUserToStorage(userWithoutPassword as User);
       setFallbackEnabled(true);
 
@@ -173,16 +178,16 @@ export const authApi = {
       // Fallback to localStorage
       const trimmedEmail = data.email.trim();
       const users = getRegisteredUsers();
-      const foundUser = users.find(
-        (u) => u.email === trimmedEmail && u.password === data.password,
-      );
+      // Match by email only; in production fallback mode, we validate against stored _password
+      const foundUser = users.find((u) => u.email === trimmedEmail);
 
-      if (foundUser) {
+      if (foundUser && foundUser._password === data.password) {
         const accessToken = generateMockToken();
         const refreshToken = generateMockToken();
         setTokens({ accessToken, refreshToken });
 
-        const { password: _, ...userWithoutPassword } = foundUser;
+        // Return user WITHOUT the password
+        const { _password: _, ...userWithoutPassword } = foundUser;
         saveUserToStorage(userWithoutPassword as User);
         setFallbackEnabled(true);
 

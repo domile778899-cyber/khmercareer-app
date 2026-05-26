@@ -6,8 +6,11 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
+import { favoritesApi } from '../api/favoritesApi';
+import type { Favorite } from '../api/favoritesApi';
 
 // ──────────────────────────────────────────────
 // Type Definitions
@@ -49,8 +52,10 @@ export interface FavoritesContextValue {
   isCourseFavorited: (courseId: string) => boolean;
   /** Check if any item with given id is favorited */
   isFavorited: (id: string) => boolean;
-  /** Reload from localStorage */
+  /** Reload from API */
   reload: () => void;
+  /** Whether favorites are syncing with the API */
+  syncing: boolean;
 }
 
 // ──────────────────────────────────────────────
@@ -58,6 +63,7 @@ export interface FavoritesContextValue {
 // ──────────────────────────────────────────────
 
 const STORAGE_KEY = 'khmercareer_favorites';
+const FAVORITES_LOADED_KEY = 'khmercareer_favorites_loaded';
 
 const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 
@@ -81,6 +87,18 @@ function saveToStorage(items: FavoriteItem[]): void {
   }
 }
 
+/**
+ * Convert API Favorite[] to local FavoriteItem[]
+ */
+function mapApiToLocal(apiFavs: Favorite[]): FavoriteItem[] {
+  return apiFavs.map((f) => ({
+    id: f.id,
+    type: 'job' as const,
+    typeId: f.jobId,
+    createdAt: f.createdAt,
+  }));
+}
+
 // ──────────────────────────────────────────────
 // Provider
 // ──────────────────────────────────────────────
@@ -90,54 +108,126 @@ interface FavoritesProviderProps {
 }
 
 export function FavoritesProvider({ children }: FavoritesProviderProps) {
-  const [items, setItems] = useState<FavoriteItem[]>(() => loadFromStorage());
+  const [items, setItems] = useState<FavoriteItem[]>([]);
+  const [syncing, setSyncing] = useState(false);
+  const mounted = useRef(false);
 
+  // ── Load favorites from API on mount ─────────────────────────────────────
+  const loadFavorites = useCallback(async () => {
+    setSyncing(true);
+    try {
+      const apiFavorites = await favoritesApi.getFavorites();
+      const localItems = mapApiToLocal(apiFavorites);
+      setItems(localItems);
+      saveToStorage(localItems);
+    } catch {
+      // API failed — use cached localStorage data
+      setItems(loadFromStorage());
+    } finally {
+      setSyncing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (mounted.current) return;
+    mounted.current = true;
+
+    // Start with cached data for instant UI
+    setItems(loadFromStorage());
+    // Then sync with API
+    loadFavorites();
+  }, [loadFavorites]);
+
+  // Persist to localStorage whenever items change
   useEffect(() => {
     saveToStorage(items);
   }, [items]);
 
   const reload = useCallback(() => {
-    setItems(loadFromStorage());
-  }, []);
+    loadFavorites();
+  }, [loadFavorites]);
 
   const addItem = useCallback(
-    (type: 'job' | 'course', typeId: string) => {
+    async (type: 'job' | 'course', typeId: string) => {
+      // Optimistic UI update
       setItems((prev) => {
         if (prev.some((i) => i.type === type && i.typeId === typeId)) return prev;
-        return [{ id: `${type}-${typeId}`, type, typeId, createdAt: new Date().toISOString() }, ...prev];
+        return [
+          { id: `${type}-${typeId}`, type, typeId, createdAt: new Date().toISOString() },
+          ...prev,
+        ];
       });
+
+      // API call for job favorites (only jobs are supported by the API)
+      if (type === 'job') {
+        try {
+          await favoritesApi.addFavorite(typeId);
+        } catch {
+          // Keep localStorage state as fallback; no action needed
+        }
+      }
     },
     [],
   );
 
   const removeItem = useCallback(
-    (type: 'job' | 'course', typeId: string) => {
+    async (type: 'job' | 'course', typeId: string) => {
+      // Optimistic UI update
       setItems((prev) => prev.filter((i) => !(i.type === type && i.typeId === typeId)));
+
+      // API call for job favorites
+      if (type === 'job') {
+        try {
+          await favoritesApi.removeFavorite(typeId);
+        } catch {
+          // Keep localStorage state as fallback; no action needed
+        }
+      }
     },
     [],
   );
 
   const toggleItem = useCallback(
-    (type: 'job' | 'course', typeId: string) => {
-      setItems((prev) => {
-        const exists = prev.some((i) => i.type === type && i.typeId === typeId);
-        if (exists) return prev.filter((i) => !(i.type === type && i.typeId === typeId));
-        return [{ id: `${type}-${typeId}`, type, typeId, createdAt: new Date().toISOString() }, ...prev];
-      });
+    async (type: 'job' | 'course', typeId: string) => {
+      const exists = items.some((i) => i.type === type && i.typeId === typeId);
+      if (exists) {
+        await removeItem(type, typeId);
+      } else {
+        await addItem(type, typeId);
+      }
     },
-    [],
+    [items, addItem, removeItem],
   );
 
-  const clearAll = useCallback(() => setItems([]), []);
+  const clearAll = useCallback(() => {
+    setItems([]);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+  }, []);
 
-  const toggleJob = useCallback((jobId: string) => toggleItem('job', jobId), [toggleItem]);
-  const toggleCourse = useCallback((courseId: string) => toggleItem('course', courseId), [toggleItem]);
+  const toggleJob = useCallback(
+    (jobId: string) => toggleItem('job', jobId),
+    [toggleItem],
+  );
+  const toggleCourse = useCallback(
+    (courseId: string) => toggleItem('course', courseId),
+    [toggleItem],
+  );
   const addJob = useCallback((jobId: string) => addItem('job', jobId), [addItem]);
   const addCourse = useCallback((courseId: string) => addItem('course', courseId), [addItem]);
   const removeJob = useCallback((jobId: string) => removeItem('job', jobId), [removeItem]);
   const removeCourse = useCallback((courseId: string) => removeItem('course', courseId), [removeItem]);
-  const isJobFavorited = useCallback((jobId: string) => items.some((i) => i.type === 'job' && i.typeId === jobId), [items]);
-  const isCourseFavorited = useCallback((courseId: string) => items.some((i) => i.type === 'course' && i.typeId === courseId), [items]);
+  const isJobFavorited = useCallback(
+    (jobId: string) => items.some((i) => i.type === 'job' && i.typeId === jobId),
+    [items],
+  );
+  const isCourseFavorited = useCallback(
+    (courseId: string) => items.some((i) => i.type === 'course' && i.typeId === courseId),
+    [items],
+  );
   const isFavorited = useCallback((id: string) => items.some((i) => i.id === id), [items]);
 
   const value = useMemo<FavoritesContextValue>(
@@ -157,8 +247,23 @@ export function FavoritesProvider({ children }: FavoritesProviderProps) {
       isCourseFavorited,
       isFavorited,
       reload,
+      syncing,
     }),
-    [items, toggleJob, toggleCourse, addJob, addCourse, removeJob, removeCourse, clearAll, isJobFavorited, isCourseFavorited, isFavorited, reload],
+    [
+      items,
+      toggleJob,
+      toggleCourse,
+      addJob,
+      addCourse,
+      removeJob,
+      removeCourse,
+      clearAll,
+      isJobFavorited,
+      isCourseFavorited,
+      isFavorited,
+      reload,
+      syncing,
+    ],
   );
 
   return <FavoritesContext.Provider value={value}>{children}</FavoritesContext.Provider>;

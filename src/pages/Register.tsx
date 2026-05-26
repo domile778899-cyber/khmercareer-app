@@ -53,11 +53,25 @@ interface FormErrors {
 
 const STORAGE_KEY = 'khmer_register_form';
 
-function loadSavedForm(): Partial<RegisterFormData & { role: UserRole }> {
+/** Sanitized form data — never includes password */
+interface SavedFormData {
+  role?: UserRole;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  companyName?: string;
+  industry?: string;
+}
+
+function loadSavedForm(): SavedFormData {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      // Ensure we never restore password fields
+      delete parsed.password;
+      delete parsed.confirmPassword;
+      return parsed as SavedFormData;
     }
   } catch {
     // ignore
@@ -65,9 +79,13 @@ function loadSavedForm(): Partial<RegisterFormData & { role: UserRole }> {
   return {};
 }
 
-function saveForm(data: RegisterFormData & { role: UserRole }) {
+function saveForm(data: SavedFormData) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    // Strip any accidentally-passed password fields
+    const safe: SavedFormData = { ...data };
+    delete (safe as Record<string, unknown>).password;
+    delete (safe as Record<string, unknown>).confirmPassword;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(safe));
   } catch {
     // ignore
   }
@@ -89,8 +107,8 @@ export default function Register() {
   const [fullName, setFullName] = useState(saved.fullName || '');
   const [email, setEmail] = useState(saved.email || '');
   const [phone, setPhone] = useState(saved.phone || '');
-  const [password, setPassword] = useState(saved.password || '');
-  const [confirmPassword, setConfirmPassword] = useState(saved.confirmPassword || '');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [companyName, setCompanyName] = useState(saved.companyName || '');
   const [industry, setIndustry] = useState(saved.industry || '');
   const [showPassword, setShowPassword] = useState(false);
@@ -99,10 +117,10 @@ export default function Register() {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Persist form data to localStorage
+  // Persist form data to localStorage (NEVER password fields)
   useEffect(() => {
-    saveForm({ fullName, email, phone, password, confirmPassword, companyName, industry, role });
-  }, [fullName, email, phone, password, confirmPassword, companyName, industry, role]);
+    saveForm({ fullName, email, phone, companyName, industry, role });
+  }, [fullName, email, phone, companyName, industry, role]);
 
   // Validation functions
   const validateFullName = useCallback(
