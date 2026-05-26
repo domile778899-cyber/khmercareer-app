@@ -7,7 +7,7 @@ import {
   Shirt, Hotel, Laptop, CheckCircle, UserPlus, Bookmark,
   Star, ChevronDown, CheckCircle2, Facebook, MessageCircle, Send, Link as LinkIcon,
   Briefcase, Clock, DollarSign, HardHat, Factory, GraduationCap, Truck, 
-  Landmark, Stethoscope, Home, Film, Zap, Wheat, PhoneCall,
+  Landmark, Stethoscope, Home as HomeIcon, Film, Zap, Wheat, PhoneCall,
   Sparkles, FileText, MessageSquare, Globe
 } from 'lucide-react';
 import gsap from 'gsap';
