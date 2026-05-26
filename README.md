@@ -1,7 +1,7 @@
-# 高棉职通车移动应用 | KhmerCareer Mobile App
+# 高棉職通車移動應用 | KhmerCareer Mobile App
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-v2.0.0-blue?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-v2.1.0-blue?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/license-Commercial-orange?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/tech-React-blueviolet?style=flat-square" alt="Tech Stack">
   <img src="https://img.shields.io/badge/author-Manus%20Security%20Bot-red?style=flat-square" alt="Author">
@@ -12,22 +12,30 @@
 ## 🌐 繁體中文 (Traditional Chinese)
 
 ### 📌 項目簡介
-专为柬埔寨求职招聘打造的跨平台移动端应用，基于 React + Capacitor + PWA 构建，具备极致的流畅度与离线工作能力。
+專為柬埔寨求職招聘打造的跨平台移動端應用，基於 React + Capacitor + PWA 構建，具備極致的流暢度與離線工作能力。
+
+### 🛠️ 項目功能 (Product Functions)
+- **自適應主頁與推薦**：根據用戶偏好和歷史瀏覽，智能推薦最合適的本地工作崗位。
+- **多語言界面切換**：完美支持高棉語、中文、英文三語界面一鍵無縫切換。
+- **在線簡歷編輯器**：移動端友好的簡歷編輯界面，支持一鍵上傳本地頭像與作品附件。
+- **即時通訊與通知**：支持接收實時面試邀請通知，在線聊天支持發送語音、圖片與位置信息。
+- **企業招聘工作台**：企業用戶可在手機端發布職位、篩選簡歷、直接發起聊天或發送面試邀請。
+- **離線收藏與分享**：支持離線收藏感興趣的職位，支持一鍵分享職位到 Telegram、Facebook 等柬埔寨主流社媒。
 
 ### ✨ 核心特色 (Key Features)
-1. **极致流畅体验**：基于 React + Tailwind CSS 打造的现代化深色与亮色自适应界面，原生级别的滑动交互。
-2. **Capacitor 跨端打包**：一套代码同时生成 Android APK、iOS App 和 PWA 网页版。
-3. **本地离线支持**：支持简历缓存、离线职位浏览及断网自动重连同步。
-4. **即时通讯**：集成实时在线聊天功能，求职者可与招聘方直接进行文字、语音及附件沟通。
+1. **極致流暢體驗**：基於 React + Tailwind CSS 打造的現代化深色與亮色自適應界面，原生級別的滑動交互。
+2. **Capacitor 跨端打包**：一套代碼同時生成 Android APK、iOS App 和 PWA 網頁版。
+3. **本地離線支持**：支持簡歷緩存、離線職位瀏覽及斷網自動重連同步。
+4. **即時通訊**：集成實時在線聊天功能，求職者可與招聘方直接進行文字、語音及附件溝通。
 
 ### 📊 關鍵指標：市場需求度與商業前景
 #### 📈 市場需求度 (Market Demand)
-柬埔寨移动互联网普及率极高，绝大多数用户完全依赖智能手机获取信息。高棉职通车移动端通过提供极致的加载速度和离线模式，解决了本地网络不稳定的痛点，极大降低了求职门槛，市场刚需属性极强。
+柬埔寨移動互聯網普及率極高，絕大多數用戶完全依賴智能手機獲取信息。高棉職通車移動端通過提供極致的加載速度和離線模式，解決了本地網絡不穩定的痛點，極大降低了求職門檻，市場剛需屬性極強。
 
 #### 🚀 發展前景 (Future Outlook)
-1. **本地多语言全面支持**：深度优化高棉语、中文、英文三语即时翻译，消除跨国招聘的语言障碍。
-2. **短视频求职**：引入类似 TikTok 的短视频简历功能，让求职者通过 30 秒自我介绍视频展现风采。
-3. **智能地图求职**：基于 LBS 地理位置，提供「附近的工作」一键导航求职功能。
+1. **本地多語言全面支持**：深度優化高棉語、中文、英文三語即時翻譯，消除跨國招聘的語言障礙。
+2. **短視頻求職**：引入類似 TikTok 的短視頻簡歷功能，讓求職者通過 30 秒自我介紹視頻展現風采。
+3. **智能地圖求職**：基於 LBS 地理位置，提供「附近的工作」一鍵導航求職功能。
 
 ### 🏗️ 技術棧 (Tech Stack)
 `React, Capacitor, TypeScript, Tailwind CSS, Progressive Web App (PWA), LocalForage`
@@ -38,6 +46,14 @@
 
 ### 📌 Project Overview
 A highly responsive cross-platform mobile application designed for Cambodia's job market, built using React, Capacitor, and Progressive Web App (PWA) standards.
+
+### 🛠️ Product Functions
+- **Adaptive Home & Recommendations**: Personalized job recommendation feed based on candidate preferences and browsing history.
+- **Tri-Lingual Interface**: Smooth, instant toggle between Khmer, Chinese, and English languages across the entire application.
+- **Mobile Resume Editor**: Mobile-optimized profile editor allowing direct upload of avatars, portfolios, and certifications.
+- **Push Notifications & Messaging**: Real-time push notifications for interview invites and instant messaging with rich media support.
+- **Employer Mobile Suite**: Enables recruiters to post vacancies, screen incoming CVs, and schedule interviews on the go.
+- **Offline Bookmarks & Sharing**: Bookmark jobs offline and share vacancies instantly to popular local channels like Telegram and Facebook.
 
 ### ✨ Key Features
 1. **Fluid UI/UX**: Built with React and Tailwind CSS, featuring adaptive dark/light modes and native-like gesture controls.
