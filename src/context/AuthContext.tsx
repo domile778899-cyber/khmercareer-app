@@ -1,87 +1,125 @@
-import { createContext, useState, useCallback, useEffect } from 'react';
+/**
+ * KhmerCareer Express — Auth Context
+ * Real API authentication with localStorage fallback for offline/demo use.
+ */
+
+import { createContext, useState, useCallback, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
+import { authApi } from '../api/authApi';
+import { clearTokens, setTokens } from '../api/client';
+import type { User } from '../api/types';
 
 export type UserRole = 'jobseeker' | 'employer' | 'admin' | 'superadmin';
-
-export interface User {
-  id: string;
-  email: string;
-  fullName: string;
-  role: UserRole;
-  avatar?: string;
-}
 
 export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => boolean;
-  register: (userData: Partial<User> & { password: string }) => boolean;
+  isLoading: boolean;
+  isFallbackMode: boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (userData: RegisterData) => Promise<boolean>;
   logout: () => void;
-  loginWithGoogle: (googleUser: { id: string; email: string; name: string; imageUrl?: string | null }) => boolean;
+  loginWithGoogle: (googleUser: GoogleUserData) => Promise<boolean>;
+  refreshUser: () => Promise<void>;
+  updateUserProfile: (data: Partial<User>) => Promise<boolean>;
+}
+
+export interface RegisterData {
+  email: string;
+  password: string;
+  fullName: string;
+  role?: UserRole;
+  phone?: string;
+  companyName?: string;
+  industry?: string;
+  avatar?: string;
+}
+
+export interface GoogleUserData {
+  id: string;
+  email: string;
+  name: string;
+  imageUrl?: string | null;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
-  login: () => false,
-  register: () => false,
+  isLoading: true,
+  isFallbackMode: false,
+  login: async () => false,
+  register: async () => false,
   logout: () => { },
-  loginWithGoogle: () => false,
+  loginWithGoogle: async () => false,
+  refreshUser: async () => { },
+  updateUserProfile: async () => false,
 });
 
 const STORAGE_KEY = 'khmer_auth_user';
-const STORAGE_USERS_KEY = 'khmer_registered_users';
-
-interface RegisteredUser extends User {
-  password: string;
-}
-
-function generateId(): string {
-  return 'u_' + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
-}
-
-function getRegisteredUsers(): RegisteredUser[] {
-  try {
-    const stored = localStorage.getItem(STORAGE_USERS_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed)) {
-        return parsed as RegisteredUser[];
-      }
-    }
-  } catch {
-    // ignore parse errors
-  }
-  return [];
-}
-
-function saveRegisteredUser(user: RegisteredUser): void {
-  const users = getRegisteredUsers();
-  const existingIndex = users.findIndex((u) => u.email === user.email);
-  if (existingIndex >= 0) {
-    users[existingIndex] = user;
-  } else {
-    users.push(user);
-  }
-  localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
-}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed && typeof parsed === 'object' && parsed.id && parsed.email && parsed.role) {
-          return parsed as User;
-        }
-      }
-    } catch {
-      // ignore parse errors
-    }
-    return null;
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFallbackMode, setIsFallbackMode] = useState(false);
+  const initRef = useRef(false);
 
+  // ── Initialize: check stored token + fetch user ────────────────────────────
+  useEffect(() => {
+    if (initRef.current) return;
+    initRef.current = true;
+
+    const initAuth = async () => {
+      setIsLoading(true);
+
+      // Check if we have a stored token
+      const accessToken = localStorage.getItem('khmer_access_token');
+      const storedUser = localStorage.getItem(STORAGE_KEY);
+
+      if (!accessToken) {
+        // No token — clean state
+        if (storedUser) {
+          try {
+            const parsed = JSON.parse(storedUser);
+            if (parsed?.id && parsed?.email && parsed?.role) {
+              setUser(parsed as User);
+            }
+          } catch { /* ignore */ }
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      // We have a token — try to get current user from API
+      try {
+        const me = await authApi.getMe();
+        if (me) {
+          setUser(me);
+          setIsFallbackMode(authApi.isFallbackMode());
+        } else {
+          // Token invalid — clear everything
+          setUser(null);
+          clearTokens();
+        }
+      } catch {
+        // API error — try stored user as fallback
+        if (storedUser) {
+          try {
+            const parsed = JSON.parse(storedUser);
+            if (parsed?.id && parsed?.email && parsed?.role) {
+              setUser(parsed as User);
+              setIsFallbackMode(true);
+            }
+          } catch { /* ignore */ }
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initAuth();
+  }, []);
+
+  // ── Persist user to localStorage ───────────────────────────────────────────
   useEffect(() => {
     if (user) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
@@ -90,84 +128,147 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
-  const login = useCallback((email: string, password: string): boolean => {
+  // ── Listen for session expiry events ───────────────────────────────────────
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      setUser(null);
+      clearTokens();
+      setIsFallbackMode(false);
+    };
+    window.addEventListener('auth:session_expired' as never, handleSessionExpired);
+    return () => window.removeEventListener('auth:session_expired' as never, handleSessionExpired);
+  }, []);
+
+  // ── Login ──────────────────────────────────────────────────────────────────
+  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
     if (!email || !password) return false;
 
-    const users = getRegisteredUsers();
-    if (users.length === 0) {
-      alert('请先注册');
+    try {
+      const response = await authApi.login({ email: email.trim(), password });
+      if (response.user) {
+        setUser(response.user);
+        setIsFallbackMode(authApi.isFallbackMode());
+        return true;
+      }
+      return false;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Login failed';
+      console.error('[AuthContext] Login error:', message);
       return false;
     }
-
-    const trimmedEmail = email.trim();
-    const foundUser = users.find(
-      (u) => u.email === trimmedEmail && u.password === password
-    );
-
-    if (foundUser) {
-      const { password: _, ...userWithoutPassword } = foundUser;
-      setUser(userWithoutPassword);
-      return true;
-    }
-
-    return false;
   }, []);
 
-  const register = useCallback((userData: Partial<User> & { password: string }): boolean => {
-    if (!userData.email || !userData.password) return false;
-    const trimmedEmail = userData.email.trim();
+  // ── Register ───────────────────────────────────────────────────────────────
+  const register = useCallback(async (userData: RegisterData): Promise<boolean> => {
+    if (!userData.email || !userData.password || !userData.fullName) return false;
 
-    const existingUsers = getRegisteredUsers();
-    if (existingUsers.some((u) => u.email === trimmedEmail)) {
+    try {
+      const response = await authApi.register({
+        email: userData.email.trim(),
+        password: userData.password,
+        fullName: userData.fullName.trim(),
+        role: userData.role || 'jobseeker',
+        phone: userData.phone,
+        companyName: userData.companyName,
+        industry: userData.industry,
+      });
+      if (response.user) {
+        setUser(response.user);
+        setIsFallbackMode(authApi.isFallbackMode());
+        return true;
+      }
+      return false;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Registration failed';
+      console.error('[AuthContext] Register error:', message);
       return false;
     }
-
-    const newUser: RegisteredUser = {
-      id: generateId(),
-      email: trimmedEmail,
-      fullName: userData.fullName || userData.email.split('@')[0] || 'New User',
-      role: userData.role || 'jobseeker',
-      avatar: userData.avatar,
-      password: userData.password,
-    };
-
-    saveRegisteredUser(newUser);
-
-    const { password: _, ...userWithoutPassword } = newUser;
-    setUser(userWithoutPassword);
-    return true;
   }, []);
 
+  // ── Logout ─────────────────────────────────────────────────────────────────
   const logout = useCallback(() => {
+    authApi.logout();
     setUser(null);
-    localStorage.removeItem(STORAGE_KEY);
+    setIsFallbackMode(false);
   }, []);
 
-  const loginWithGoogle = useCallback(
-    (googleUser: { id: string; email: string; name: string; imageUrl?: string | null }): boolean => {
-      if (!googleUser.email || !googleUser.id) return false;
-      const newUser: User = {
+  // ── Google Login ───────────────────────────────────────────────────────────
+  const loginWithGoogle = useCallback(async (googleUser: GoogleUserData): Promise<boolean> => {
+    if (!googleUser.email || !googleUser.id) return false;
+
+    try {
+      const response = await authApi.googleLogin({
         id: googleUser.id,
         email: googleUser.email,
-        fullName: googleUser.name || googleUser.email.split('@')[0] || 'Google User',
-        role: 'jobseeker',
-        avatar: googleUser.imageUrl || undefined,
-      };
-      setUser(newUser);
+        name: googleUser.name,
+        imageUrl: googleUser.imageUrl,
+      });
+      if (response.user) {
+        setUser(response.user);
+        setIsFallbackMode(authApi.isFallbackMode());
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('[AuthContext] Google login error:', error);
+      return false;
+    }
+  }, []);
+
+  // ── Refresh User ───────────────────────────────────────────────────────────
+  const refreshUser = useCallback(async () => {
+    try {
+      const me = await authApi.getMe();
+      if (me) {
+        setUser(me);
+        setIsFallbackMode(authApi.isFallbackMode());
+      }
+    } catch (error) {
+      console.error('[AuthContext] Refresh user error:', error);
+    }
+  }, []);
+
+  // ── Update User Profile ────────────────────────────────────────────────────
+  const updateUserProfile = useCallback(async (data: Partial<User>): Promise<boolean> => {
+    try {
+      const response = await authApi.updateProfile({
+        fullName: data.fullName,
+        phone: data.phone,
+        location: data.location,
+        bio: data.bio,
+        skills: data.skills,
+        companyName: data.companyName,
+        industry: data.industry,
+      });
+      if (response.user) {
+        setUser(response.user);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('[AuthContext] Update profile error:', error);
+      // Optimistic update
+      if (user) {
+        const updated = { ...user, ...data, updatedAt: new Date().toISOString() };
+        setUser(updated);
+      }
       return true;
-    },
-    []
-  );
+    }
+  }, [user]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated: user !== null,
+        isLoading,
+        isFallbackMode,
         login,
         register,
         logout,
         loginWithGoogle,
+        refreshUser,
+        updateUserProfile,
       }}
     >
       {children}

@@ -44,7 +44,6 @@ function loadSavedEmail(): string | undefined {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Return only email, never load password from storage
       if (parsed && typeof parsed === 'object' && typeof parsed.email === 'string') {
         return parsed.email;
       }
@@ -57,7 +56,6 @@ function loadSavedEmail(): string | undefined {
 
 function saveEmail(email: string) {
   try {
-    // Only store email, never store password
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ email }));
   } catch {
     // ignore
@@ -69,13 +67,11 @@ function clearSavedForm() {
 }
 
 function sanitizeOldStorage() {
-  // Clean up any previously stored password data
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed && typeof parsed === 'object' && parsed.password) {
-        // Old data with password found — clear it
         localStorage.removeItem(STORAGE_KEY);
       }
     }
@@ -90,7 +86,6 @@ export default function Login() {
   const { success, error: showError } = useToast();
   const { t } = useTranslation();
 
-  // Sanitize any old storage data that may contain passwords
   sanitizeOldStorage();
 
   const savedEmail = loadSavedEmail();
@@ -138,7 +133,7 @@ export default function Login() {
       });
       return error;
     },
-    [validateEmail, validatePassword]
+    [validateEmail, validatePassword],
   );
 
   const validateAll = useCallback(() => {
@@ -160,19 +155,28 @@ export default function Login() {
 
     setIsLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 600));
-
-    const successLogin = login(email.trim(), password);
-    if (successLogin) {
-      clearSavedForm();
-      success(t('login.toast.welcomeBack'));
-      setTimeout(() => navigate('/'), 800);
-    } else {
+    try {
+      const successLogin = await login(email.trim(), password);
+      if (successLogin) {
+        clearSavedForm();
+        success(t('login.toast.welcomeBack'));
+        setTimeout(() => navigate('/'), 800);
+      } else {
+        showError(t('login.error.invalidCredentials'));
+        setErrors({
+          email: t('login.error.invalidCredentials'),
+          password: t('login.error.invalidCredentials'),
+        });
+      }
+    } catch (err) {
       showError(t('login.error.invalidCredentials'));
-      setErrors({ email: t('login.error.invalidCredentials'), password: t('login.error.invalidCredentials') });
+      setErrors({
+        email: t('login.error.invalidCredentials'),
+        password: t('login.error.invalidCredentials'),
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const handleDemoLogin = async () => {
@@ -181,16 +185,20 @@ export default function Login() {
     setErrors({});
     setIsLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    const successLogin = login('demo@khmerjob.com', 'demo123');
-    if (successLogin) {
-      clearSavedForm();
-      success(t('login.toast.demoLogin'));
-      setTimeout(() => navigate('/'), 800);
+    try {
+      const successLogin = await login('demo@khmerjob.com', 'demo123');
+      if (successLogin) {
+        clearSavedForm();
+        success(t('login.toast.demoLogin'));
+        setTimeout(() => navigate('/'), 800);
+      } else {
+        showError('Demo login failed. Please try registering first.');
+      }
+    } catch {
+      showError('Demo login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const features = [
@@ -376,7 +384,6 @@ export default function Login() {
                 <GoogleSignInButton
                   onSuccess={(user) => {
                     success(t('login.toast.googleLogin'));
-                    // Store Google user info
                     localStorage.setItem(
                       'khmer_auth_user',
                       JSON.stringify({
@@ -520,7 +527,8 @@ export default function Login() {
               </div>
             </div>
           </motion.div>
-        </div></div>
+        </div>
+      </div>
     </div>
   );
 }

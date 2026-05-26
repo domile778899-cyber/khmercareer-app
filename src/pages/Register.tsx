@@ -111,7 +111,7 @@ export default function Register() {
       if (value.trim().length < 2) return t('register.error.nameLength');
       return undefined;
     },
-    [t]
+    [t],
   );
 
   const validateEmail = useCallback((value: string): string | undefined => {
@@ -138,7 +138,7 @@ export default function Register() {
       if (value !== pwd) return t('register.error.passwordsMismatch');
       return undefined;
     },
-    [password, t]
+    [password, t],
   );
 
   const validateCompanyName = useCallback(
@@ -146,7 +146,7 @@ export default function Register() {
       if (isEmployer && (!value || !value.trim())) return t('register.error.companyRequired');
       return undefined;
     },
-    [role, t]
+    [role, t],
   );
 
   const validateField = useCallback(
@@ -185,7 +185,7 @@ export default function Register() {
       });
       return error;
     },
-    [validateFullName, validateEmail, validatePhone, validatePassword, validateConfirmPassword, validateCompanyName, password]
+    [validateFullName, validateEmail, validatePhone, validatePassword, validateConfirmPassword, validateCompanyName, password],
   );
 
   const validateStep1 = useCallback(() => {
@@ -213,7 +213,7 @@ export default function Register() {
     setErrors(newErrors);
     setTouched({ password: true, confirmPassword: true, agreed: true });
     return Object.keys(newErrors).length === 0;
-  }, [password, confirmPassword, agreed, validatePassword, validateConfirmPassword]);
+  }, [password, confirmPassword, agreed, validatePassword, validateConfirmPassword, t]);
 
   const handleNext = () => {
     if (validateStep1()) {
@@ -232,25 +232,31 @@ export default function Register() {
     if (!validateStep2()) return;
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
 
-    const successReg = register({
-      email,
-      fullName,
-      role,
-      avatar: undefined,
-      password,
-    });
+    try {
+      const successReg = await register({
+        email,
+        fullName,
+        role,
+        phone,
+        companyName,
+        industry,
+        password,
+      });
 
-    if (successReg) {
-      clearSavedForm();
-      success(t('register.toast.registerSuccess'));
-      setTimeout(() => navigate('/'), 800);
-    } else {
-      showError(t('register.error.registerFailed'));
+      if (successReg) {
+        clearSavedForm();
+        success(t('register.toast.registerSuccess'));
+        setTimeout(() => navigate('/'), 800);
+      } else {
+        showError(t('register.error.registerFailed'));
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : t('register.error.registerFailed');
+      showError(message);
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const industries = [
@@ -322,7 +328,7 @@ export default function Register() {
                         'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors',
                         step >= s.num
                           ? 'bg-gold text-deep-brown'
-                          : 'bg-sand text-warm-gray'
+                          : 'bg-sand text-warm-gray',
                       )}
                     >
                       {s.num}
@@ -330,7 +336,7 @@ export default function Register() {
                     <span
                       className={cn(
                         'text-xs font-medium hidden sm:block',
-                        step >= s.num ? 'text-charcoal' : 'text-warm-gray'
+                        step >= s.num ? 'text-charcoal' : 'text-warm-gray',
                       )}
                     >
                       {s.label}
@@ -339,7 +345,7 @@ export default function Register() {
                       <div
                         className={cn(
                           'flex-1 h-0.5 rounded',
-                          step > s.num ? 'bg-gold' : 'bg-sand'
+                          step > s.num ? 'bg-gold' : 'bg-sand',
                         )}
                       />
                     )}
@@ -372,13 +378,13 @@ export default function Register() {
                       'flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left',
                       role === 'jobseeker'
                         ? 'border-gold bg-gold/5'
-                        : 'border-sand hover:border-gold/30'
+                        : 'border-sand hover:border-gold/30',
                     )}
                   >
                     <UserCircle
                       className={cn(
                         'w-6 h-6',
-                        role === 'jobseeker' ? 'text-gold' : 'text-warm-gray'
+                        role === 'jobseeker' ? 'text-gold' : 'text-warm-gray',
                       )}
                     />
                     <div>
@@ -393,13 +399,13 @@ export default function Register() {
                       'flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left',
                       role === 'employer'
                         ? 'border-gold bg-gold/5'
-                        : 'border-sand hover:border-gold/30'
+                        : 'border-sand hover:border-gold/30',
                     )}
                   >
                     <Building2
                       className={cn(
                         'w-6 h-6',
-                        role === 'employer' ? 'text-gold' : 'text-warm-gray'
+                        role === 'employer' ? 'text-gold' : 'text-warm-gray',
                       )}
                     />
                     <div>
@@ -700,7 +706,7 @@ export default function Register() {
                         . {t('register.consent')}
                       </label>
                     </div>
-                    {touched.agreed && errors.agreed && (
+                    {errors.agreed && (
                       <motion.p
                         initial={{ opacity: 0, y: -4 }}
                         animate={{ opacity: 1, y: 0 }}
