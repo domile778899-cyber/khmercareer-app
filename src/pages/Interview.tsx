@@ -416,6 +416,29 @@ function MockInterviewSection() {
   const [questions, setQuestions] = useState(mockQuestions);
   const [ratings, setRatings] = useState({ communication: 4, technical: 3, cultureFit: 5, language: 4 });
   const [notes, setNotes] = useState('');
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
+  const [aiPosition, setAiPosition] = useState('');
+
+  const handleGenerateAIQuestions = async () => {
+    if (!aiPosition.trim()) return;
+    setIsGeneratingQuestions(true);
+    try {
+      const { default: aiApi } = await import('../api/aiApi');
+      const res = await aiApi.chatWithAI(
+        `Generate 5 professional interview questions for a "${aiPosition}" position in Cambodia. Return ONLY a JSON array of 5 strings, no explanation, no markdown.`,
+        [],
+        { type: 'interview_prep' },
+        'en'
+      );
+      const raw = (res.message || '').trim();
+      const match = raw.match(/\[.*\]/s);
+      if (match) {
+        const arr: string[] = JSON.parse(match[0]);
+        setQuestions(arr.slice(0, 5).map((text, i) => ({ id: i + 1, text, checked: i < 2 })));
+      }
+    } catch { /* keep current questions */ }
+    finally { setIsGeneratingQuestions(false); }
+  };
 
   const toggleQuestion = (id: number) => {
     setQuestions((prev) => prev.map((q) => (q.id === id ? { ...q, checked: !q.checked } : q)));
@@ -552,6 +575,28 @@ function MockInterviewSection() {
                     <span className="text-white/50">Applied</span>
                     <span className="text-white">2 days ago</span>
                   </div>
+                </div>
+              </div>
+
+              {/* AI Question Generator */}
+              <div className="bg-white/5 rounded-xl p-4 border border-white/10 mb-2">
+                <h4 className="text-h4 text-white mb-2">AI Generate Questions</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={aiPosition}
+                    onChange={(e) => setAiPosition(e.target.value)}
+                    placeholder="Enter position (e.g. HR Manager)"
+                    className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-body-small text-white placeholder:text-white/30 focus:outline-none focus:border-gold/50"
+                    onKeyDown={(e) => e.key === 'Enter' && handleGenerateAIQuestions()}
+                  />
+                  <button
+                    onClick={handleGenerateAIQuestions}
+                    disabled={isGeneratingQuestions || !aiPosition.trim()}
+                    className="px-3 py-2 bg-gold text-deep-brown rounded-lg text-body-small font-semibold hover:bg-gold-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                  >
+                    {isGeneratingQuestions ? <><span className="animate-spin">⟳</span> AI</> : <><Zap size={14} /> AI</>}
+                  </button>
                 </div>
               </div>
 

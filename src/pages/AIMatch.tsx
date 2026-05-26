@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { mockJobs, type MockJob } from '../data/mockJobs';
+import { jobsApi } from '../api/jobsApi';
 import { useApply } from '../stores/ApplyContext';
 import { useFavorites } from '../context/FavoritesContext';
 import MatchCard, { type MatchResult, type MatchDimension } from '../components/MatchCard';
@@ -858,31 +859,57 @@ export default function AIMatch() {
     [filters.selectedSkills]
   );
 
-  // Run matching algorithm
-  const runMatching = useCallback(() => {
+    // Run matching algorithm (real API + local scoring)
+  const runMatching = useCallback(async () => {
     setIsAnalyzing(true);
-
-    // Simulate AI analysis delay for UX
-    setTimeout(() => {
+    try {
+      const apiResponse = await jobsApi.getJobs({ limit: 200 } as any);
+      const apiJobs: MockJob[] = (apiResponse.jobs || []).map((j: any) => ({
+        id: j.id,
+        title: j.title,
+        titleZh: j.titleZh || j.title,
+        titleEn: j.titleEn || j.title,
+        company: j.company || j.companyName || '',
+        location: j.location || '',
+        salaryMin: j.salaryMin || 0,
+        salaryMax: j.salaryMax || 0,
+        type: j.type || 'Full-time',
+        industry: j.industry || '',
+        experience: j.experience || '',
+        level: j.level || '',
+        description: j.description || '',
+        requirements: Array.isArray(j.requirements) ? j.requirements : [],
+        benefits: Array.isArray(j.benefits) ? j.benefits : [],
+        applicants: j.applicants || 0,
+        postedAt: j.createdAt || j.postedAt || new Date().toISOString(),
+        status: j.status || 'active',
+        verified: j.verified || false,
+        urgent: j.urgent || false,
+        featured: j.featured || false,
+        employerType: j.employerType || '',
+        createdAt: j.createdAt || new Date().toISOString(),
+      }));
+      const allJobs = apiJobs.length > 0
+        ? [...apiJobs, ...mockJobs.filter(m => !apiJobs.find(a => a.title === m.title))]
+        : mockJobs;
+      const results = allJobs
+        .filter((job) => job.status === 'active')
+        .map((job) =>
+          calculateMatch(job, selectedSkillTags, filters.selectedLocations, filters.salaryRange[0], filters.salaryRange[1], selectedExpLevel)
+        );
+      results.sort((a, b) => b.overallScore - a.overallScore);
+      setMatchResults(results);
+    } catch {
       const results = mockJobs
         .filter((job) => job.status === 'active')
         .map((job) =>
-          calculateMatch(
-            job,
-            selectedSkillTags,
-            filters.selectedLocations,
-            filters.salaryRange[0],
-            filters.salaryRange[1],
-            selectedExpLevel
-          )
+          calculateMatch(job, selectedSkillTags, filters.selectedLocations, filters.salaryRange[0], filters.salaryRange[1], selectedExpLevel)
         );
-
-      // Sort by score descending
       results.sort((a, b) => b.overallScore - a.overallScore);
-
       setMatchResults(results);
+    } finally {
       setIsAnalyzing(false);
-    }, 800);
+    }
   }, [selectedSkillTags, filters.selectedLocations, filters.salaryRange, selectedExpLevel]);
 
   // Auto-run on first load with default values

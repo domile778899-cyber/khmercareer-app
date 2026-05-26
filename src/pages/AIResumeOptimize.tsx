@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useMemo } from 'react';
+import aiApi from '../api/aiApi';
 import {
   Sparkles,
   FileText,
@@ -115,9 +116,33 @@ export default function AIResumeOptimize() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAnalyze = () => {
-    const result = analyzeResume(formData);
-    setAnalysis(result);
+  const [isLoading, setIsLoading] = useState(false);
+  const handleAnalyze = async () => {
+    setIsLoading(true);
+    try {
+      const aiResult = await aiApi.optimizeResume({
+        resumeData: {
+          name: formData.name,
+          experience: formData.experience,
+          education: formData.education,
+          skills: formData.skills,
+          targetPosition: formData.targetPosition,
+        },
+      });
+      const localResult = analyzeResume(formData);
+      setAnalysis({
+        ...localResult,
+        aiSuggestions: aiResult.suggestions || [],
+        aiOptimizedContent: aiResult.optimizedResume || null,
+        aiScore: aiResult.score || localResult.total,
+        total: aiResult.score || localResult.total,
+      });
+    } catch {
+      const result = analyzeResume(formData);
+      setAnalysis(result);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleExport = () => {
@@ -318,10 +343,14 @@ AI综合评分：${analysis?.total || 0}/100
               {/* 分析按钮 */}
               <button
                 onClick={handleAnalyze}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+                disabled={isLoading}
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <Sparkles className="w-5 h-5" />
-                AI智能分析
+                {isLoading ? (
+                  <><RefreshCw className="w-5 h-5 animate-spin" />AI分析中...</>
+                ) : (
+                  <><Sparkles className="w-5 h-5" />AI智能分析</>
+                )}
               </button>
             </div>
           </div>

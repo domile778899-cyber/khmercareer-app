@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { coursesApi } from '../api/coursesApi';
 import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -384,8 +385,31 @@ function FeaturedCourses({
   searchQuery: string;
 }) {
   const { t } = useTranslation();
+  const [apiCourses, setApiCourses] = useState<typeof courses>(courses);
+  const [isLoadingCourses, setIsLoadingCourses] = useState(false);
 
-  const filtered = courses.filter((c) => {
+  useEffect(() => {
+    setIsLoadingCourses(true);
+    coursesApi.getCourses({ limit: 100 } as any)
+      .then((res) => {
+        const fetched = (res.courses || []).map((c: any) => ({
+          id: c.id,
+          title: c.title,
+          teacher: c.instructor?.name || c.instructorName || c.teacher || 'Instructor',
+          category: c.category || 'General',
+          price: c.price ?? null,
+          rating: c.rating || 4.5,
+          reviews: c.reviewCount || c.reviews || 0,
+          students: c.enrollmentCount || c.students || 0,
+          duration: c.duration || '—',
+        }));
+        if (fetched.length > 0) setApiCourses(fetched);
+      })
+      .catch(() => { /* keep static data */ })
+      .finally(() => setIsLoadingCourses(false));
+  }, []);
+
+  const filtered = apiCourses.filter((c) => {
     const matchCategory = activeCategory === 'All' || c.category === activeCategory;
     const matchSearch =
       searchQuery === '' ||
