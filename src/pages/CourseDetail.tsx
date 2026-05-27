@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import PaymentModal from "../components/PaymentModal";
 import {
   Play,
   Users,
@@ -141,6 +142,8 @@ export default function CourseDetail() {
   const [wishlisted, setWishlisted] = useState(false);
   const [enrolled, setEnrolled] = useState(false);
   const [showAllSections, setShowAllSections] = useState(false);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [paymentNotice, setPaymentNotice] = useState<string | null>(null);
 
   const toggleSection = (index: number) => {
     const next = new Set(expandedSections);
@@ -242,7 +245,11 @@ export default function CourseDetail() {
                 <p className="text-3xl font-bold text-[#D4AF37] mb-4">$19.99</p>
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setEnrolled(!enrolled)}
+                    onClick={() => {
+                      if (enrolled) return;
+                      setPaymentNotice(null);
+                      setPaymentModalOpen(true);
+                    }}
                     className={`flex-1 py-3.5 font-bold rounded-xl transition-colors flex items-center justify-center gap-2 ${
                       enrolled
                         ? "bg-[#059669] hover:bg-[#047857] text-white"
@@ -577,6 +584,27 @@ export default function CourseDetail() {
           </div>
         </section>
       </div>
+
+      {paymentNotice && (
+        <div className="fixed bottom-6 left-1/2 z-40 max-w-md -translate-x-1/2 rounded-xl border border-[#D4AF37]/30 bg-white px-4 py-3 text-sm text-[#1A1714] shadow-lg">
+          {paymentNotice}
+        </div>
+      )}
+
+      <PaymentModal
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+        amount={19.99}
+        itemName="Business English Mastery"
+        paymentType="course"
+        description="Course checkout: Business English Mastery"
+        onSuccess={() => {
+          setEnrolled(true);
+          setPaymentNotice("Course payment completed. Enrollment is now active.");
+          setPaymentModalOpen(false);
+        }}
+        onFailure={(message) => setPaymentNotice(message)}
+      />
     </div>
   );
 }

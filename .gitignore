@@ -1,3 +1,55 @@
-node_modules
-dist
+# Dependencies
+node_modules/
+
+# Build output and archives
+dist/
+dist-*/
+dist.tar.gz
+*.tsbuildinfo
+
+# Local/editor files
 .DS_Store
+.vscode/
+.idea/
+
+# Environment files; keep .env.example tracked
+.env
+.env.*
+!.env.example
+
+# Temporary Git recovery backups
+.git.*backup*/
+.git.corrupt-backup-*/
+.git.partial-backup-*/
+
+# Runtime logs and diagnostics
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Root-level generated static duplicates restored from dist.
+# Canonical public assets belong under public/.
+/assets/
+/apple-touch-icon.png
+/favicon-new.png
+/favicon.ico
+/icon-192.png
+/icon-512.png
+/logo-new.png
+/og-image-new.jpg
+/employer-camko.jpg
+/employer-lyly.jpg
+/employer-sokha.jpg
+/garment-factory.jpg
+/hero-fallback.jpg
+/ict-office.jpg
+/tourism-hotel.jpg
+/manifest.json
+/offline.html
+/privacy-policy.html
+/robots.txt
+/sitemap.xml
+/sw.js
+/terms-of-service.html

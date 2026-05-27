@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { useState, useEffect, useCallback } from "react";
+import { paymentsApi, toPaymentCents } from "../api/paymentsApi";
+import type { LocalPaymentInstructions, PaymentType } from "../api/paymentsApi";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -21,7 +23,10 @@ interface PaymentModalProps {
   onClose: () => void;
   amount: number;
   itemName: string;
+  paymentType?: PaymentType;
+  description?: string;
   onSuccess: () => void;
+  onFailure?: (message: string) => void;
 }
 
 /* ─────────────────────── hash → 25×25 QR pattern ─────────────────────── */
@@ -194,7 +199,7 @@ function SuccessOverlay({ onDone }: { onDone: () => void }) {
 
 /* ─────────────────────── tab content: ABA Pay ─────────────────────── */
 
-function AbaPayTab({ amount, itemName }: { amount: number; itemName: string }) {
+function AbaPayTab({ amount, itemName, reference }: { amount: number; itemName: string; reference: string }) {
   return (
     <div className="space-y-4">
       <AmountCard amount={amount} />
@@ -208,7 +213,7 @@ function AbaPayTab({ amount, itemName }: { amount: number; itemName: string }) {
           បើកកម្មវិធី ABA Bank របស់អ្នក ហើយស្គេន QR កូដខាងក្រោម / Open your ABA Bank app and scan the QR code below
         </p>
         <QRPattern
-          data={`ABA|${itemName}|${amount}|${Date.now()}`}
+          data={`ABA|${itemName}|${amount}|${reference}`}
           label="Scan with ABA Bank Mobile App"
         />
       </div>
@@ -336,10 +341,10 @@ function WingPayTab({
 
 /* ─────────────────────── tab content: KHQR ─────────────────────── */
 
-function KhqrTab({ amount, itemName }: { amount: number; itemName: string }) {
+function KhqrTab({ amount, itemName, reference }: { amount: number; itemName: string; reference: string }) {
   const merchantId = "KHQR-MERCHANT-001";
   const merchantName = "高棉职通车 (Khmer Career Express)";
-  const qrData = `KHQR|${merchantId}|${itemName}|${amount}|${Date.now()}`;
+  const qrData = `KHQR|${merchantId}|${itemName}|${amount}|${reference}`;
 
   return (
     <div className="space-y-4">
@@ -395,7 +400,7 @@ function KhqrTab({ amount, itemName }: { amount: number; itemName: string }) {
 /* ─────────────────────── method tab button ─────────────────────── */
 
 function MethodTab({
-  method: _method,
+  method,
   active,
   onClick,
   icon,
@@ -410,6 +415,7 @@ function MethodTab({
   return (
     <button
       type="button"
+      aria-label={`Select ${method} payment method`}
       onClick={onClick}
       className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all
         border-2 flex-1 justify-center
@@ -439,16 +445,24 @@ export default function PaymentModal({
   onClose,
   amount,
   itemName,
+  paymentType = "course",
+  description,
   onSuccess,
+  onFailure,
 }: PaymentModalProps) {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>("aba");
   const [processing, setProcessing] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [instructions, setInstructions] = useState<LocalPaymentInstructions | null>(null);
+  const [checkoutReference] = useState(() => `KHC-FE-${Date.now()}`);
 
   const resetState = useCallback(() => {
     setSelectedMethod("aba");
     setProcessing(false);
     setCompleted(false);
+    setPaymentError(null);
+    setInstructions(null);
   }, []);
 
   const handleClose = useCallback(() => {
@@ -456,13 +470,34 @@ export default function PaymentModal({
     setTimeout(resetState, 300);
   }, [onClose, resetState]);
 
-  const handlePaymentSubmit = useCallback(() => {
+  const handlePaymentSubmit = useCallback(async () => {
     setProcessing(true);
-    setTimeout(() => {
-      setProcessing(false);
+    setPaymentError(null);
+
+    try {
+      const created = await paymentsApi.createLocalPayment({
+        type: paymentType,
+        amount: toPaymentCents(amount),
+        method: selectedMethod,
+        description: description ?? itemName,
+      });
+      const externalRef = created.payment.externalRef ?? created.instructions.reference;
+      setInstructions(created.instructions);
+
+      await paymentsApi.confirmLocalPayment({
+        paymentId: created.payment.id,
+        externalRef,
+      });
+
       setCompleted(true);
-    }, 2000);
-  }, []);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Payment failed. Please try again.";
+      setPaymentError(message);
+      onFailure?.(message);
+    } finally {
+      setProcessing(false);
+    }
+  }, [amount, description, itemName, onFailure, paymentType, selectedMethod]);
 
   const handleSuccessDone = useCallback(() => {
     onSuccess();
@@ -586,16 +621,40 @@ export default function PaymentModal({
                   transition={{ duration: 0.2 }}
                 >
                   {selectedMethod === "aba" && (
-                    <AbaPayTab amount={amount} itemName={itemName} />
+                    <AbaPayTab amount={amount} itemName={itemName} reference={instructions?.reference ?? checkoutReference} />
                   )}
                   {selectedMethod === "wing" && (
                     <WingPayTab amount={amount} onSubmit={handlePaymentSubmit} />
                   )}
                   {selectedMethod === "khqr" && (
-                    <KhqrTab amount={amount} itemName={itemName} />
+                    <KhqrTab amount={amount} itemName={itemName} reference={instructions?.reference ?? checkoutReference} />
                   )}
                 </motion.div>
               </AnimatePresence>
+            </div>
+
+            <div className="px-5 pb-4 space-y-3">
+              {instructions && (
+                <div className="rounded-lg border border-[#D4AF37]/20 bg-white/70 p-3 text-xs text-[#2D2926]/70">
+                  <p className="font-semibold text-[#2D2926]">Payment reference: {instructions.reference}</p>
+                  <p className="mt-1 whitespace-pre-line">{instructions.instructions}</p>
+                </div>
+              )}
+              {paymentError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700">
+                  {paymentError}
+                </div>
+              )}
+              {selectedMethod !== "wing" && (
+                <button
+                  type="button"
+                  onClick={handlePaymentSubmit}
+                  disabled={processing}
+                  className="w-full rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#B8941F] py-3 text-sm font-semibold text-white shadow-lg shadow-[#D4AF37]/20 transition-all hover:shadow-xl hover:shadow-[#D4AF37]/30 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  I have completed payment — ${amount.toFixed(2)}
+                </button>
+              )}
             </div>
 
             {/* ─── Footer ─── */}

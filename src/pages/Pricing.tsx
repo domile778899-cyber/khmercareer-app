@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import PaymentModal from '../components/PaymentModal';
 import { motion, useInView } from 'framer-motion';
 import {
   ShieldCheck,
@@ -170,6 +171,8 @@ function AccordionItem({
 export default function Pricing() {
   const [isAnnual, setIsAnnual] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [paymentNotice, setPaymentNotice] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     companyName: '',
     yourName: '',
@@ -184,6 +187,8 @@ export default function Pricing() {
   const savingsInView = useInView(savingsRef, { once: true, amount: 0.5 });
 
   const proPrice = isAnnual ? '$79' : '$99';
+  const proAmount = isAnnual ? 79 : 99;
+  const proPlanName = isAnnual ? 'Professional Annual Plan' : 'Professional Monthly Plan';
 
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -382,12 +387,16 @@ export default function Pricing() {
                   Dedicated account manager
                 </li>
               </ul>
-              <Link
-                to="/employers"
+              <button
+                type="button"
+                onClick={() => {
+                  setPaymentNotice(null);
+                  setPaymentModalOpen(true);
+                }}
                 className="block w-full text-center py-3.5 rounded-xl font-semibold min-h-[56px] flex items-center justify-center bg-gold text-deep-brown shadow-gold hover:bg-gold-dark hover:scale-[1.03] hover:shadow-gold-hover transition-all duration-200"
               >
                 Start Professional
-              </Link>
+              </button>
             </motion.div>
 
             {/* Enterprise */}
@@ -922,8 +931,26 @@ export default function Pricing() {
           </div>
         </div>
       </section>
+
+      {paymentNotice && (
+        <div className="fixed bottom-6 left-1/2 z-40 max-w-md -translate-x-1/2 rounded-xl border border-gold/30 bg-white px-4 py-3 text-sm text-charcoal shadow-card">
+          {paymentNotice}
+        </div>
+      )}
+
+      <PaymentModal
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+        amount={proAmount}
+        itemName={proPlanName}
+        paymentType="subscription"
+        description={`Employer subscription checkout: ${proPlanName}`}
+        onSuccess={() => {
+          setPaymentNotice('Professional subscription payment completed successfully.');
+          setPaymentModalOpen(false);
+        }}
+        onFailure={(message) => setPaymentNotice(message)}
+      />
     </div>
   );
 }
-
-import React from 'react';

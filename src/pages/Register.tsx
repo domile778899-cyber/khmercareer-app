@@ -52,23 +52,25 @@ interface FormErrors {
 
 const STORAGE_KEY = 'khmer_register_form';
 
-function loadSavedForm(): Partial<RegisterFormData & { role: UserRole }> {
+type RegisterDraft = Omit<RegisterFormData, 'password' | 'confirmPassword'> & { role: UserRole };
+
+function loadSavedForm(): Partial<RegisterDraft> {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      return JSON.parse(saved);
+      return JSON.parse(saved) as Partial<RegisterDraft>;
     }
   } catch {
-    // ignore
+    // ignore non-critical draft parsing failures
   }
   return {};
 }
 
-function saveForm(data: RegisterFormData & { role: UserRole }) {
+function saveForm(data: RegisterDraft) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
-    // ignore
+    // ignore non-critical draft persistence failures
   }
 }
 
@@ -87,8 +89,8 @@ export default function Register() {
   const [fullName, setFullName] = useState(saved.fullName || '');
   const [email, setEmail] = useState(saved.email || '');
   const [phone, setPhone] = useState(saved.phone || '');
-  const [password, setPassword] = useState(saved.password || '');
-  const [confirmPassword, setConfirmPassword] = useState(saved.confirmPassword || '');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [companyName, setCompanyName] = useState(saved.companyName || '');
   const [industry, setIndustry] = useState(saved.industry || '');
   const [showPassword, setShowPassword] = useState(false);
@@ -97,10 +99,10 @@ export default function Register() {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Persist form data to localStorage
+  // Persist only non-sensitive form draft fields.
   useEffect(() => {
-    saveForm({ fullName, email, phone, password, confirmPassword, companyName, industry, role });
-  }, [fullName, email, phone, password, confirmPassword, companyName, industry, role]);
+    saveForm({ fullName, email, phone, companyName, industry, role });
+  }, [fullName, email, phone, companyName, industry, role]);
 
   // Validation functions
   const validateFullName = useCallback(
@@ -126,7 +128,7 @@ export default function Register() {
 
   const validatePassword = useCallback((value: string): string | undefined => {
     if (!value) return 'Password is required';
-    if (value.length < 6) return 'Password must be at least 6 characters';
+    if (value.length < 8) return 'Password must be at least 8 characters';
     return undefined;
   }, []);
 
@@ -230,9 +232,8 @@ export default function Register() {
     if (!validateStep2()) return;
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
 
-    const successReg = register({
+    const successReg = await register({
       email,
       fullName,
       role,

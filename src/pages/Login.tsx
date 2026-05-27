@@ -37,23 +37,25 @@ interface FormErrors {
 
 const STORAGE_KEY = 'khmer_login_form';
 
-function loadSavedForm(): Partial<LoginFormData> {
+type LoginDraft = Pick<LoginFormData, 'email'>;
+
+function loadSavedForm(): Partial<LoginDraft> {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      return JSON.parse(saved);
+      return JSON.parse(saved) as Partial<LoginDraft>;
     }
   } catch {
-    // ignore
+    // ignore non-critical draft parsing failures
   }
   return {};
 }
 
-function saveForm(data: LoginFormData) {
+function saveForm(data: LoginDraft) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
-    // ignore
+    // ignore non-critical draft persistence failures
   }
 }
 
@@ -68,17 +70,17 @@ export default function Login() {
 
   const saved = loadSavedForm();
   const [email, setEmail] = useState(saved.email || '');
-  const [password, setPassword] = useState(saved.password || '');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Persist form to localStorage
+  // Persist only non-sensitive form draft fields.
   useEffect(() => {
-    saveForm({ email, password });
-  }, [email, password]);
+    saveForm({ email });
+  }, [email]);
 
   const validateEmail = useCallback((value: string): string | undefined => {
     if (!value || !value.trim()) return 'Email is required';
@@ -129,15 +131,13 @@ export default function Login() {
 
     setIsLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 600));
-
-    const successLogin = login(email.trim(), password);
+    const successLogin = await login(email.trim(), password);
     if (successLogin) {
       clearSavedForm();
       success('Welcome back! Login successful');
       setTimeout(() => navigate('/'), 800);
     } else {
-      showError('Invalid email or password. Try password: demo123');
+      showError('Invalid email or password.');
       setErrors({ email: 'Invalid email or password', password: 'Invalid email or password' });
     }
 
@@ -150,13 +150,13 @@ export default function Login() {
     setErrors({});
     setIsLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    const successLogin = login('demo@khmerjob.com', 'demo123');
+    const successLogin = await login('demo@khmerjob.com', 'demo123');
     if (successLogin) {
       clearSavedForm();
       success('Welcome! Demo login successful');
       setTimeout(() => navigate('/'), 800);
+    } else {
+      showError('Demo login is disabled or unavailable.');
     }
 
     setIsLoading(false);

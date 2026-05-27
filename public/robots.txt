@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Disallow private/user-specific pages
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /chat
+Disallow: /resume
+Disallow: /teacher-dashboard
+Disallow: /course-upload
+Disallow: /ai-generate
+
+# Disallow search/filter query pages to avoid duplicate content
+Disallow: /*?*
+
+# Crawl rate
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://khmercareer.com/sitemap.xml
