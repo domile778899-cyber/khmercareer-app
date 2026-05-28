@@ -26,6 +26,7 @@ import FormField from '../components/FormField';
 import { useToast } from '../components/Toast';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import ReCaptcha, { useReCaptcha } from '../components/ReCaptcha';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^[0-9+]{9,15}$/;
@@ -52,6 +53,7 @@ interface FormErrors {
 }
 
 const STORAGE_KEY = 'khmer_register_form';
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
 /** Sanitized form data — never includes password */
 interface SavedFormData {
@@ -116,6 +118,8 @@ export default function Register() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const { verifyWithBackend } = useReCaptcha(RECAPTCHA_SITE_KEY);
 
   // Persist form data to localStorage (NEVER password fields)
   useEffect(() => {
@@ -250,6 +254,20 @@ export default function Register() {
     if (!validateStep2()) return;
 
     setIsLoading(true);
+
+    // Verify reCAPTCHA if site key is configured
+    if (RECAPTCHA_SITE_KEY) {
+      try {
+        const result = await verifyWithBackend('register');
+        if (!result || !result.success) {
+          showError('Security verification failed. Please try again.');
+          setIsLoading(false);
+          return;
+        }
+      } catch {
+        // Continue in local mode
+      }
+    }
 
     try {
       const successReg = await register({
@@ -732,6 +750,18 @@ export default function Register() {
                       >
                         {errors.agreed}
                       </motion.p>
+                    )}
+
+                    {/* reCAPTCHA Protection */}
+                    {RECAPTCHA_SITE_KEY && (
+                      <div className="py-2">
+                        <ReCaptcha
+                          siteKey={RECAPTCHA_SITE_KEY}
+                          action="register"
+                          onVerify={(token) => setCaptchaToken(token)}
+                        />
+                        <p className="text-warm-gray/50 text-[10px] mt-1">Protected by Google reCAPTCHA</p>
+                      </div>
                     )}
 
                     <div className="flex gap-3">

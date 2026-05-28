@@ -22,9 +22,11 @@ import { useAuth } from '../hooks/useAuth';
 import FormField from '../components/FormField';
 import { useToast } from '../components/Toast';
 import GoogleSignInButton from '../components/GoogleSignInButton';
+import ReCaptcha, { useReCaptcha, verifyReCaptchaToken } from '../components/ReCaptcha';
 import { useTranslation } from 'react-i18next';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
 interface LoginFormData {
   email: string;
@@ -95,6 +97,8 @@ export default function Login() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const { verifyWithBackend } = useReCaptcha(RECAPTCHA_SITE_KEY);
 
   // Persist email to localStorage (never persist password)
   useEffect(() => {
@@ -153,6 +157,20 @@ export default function Login() {
     if (!validateAll()) return;
 
     setIsLoading(true);
+
+    // Verify reCAPTCHA if site key is configured
+    if (RECAPTCHA_SITE_KEY) {
+      try {
+        const result = await verifyWithBackend('login');
+        if (!result || !result.success) {
+          showError('Security verification failed. Please try again.');
+          setIsLoading(false);
+          return;
+        }
+      } catch {
+        // Continue in local mode
+      }
+    }
 
     try {
       const successLogin = await login(email.trim(), password);
@@ -312,6 +330,18 @@ export default function Login() {
                     </motion.p>
                   )}
                 </div>
+
+                {/* reCAPTCHA Protection */}
+                {RECAPTCHA_SITE_KEY && (
+                  <div className="py-2">
+                    <ReCaptcha
+                      siteKey={RECAPTCHA_SITE_KEY}
+                      action="login"
+                      onVerify={(token) => setCaptchaToken(token)}
+                    />
+                    <p className="text-white/20 text-[10px] mt-1">Protected by Google reCAPTCHA</p>
+                  </div>
+                )}
 
                 <div className="flex items-center justify-between">
                   <label className="flex items-center gap-2 cursor-pointer">

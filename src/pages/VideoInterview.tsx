@@ -8,9 +8,12 @@ import {
   ScreenShare, StopCircle, RefreshCw, Volume2, VolumeX,
   MoreVertical, Minimize2, Maximize2, User, Bot,
   FileText, Star, TrendingUp, CheckCircle2, Timer,
-  Settings, HelpCircle, PanelLeftClose, PanelLeftOpen
+  Settings, HelpCircle, PanelLeftClose, PanelLeftOpen,
+  Signal, SignalHigh, SignalLow, NotebookPen, Phone,
+  WifiOff, Loader2, StickyNote
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { apiClient } from '../api/client'
 
 /* ═══════════════════════════════════════════
    Types
@@ -42,6 +45,29 @@ interface InterviewRecord {
   answer: string
   duration: number
   aiScore: number
+}
+
+/* ── WebRTC Signaling Types ── */
+interface CallStatus {
+  state: 'idle' | 'connecting' | 'ringing' | 'connected' | 'reconnecting' | 'ended' | 'error'
+  message: string
+}
+
+interface WebRTCSignalPayload {
+  type: 'offer' | 'answer' | 'ice-candidate'
+  sdp?: string
+  candidate?: RTCIceCandidateInit
+  roomId: string
+  fromUserId: string
+  toUserId?: string
+}
+
+interface InterviewNote {
+  id: string
+  questionId: number
+  note: string
+  score: number
+  createdAt: string
 }
 
 /* ═══════════════════════════════════════════
@@ -120,6 +146,83 @@ const AI_TIPS = [
 /* ═══════════════════════════════════════════
    Sub-Components
    ═══════════════════════════════════════════ */
+
+/** Call Status Badge */
+function CallStatusBadge({ status }: { status: CallStatus }) {
+  const iconMap = {
+    idle: <Signal className="w-3.5 h-3.5 text-white/60" />,
+    connecting: <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />,
+    ringing: <SignalLow className="w-3.5 h-3.5 text-amber-400" />,
+    connected: <SignalHigh className="w-3.5 h-3.5 text-emerald-400" />,
+    reconnecting: <WifiOff className="w-3.5 h-3.5 text-amber-400" />,
+    ended: <WifiOff className="w-3.5 h-3.5 text-white/40" />,
+    error: <WifiOff className="w-3.5 h-3.5 text-red-400" />,
+  }
+  const bgMap = {
+    idle: 'bg-white/10',
+    connecting: 'bg-amber-500/20',
+    ringing: 'bg-amber-500/20',
+    connected: 'bg-emerald-500/20',
+    reconnecting: 'bg-amber-500/20',
+    ended: 'bg-white/10',
+    error: 'bg-red-500/20',
+  }
+  return (
+    <motion.div
+      className={`flex items-center gap-1.5 ${bgMap[status.state]} backdrop-blur-md rounded-full px-3 py-1.5 text-white`}
+      initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+      key={status.state}
+    >
+      {iconMap[status.state]}
+      <span className="text-[11px] font-medium">{status.message}</span>
+    </motion.div>
+  )
+}
+
+/** Call Duration Badge */
+function CallDurationBadge({ duration }: { duration: number }) {
+  const fmt = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
+  return (
+    <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md rounded-full px-3 py-1.5 text-white">
+      <Phone className="w-3.5 h-3.5 text-gold" />
+      <span className="font-mono text-[11px] font-semibold tracking-wider">{fmt(duration)}</span>
+    </div>
+  )
+}
+
+/** Interview Notes Panel */
+function InterviewNotesPanel({ notes, onDelete }: { notes: InterviewNote[]; onDelete: (id: string) => void }) {
+  return (
+    <div className="flex flex-col h-full">
+      <h4 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+        <NotebookPen className="w-3.5 h-3.5" /> 面试笔记
+      </h4>
+      <div className="flex-1 overflow-y-auto space-y-2.5 min-h-0 pr-1">
+        {notes.length === 0 && (
+          <p className="text-white/30 text-xs text-center py-8">暂无笔记，请在面试中添加</p>
+        )}
+        {notes.map(note => (
+          <motion.div
+            key={note.id}
+            className="bg-white/5 border border-white/10 rounded-lg p-3"
+            initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-gold text-[10px] font-medium">Q{note.questionId} · {note.score}分</span>
+              <button onClick={() => onDelete(note.id)} className="text-white/20 hover:text-red-400 transition-colors">
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+            <p className="text-white/70 text-xs leading-relaxed">{note.note}</p>
+            <span className="text-white/20 text-[10px] mt-1.5 block">
+              {new Date(note.createdAt).toLocaleTimeString()}
+            </span>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 /** Interview Timer */
 function InterviewTimer({ seconds, isRunning, onToggle }: { seconds: number; isRunning: boolean; onToggle: () => void }) {
@@ -577,7 +680,7 @@ function InterviewEndScreen({
 /* ═══════════════════════════════════════════
    Main Component
    ═══════════════════════════════════════════ */
-type SidebarTab = 'ai' | 'questions' | 'score'
+type SidebarTab = 'ai' | 'questions' | 'score' | 'notes'
 type InterviewPhase = 'preparing' | 'ongoing' | 'ended'
 
 export default function VideoInterview() {
@@ -659,10 +762,106 @@ export default function VideoInterview() {
   }, [phase])
 
   /* ═══════════════════════════════════════════
-     Media: getUserMedia
+     Media: getUserMedia + WebRTC Signaling
      ═══════════════════════════════════════════ */
+  const [callStatus, setCallStatus] = useState<CallStatus>({ state: 'idle', message: '准备就绪' })
+  const [callDuration, setCallDuration] = useState(0)
+  const [callTimerRunning, setCallTimerRunning] = useState(false)
+  const callTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [interviewNotes, setInterviewNotes] = useState<InterviewNote[]>([])
+  const [noteInput, setNoteInput] = useState('')
+  const [noteScore, setNoteScore] = useState(5)
+  const [showNotesPanel, setShowNotesPanel] = useState(false)
+  const [roomId, setRoomId] = useState<string>('')
+  const signalingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  /* ── Call Duration Timer ── */
+  useEffect(() => {
+    if (callTimerRunning) {
+      callTimerRef.current = setInterval(() => setCallDuration(d => d + 1), 1000)
+    } else if (callTimerRef.current) {
+      clearInterval(callTimerRef.current)
+    }
+    return () => { if (callTimerRef.current) clearInterval(callTimerRef.current) }
+  }, [callTimerRunning])
+
+  /* ── Format duration ── */
+  const fmtDuration = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
+
+  /* ── WebRTC Signaling: Create Room ── */
+  const createSignalRoom = useCallback(async (rid: string) => {
+    try {
+      await apiClient.post('/webrtc/rooms', { roomId: rid, type: 'interview' })
+    } catch {
+      // Local mode - continue without signaling server
+    }
+  }, [])
+
+  /* ── Send Signal ── */
+  const sendSignal = useCallback(async (payload: Omit<WebRTCSignalPayload, 'fromUserId'>) => {
+    try {
+      await apiClient.post('/webrtc/signal', { ...payload, fromUserId: userId.current })
+    } catch {
+      // Local mode
+    }
+  }, [])
+
+  /* ── Poll for Remote Signals ── */
+  const startSignalingPolling = useCallback((rid: string, pc: RTCPeerConnection) => {
+    if (signalingIntervalRef.current) clearInterval(signalingIntervalRef.current)
+    signalingIntervalRef.current = setInterval(async () => {
+      try {
+        const response = await apiClient.get(`/webrtc/signals/${rid}?userId=${userId.current}`)
+        const signals: WebRTCSignalPayload[] = response.data || []
+        for (const sig of signals) {
+          if (sig.type === 'answer' && sig.sdp) {
+            await pc.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp: sig.sdp }))
+          } else if (sig.type === 'ice-candidate' && sig.candidate) {
+            await pc.addIceCandidate(new RTCIceCandidate(sig.candidate))
+          }
+        }
+      } catch {
+        // No signals available
+      }
+    }, 3000)
+  }, [])
+
+  /* ── Stop Signaling Polling ── */
+  const stopSignalingPolling = useCallback(() => {
+    if (signalingIntervalRef.current) {
+      clearInterval(signalingIntervalRef.current)
+      signalingIntervalRef.current = null
+    }
+  }, [])
+
+  /* ── Save Interview Note ── */
+  const saveNote = useCallback(() => {
+    if (!noteInput.trim() || !currentQuestion) return
+    const note: InterviewNote = {
+      id: crypto.randomUUID(),
+      questionId: currentQuestion.id,
+      note: noteInput.trim(),
+      score: noteScore,
+      createdAt: new Date().toISOString(),
+    }
+    setInterviewNotes(prev => [...prev, note])
+    setNoteInput('')
+    setNoteScore(5)
+  }, [noteInput, noteScore, currentQuestion])
+
+  /* ── Delete Note ── */
+  const deleteNote = useCallback((id: string) => {
+    setInterviewNotes(prev => prev.filter(n => n.id !== id))
+  }, [])
+
+  /* ═══════════════════════════════════════════
+     Media: getUserMedia with WebRTC Signaling
+     ═══════════════════════════════════════════ */
+  const userId = useRef(`user_${Math.random().toString(36).slice(2, 8)}`)
+
   const startMedia = useCallback(async () => {
     try {
+      setCallStatus({ state: 'connecting', message: '正在连接...' })
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { width: 1280, height: 720, facingMode: 'user' },
         audio: true,
@@ -672,15 +871,99 @@ export default function VideoInterview() {
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = mediaStream
       }
+
+      /* ── Setup WebRTC PeerConnection with Signaling ── */
+      const rid = `interview_${crypto.randomUUID()}`
+      setRoomId(rid)
+      await createSignalRoom(rid)
+
+      const pc = new RTCPeerConnection({
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+        ],
+      })
+      pcRef.current = pc
+
+      mediaStream.getTracks().forEach(track => pc.addTrack(track, mediaStream))
+
+      /* ── Handle remote stream ── */
+      const remoteVideo = document.getElementById('remote-video') as HTMLVideoElement
+      pc.ontrack = (event) => {
+        if (remoteVideo && event.streams[0]) {
+          remoteVideo.srcObject = event.streams[0]
+        }
+      }
+
+      /* ── Connection state changes ── */
+      pc.onconnectionstatechange = () => {
+        switch (pc.connectionState) {
+          case 'connecting':
+            setCallStatus({ state: 'connecting', message: '正在建立连接...' })
+            break
+          case 'connected':
+            setCallStatus({ state: 'connected', message: '已连接' })
+            setCallTimerRunning(true)
+            break
+          case 'disconnected':
+            setCallStatus({ state: 'reconnecting', message: '连接断开，正在重连...' })
+            break
+          case 'failed':
+            setCallStatus({ state: 'error', message: '连接失败' })
+            setCallTimerRunning(false)
+            break
+          case 'closed':
+            setCallStatus({ state: 'ended', message: '通话已结束' })
+            setCallTimerRunning(false)
+            break
+        }
+      }
+
+      /* ── ICE candidates ── */
+      pc.onicecandidate = async (event) => {
+        if (event.candidate) {
+          await sendSignal({
+            type: 'ice-candidate',
+            candidate: event.candidate.toJSON(),
+            roomId: rid,
+          })
+        }
+      }
+
+      /* ── Create and send offer ── */
+      const offer = await pc.createOffer()
+      await pc.setLocalDescription(offer)
+      await sendSignal({ type: 'offer', sdp: offer.sdp, roomId: rid })
+
+      /* ── Start polling for remote signals ── */
+      startSignalingPolling(rid, pc)
+
+      /* ── Show local preview in remote area for demo ── */
+      if (remoteVideo) {
+        /* In demo mode, show local preview as remote (mirror effect) */
+        setTimeout(() => {
+          setCallStatus({ state: 'connected', message: '已连接（演示模式）' })
+          setCallTimerRunning(true)
+        }, 2000)
+      }
+
       return mediaStream
     } catch (err) {
       console.error('Failed to access camera:', err)
       setHasMediaError(true)
+      setCallStatus({ state: 'error', message: '无法访问摄像头/麦克风' })
       return null
     }
-  }, [])
+  }, [createSignalRoom, sendSignal, startSignalingPolling])
+
+  const pcRef = useRef<RTCPeerConnection | null>(null)
 
   const stopMedia = useCallback(() => {
+    stopSignalingPolling()
+    if (pcRef.current) {
+      pcRef.current.close()
+      pcRef.current = null
+    }
     if (stream) {
       stream.getTracks().forEach((track) => track.stop())
       setStream(null)
@@ -688,7 +971,9 @@ export default function VideoInterview() {
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = null
     }
-  }, [stream])
+    setCallStatus({ state: 'ended', message: '通话已结束' })
+    setCallTimerRunning(false)
+  }, [stream, stopSignalingPolling])
 
   /* Toggle mute */
   const toggleMute = useCallback(() => {
@@ -755,9 +1040,21 @@ export default function VideoInterview() {
   const endInterview = () => {
     setIsTimerRunning(false)
     setPhase('ended')
+    setCallStatus({ state: 'ended', message: '面试已结束' })
+    setCallTimerRunning(false)
     stopMedia()
     // Calculate final scores based on records
     calculateFinalScores()
+    // Save interview notes to backend
+    try {
+      apiClient.post('/interview/notes', {
+        roomId,
+        notes: interviewNotes,
+        duration: callDuration,
+        overallScore,
+        records: interviewRecords,
+      })
+    } catch { /* local mode */ }
   }
 
   const nextQuestion = () => {
@@ -848,6 +1145,13 @@ export default function VideoInterview() {
     setAnsweredIds(new Set())
     setInterviewRecords([])
     setOverallScore(0)
+    setCallStatus({ state: 'idle', message: '准备就绪' })
+    setCallDuration(0)
+    setCallTimerRunning(false)
+    setInterviewNotes([])
+    setNoteInput('')
+    setNoteScore(5)
+    setRoomId('')
     setAiScores([
       { dimension: '专业技能', score: 0, maxScore: 25, feedback: '等待评估...' },
       { dimension: '沟通表达', score: 0, maxScore: 25, feedback: '等待评估...' },
@@ -1020,12 +1324,17 @@ export default function VideoInterview() {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Call Status Indicator */}
           {phase === 'ongoing' && (
-            <InterviewTimer
-              seconds={timer}
-              isRunning={isTimerRunning}
-              onToggle={() => setIsTimerRunning(!isTimerRunning)}
-            />
+            <div className="flex items-center gap-2">
+              <CallStatusBadge status={callStatus} />
+              <CallDurationBadge duration={callDuration} />
+              <InterviewTimer
+                seconds={timer}
+                isRunning={isTimerRunning}
+                onToggle={() => setIsTimerRunning(!isTimerRunning)}
+              />
+            </div>
           )}
 
           {/* Floating AI Tip */}
@@ -1064,8 +1373,18 @@ export default function VideoInterview() {
           {/* Remote Video Placeholder (Interviewer) */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative w-full h-full">
-              {/* Interviewer Avatar Placeholder */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-charcoal via-deep-brown to-black">
+              {/* Remote Video */}
+              <video
+                id="remote-video"
+                autoPlay
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover z-0"
+              />
+              {/* Interviewer Avatar Placeholder Overlay - hides when connected */}
+              <div
+                className={`absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-charcoal via-deep-brown to-black z-10 transition-opacity duration-500 ${callStatus.state === 'connected' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                id="interviewer-overlay"
+              >
                 <motion.div
                   className="w-24 h-24 rounded-full bg-gradient-to-br from-gold/30 to-gold/10 border-2 border-gold/30 flex items-center justify-center mb-4"
                   animate={{ scale: [1, 1.02, 1] }}
@@ -1081,6 +1400,15 @@ export default function VideoInterview() {
                   <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                   <span className="text-xs text-white/60">在线</span>
                 </div>
+
+                {/* Call Status Overlay */}
+                {callStatus.state !== 'connected' && callStatus.state !== 'idle' && (
+                  <div className="absolute top-4 left-4 bg-black/70 rounded-lg px-3 py-2 flex items-center gap-2">
+                    {callStatus.state === 'connecting' && <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />}
+                    {callStatus.state === 'error' && <WifiOff className="w-3.5 h-3.5 text-red-400" />}
+                    <span className="text-xs text-white/80">{callStatus.message}</span>
+                  </div>
+                )}
 
                 {/* Current Question Display on Main Screen */}
                 {currentQuestion && (
@@ -1170,6 +1498,7 @@ export default function VideoInterview() {
                   { key: 'ai', icon: Brain, label: 'AI助手' },
                   { key: 'questions', icon: ClipboardList, label: '题目' },
                   { key: 'score', icon: BarChart3, label: '评分' },
+                  { key: 'notes', icon: StickyNote, label: '笔记' },
                 ] as const).map((tab) => (
                   <button
                     key={tab.key}
@@ -1213,6 +1542,37 @@ export default function VideoInterview() {
                     overallScore={overallScore}
                     interviewRecords={interviewRecords}
                   />
+                )}
+                {sidebarTab === 'notes' && (
+                  <div className="flex flex-col h-full">
+                    <InterviewNotesPanel notes={interviewNotes} onDelete={deleteNote} />
+                    <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
+                      <textarea
+                        value={noteInput}
+                        onChange={e => setNoteInput(e.target.value)}
+                        placeholder="添加面试笔记..."
+                        rows={2}
+                        className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/40 outline-none focus:border-gold/50 resize-none"
+                      />
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                          <Star className="w-3 h-3 text-gold" />
+                          <input
+                            type="number" min={1} max={10} value={noteScore}
+                            onChange={e => setNoteScore(Math.min(10, Math.max(1, Number(e.target.value))))}
+                            className="w-12 bg-white/10 border border-white/10 rounded px-1.5 py-1 text-xs text-white text-center"
+                          />
+                        </div>
+                        <button
+                          onClick={saveNote}
+                          disabled={!noteInput.trim()}
+                          className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-gold/20 hover:bg-gold/30 text-gold rounded-lg transition-colors disabled:opacity-30 text-xs"
+                        >
+                          <NotebookPen className="w-3 h-3" /> 保存笔记
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
             </motion.div>
