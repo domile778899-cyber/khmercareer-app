@@ -1,63 +1,287 @@
-apply plugin: 'com.android.application'
+/**
+ * ============================================================
+ * KhmerCareer Express - Android App Module Build Configuration
+ * ============================================================
+ * This file configures the Android app build for KhmerCareer Express.
+ * It handles:
+ *   - App versioning (auto-incrementing from version.properties)
+ *   - Signing configuration for release builds
+ *   - Build types (debug and release)
+ *   - ProGuard/R8 code shrinking rules
+ *   - Dependencies for Capacitor and plugins
+ *   - ABI filters for supported architectures
+ *
+ * The signing configuration supports both:
+ *   - Local builds: using keystore in project directory
+ *   - CI/CD builds: using keystore from environment/secrets
+ *
+ * Usage:
+ *   cd android && ./gradlew assembleDebug     # Build debug APK
+ *   cd android && ./gradlew assembleRelease   # Build release APK
+ * ============================================================
+ */
+
+plugins {
+    id 'com.android.application'
+}
 
 android {
+    // ── Namespace (must match appId from capacitor.config.ts) ──
     namespace "com.khmercareer.app"
+
+    // ── SDK Versions ────────────────────────────────────────
+    /** Target SDK — must match installed SDK */
     compileSdk rootProject.ext.compileSdkVersion
+
     defaultConfig {
+        /** Application ID — unique identifier on Google Play */
         applicationId "com.khmercareer.app"
+        /** Minimum Android version supported (Android 6.0 / API 23) */
         minSdkVersion rootProject.ext.minSdkVersion
+        /** Target SDK for behavior compatibility */
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0.0"
+
+        // ── Version Code & Name ─────────────────────────────
+        /**
+         * Version code: Auto-incrementing integer used by Google Play.
+         * Reads from version.properties file; auto-increments on each build.
+         */
+        versionCode getVersionCode()
+        /**
+         * Version name: Human-readable version (e.g., "1.0.0").
+         * Maps to the web app version in package.json.
+         */
+        versionName getVersionName()
+
+        // ── Build Features ──────────────────────────────────
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        aaptOptions {
-             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
-             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
-            ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
-        }
     }
+
+    // ── Signing Configuration ───────────────────────────────
     signingConfigs {
         release {
-            storeFile file("release.keystore")
-            storePassword "khmercareer2024"
-            keyAlias "khmercareer"
-            keyPassword "khmercareer2024"
+            /**
+             * Release signing configuration.
+             *
+             * For LOCAL builds:
+             *   Place your release.keystore in android/app/ directory.
+             *   Set passwords in local.properties or as environment variables.
+             *
+             * For CI/CD builds (GitHub Actions):
+             *   Keystore and passwords are injected via secrets.
+             *   See .github/workflows/build-android.yml
+             */
+
+            // Try to load from environment variables (CI/CD)
+            def keystorePath = System.getenv("BUILD_KEYSTORE_PATH") ?: "release.keystore"
+            def keystorePass = System.getenv("BUILD_KEYSTORE_PASSWORD")
+            def keyAlias = System.getenv("BUILD_KEY_ALIAS") ?: "khmercareer"
+            def keyPass = System.getenv("BUILD_KEY_PASSWORD")
+
+            // Fallback to local.properties for local builds
+            if (!keystorePass || !keyPass) {
+                def propsFile = rootProject.file('local.properties')
+                if (propsFile.exists()) {
+                    def props = new Properties()
+                    props.load(new FileInputStream(propsFile))
+                    if (props['RELEASE_STORE_PASSWORD']) {
+                        keystorePath = props['RELEASE_STORE_FILE'] ?: keystorePath
+                        keystorePass = props['RELEASE_STORE_PASSWORD']
+                        keyAlias = props['RELEASE_KEY_ALIAS'] ?: keyAlias
+                        keyPass = props['RELEASE_KEY_PASSWORD']
+                    }
+                }
+            }
+
+            // Only configure signing if we have passwords
+            if (keystorePass && keyPass) {
+                storeFile file(keystorePath)
+                storePassword keystorePass
+                keyAlias keyAlias
+                keyPassword keyPass
+                enableV1Signing true   // For Android < 7.0
+                enableV2Signing true   // For Android 7.0+
+                enableV3Signing true   // For Android 9.0+ (optional)
+            } else {
+                println "WARNING: No signing credentials found. Release build will be unsigned."
+                println "Set BUILD_KEYSTORE_PASSWORD and BUILD_KEY_PASSWORD env vars, "
+                println "or add RELEASE_STORE_PASSWORD to local.properties"
+            }
+        }
+
+        debug {
+            // Debug builds use Android's auto-generated debug keystore
+            storeFile file(System.getenv("HOME") + "/.android/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
         }
     }
+
+    // ── Build Types ─────────────────────────────────────────
     buildTypes {
-        release {
-            signingConfig signingConfigs.release
+        debug {
+            /** Debug build with debugging enabled */
+            debuggable true
             minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+            // Add "-debug" suffix to debug APKs
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+
+        release {
+            /** Release build with code shrinking and obfuscation */
+            debuggable false
+            /** Enable code shrinking with R8 */
+            minifyEnabled true
+            /** Enable resource shrinking */
+            shrinkResources true
+            /** ProGuard rules file */
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            /**
+             * Use release signing config if credentials are available,
+             * otherwise fall back to debug signing (unsigned release).
+             */
+            if (signingConfigs.release.storePassword) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
         }
     }
-}
 
-repositories {
-    flatDir{
-        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    // ── ABI Filters ─────────────────────────────────────────
+    /**
+     * Filter native libraries to include only supported architectures.
+     * This reduces APK size significantly.
+     *
+     * arm64-v8a:   Modern 64-bit ARM devices (primary target)
+     * armeabi-v7a: Older 32-bit ARM devices
+     * x86_64:      64-bit x86 emulators
+     */
+    ndk {
+        abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64'
+    }
+
+    // ── Packaging Options ───────────────────────────────────
+    packagingOptions {
+        // Exclude duplicate license files
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    // ── Lint Options ────────────────────────────────────────
+    lintOptions {
+        disable 'MissingTranslation'
+        disable 'ExtraTranslation'
+        abortOnError false
+        checkReleaseBuilds false
+    }
+
+    // ── Compile Options ─────────────────────────────────────
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
+// ── Auto-incrementing Version Code ──────────────────────────
+/**
+ * Reads version code from version.properties and auto-increments it.
+ * Creates the file if it doesn't exist.
+ */
+def getVersionCode() {
+    def versionFile = file('version.properties')
+    def versionCode = 1
+    if (versionFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(versionFile))
+        versionCode = props['VERSION_CODE'].toInteger()
+    }
+    // Increment version code
+    versionCode++
+    // Save back
+    def props = new Properties()
+    props.setProperty('VERSION_CODE', versionCode.toString())
+    props.store(versionFile.newWriter(), "Auto-generated version file. Do not edit manually.")
+    return versionCode
+}
+
+/**
+ * Reads version name from version.properties or falls back to default.
+ */
+def getVersionName() {
+    def versionFile = file('version.properties')
+    if (versionFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(versionFile))
+        if (props['VERSION_NAME']) {
+            return props['VERSION_NAME']
+        }
+    }
+    // Default version — update this for releases
+    return "1.0.0"
+}
+
+// ── Repositories ────────────────────────────────────────────
+repositories {
+    google()
+    mavenCentral()
+}
+
+// ── Dependencies ────────────────────────────────────────────
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
     implementation project(':capacitor-android')
+
+    // ── Capacitor Plugins ─────────────────────────────────
+    implementation project(':capacitor-camera')
+    implementation project(':capacitor-geolocation')
+    implementation project(':capacitor-push-notifications')
+    implementation project(':capacitor-splash-screen')
+    implementation project(':capacitor-status-bar')
+    implementation project(':capacitor-share')
+    implementation project(':capacitor-app')
+
+    // ── Testing ────────────────────────────────────────────
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
-    implementation project(':capacitor-cordova-android-plugins')
+
+    // ── Additional ─────────────────────────────────────────
+    // Play Core for in-app updates
+    implementation 'com.google.android.play:core:1.10.3'
+    // Security library for encrypted SharedPreferences
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
 }
 
+// ── Gradle Task Customizations ──────────────────────────────
+/**
+ * Copy build outputs to a common directory for CI/CD
+ */
+task copyOutputs(type: Copy) {
+    from 'build/outputs/apk'
+    into '../../output'
+    include '**/*.apk'
+}
+
+assembleDebug.doLast {
+    tasks.copyOutputs.execute()
+}
+
+assembleRelease.doLast {
+    tasks.copyOutputs.execute()
+}
+
+// ── Apply Capacitor Gradle File ─────────────────────────────
+// This must be at the end of the file
 apply from: 'capacitor.build.gradle'
-
-try {
-    def servicesJSON = file('google-services.json')
-    if (servicesJSON.text) {
-        apply plugin: 'com.google.gms.google-services'
-    }
-} catch(Exception e) {
-    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
-}

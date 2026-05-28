@@ -7,6 +7,7 @@ import Layout from './components/Layout'
 import { Suspense, lazy } from 'react'
 import Home from './pages/Home'
 import ErrorBoundary from './components/ErrorBoundary'
+import PWAInstallPrompt from './components/PWAInstallPrompt'
 import { useAuth } from './hooks/useAuth'
 
 /* ── Lazy loaded pages ── */
@@ -203,6 +204,9 @@ export default function App() {
                 <Route path="analytics" element={<SafeRoute><SuspenseWrapper><AnalyticsCenter /></SuspenseWrapper></SafeRoute>} />
               </Route>
             </Routes>
+
+            {/* PWA Install Prompt — shows on all pages when conditions are met */}
+            <PWAInstallPrompt />
           </ApplyProvider>
         </ChatProvider>
       </FavoritesProvider>

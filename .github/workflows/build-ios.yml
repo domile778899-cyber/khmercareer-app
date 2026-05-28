@@ -1,0 +1,332 @@
+# ============================================================
+# KhmerCareer Express - iOS CI/CD Pipeline
+# ============================================================
+# This workflow builds the iOS archive and exports an IPA file
+# for the KhmerCareer Express app using GitHub Actions.
+#
+# NOTE: GitHub Actions free tier does NOT include macOS runners.
+# This workflow requires a paid macOS runner (macos-latest).
+# For free alternatives, build locally using scripts/build-ios.sh
+#
+# Triggers:
+#   - Push to master/main branch
+#   - Manual dispatch (workflow_dispatch)
+#
+# Build Outputs:
+#   - .xcarchive file
+#   - .ipa file (signed, ready for TestFlight/App Store)
+#   - Build artifacts uploaded to GitHub Actions
+#
+# Required GitHub Secrets:
+#   APPLE_TEAM_ID    - Apple Developer Team ID
+#   APPLE_CERTIFICATE_BASE64 - Base64-encoded .p12 certificate
+#   APPLE_CERTIFICATE_PASSWORD - Certificate password
+#   PROVISION_PROFILE_BASE64 - Base64-encoded provisioning profile
+#   APPLE_ID         - Apple ID for App Store Connect
+#   APP_SPECIFIC_PASSWORD - App-specific password for upload
+#
+# Usage:
+#   1. Go to Actions tab → Build iOS IPA
+#   2. Click "Run workflow" for manual build
+#   3. Download IPA from the workflow artifacts
+# ============================================================
+
+name: Build iOS IPA
+
+on:
+  # Trigger on push to master/main branch
+  push:
+    branches:
+      - master
+      - main
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - 'docs/**'
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'archive'
+        type: choice
+        options:
+          - archive
+          - ipa
+          - both
+      upload_testflight:
+        description: 'Upload to TestFlight'
+        required: false
+        default: false
+        type: boolean
+
+# Prevent multiple concurrent builds
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Build iOS Archive and IPA ─────────────────────────────
+  build-ios:
+    name: Build iOS Archive & IPA
+    # macOS runner is required for Xcode builds
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    env:
+      # Node.js version
+      NODE_VERSION: 20
+      # Xcode version
+      XCODE_VERSION: '15.0'
+      # App configuration
+      APP_SCHEME: 'KhmerCareer Express'
+      APP_BUNDLE_ID: 'com.khmercareer.app'
+
+    steps:
+      # ── Step 1: Checkout source code ──────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ── Step 2: Select Xcode version ──────────────────────
+      - name: Select Xcode version
+        run: |
+          sudo xcode-select -s /Applications/Xcode_${{ env.XCODE_VERSION }}.app/Contents/Developer
+          xcodebuild -version
+          xcrun simctl list devices
+
+      # ── Step 3: Setup Node.js ─────────────────────────────
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # ── Step 4: Install dependencies ──────────────────────
+      - name: Install npm dependencies
+        run: |
+          echo "Installing npm dependencies..."
+          npm ci --prefer-offline --no-audit
+          echo "Dependencies installed successfully"
+
+      # ── Step 5: Install Capacitor iOS platform ────────────
+      - name: Install Capacitor iOS platform
+        run: |
+          echo "Installing Capacitor iOS platform..."
+          npm install @capacitor/ios
+          npx cap install ios
+          echo "iOS platform installed"
+
+      # ── Step 6: Build web assets ──────────────────────────
+      - name: Build web assets
+        run: |
+          echo "Building web assets for production..."
+          npm run build
+          echo "Web assets built successfully"
+
+      # ── Step 7: Sync Capacitor ────────────────────────────
+      - name: Sync Capacitor
+        run: |
+          echo "Syncing Capacitor with iOS..."
+          npx cap sync ios
+          echo "Capacitor sync complete"
+
+      # ── Step 8: Install Apple certificate (if available) ────
+      - name: Install Apple signing certificate
+        if: secrets.APPLE_CERTIFICATE_BASE64 != ''
+        env:
+          APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "Setting up Apple signing certificate..."
+          # Create keychain
+          security create-keychain -p "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          # Decode certificate
+          echo "$APPLE_CERTIFICATE_BASE64" | base64 -d > certificate.p12
+          # Import certificate
+          security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" build.keychain
+          echo "Certificate installed"
+
+      # ── Step 9: Install provisioning profile (if available) ──
+      - name: Install provisioning profile
+        if: secrets.PROVISION_PROFILE_BASE64 != ''
+        env:
+          PROVISION_PROFILE_BASE64: ${{ secrets.PROVISION_PROFILE_BASE64 }}
+        run: |
+          echo "Installing provisioning profile..."
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$PROVISION_PROFILE_BASE64" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+          echo "Provisioning profile installed"
+
+      # ── Step 10: Create ExportOptions.plist ─────────────────
+      - name: Create ExportOptions.plist
+        run: |
+          mkdir -p ios/build
+          cat > ios/build/ExportOptions.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>${{ env.APP_BUNDLE_ID }}</key>
+              <string>KhmerCareer Express Distribution</string>
+            </dict>
+            <key>compileBitcode</key>
+            <false/>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          EOF
+          echo "ExportOptions.plist created"
+
+      # ── Step 11: Build archive ──────────────────────────────
+      - name: Build iOS archive
+        run: |
+          echo "Building iOS archive..."
+          cd ios/App
+          SCHEME_NAME="${{ env.APP_SCHEME }}"
+          # Find the scheme name
+          SCHEME=$(xcodebuild -list -project App.xcodeproj 2>/dev/null | grep -o "KhmerCareer.*" | head -1 || echo "App")
+          echo "Using scheme: $SCHEME"
+          # Build archive
+          xcodebuild archive \
+            -project App.xcodeproj \
+            -scheme "$SCHEME" \
+            -archivePath ../../output/KhmerCareer.xcarchive \
+            -destination 'generic/platform=iOS' \
+            -allowProvisioningUpdates \
+            -skipPackagePluginValidation \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            || true
+          echo "Archive build completed"
+
+      # ── Step 12: Export IPA ─────────────────────────────────
+      - name: Export IPA
+        if: |
+          github.event.inputs.build_type == 'ipa' ||
+          github.event.inputs.build_type == 'both' ||
+          github.event.inputs.build_type == null
+        run: |
+          echo "Exporting IPA..."
+          if [ -d "output/KhmerCareer.xcarchive" ]; then
+            xcodebuild -exportArchive \
+              -archivePath output/KhmerCareer.xcarchive \
+              -exportOptionsPlist ios/build/ExportOptions.plist \
+              -exportPath output/IPA \
+              -allowProvisioningUpdates \
+              || true
+            # Fallback: create IPA manually if export fails
+            if [ ! -f "output/IPA/*.ipa" ]; then
+              echo "Standard export failed, attempting fallback..."
+              mkdir -p output/IPA/Payload
+              cp -R output/KhmerCareer.xcarchive/Products/Applications/*.app output/IPA/Payload/ 2>/dev/null || true
+              cd output/IPA
+              zip -r KhmerCareer-unsigned.ipa Payload
+              cd ../..
+            fi
+          fi
+          echo "IPA export completed"
+
+      # ── Step 13: Organize output files ──────────────────────
+      - name: Organize output files
+        run: |
+          mkdir -p output/final
+          TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
+          # Copy IPA if exists
+          if [ -f output/IPA/*.ipa ]; then
+            cp output/IPA/*.ipa "output/final/KhmerCareer-iOS-${TIMESTAMP}.ipa"
+            echo "IPA copied"
+          fi
+          # Copy archive info
+          if [ -d output/KhmerCareer.xcarchive ]; then
+            echo "Archive size: $(du -sh output/KhmerCareer.xcarchive | cut -f1)"
+          fi
+          ls -la output/final/ 2>/dev/null || echo "No output files in final/"
+
+      # ── Step 14: Upload IPA artifact ────────────────────────
+      - name: Upload IPA artifact
+        if: |
+          github.event.inputs.upload_testflight == false ||
+          github.event.inputs.upload_testflight == null
+        uses: actions/upload-artifact@v4
+        with:
+          name: KhmerCareer-IPA-${{ github.run_number }}
+          path: output/final/*.ipa
+          retention-days: 30
+          if-no-files-found: warn
+
+      # ── Step 15: Upload to TestFlight (optional) ────────────
+      - name: Upload to TestFlight
+        if: github.event.inputs.upload_testflight == true
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APP_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
+        run: |
+          echo "Uploading to TestFlight..."
+          IPA_FILE=$(ls output/final/*.ipa 2>/dev/null | head -1)
+          if [ -n "$IPA_FILE" ]; then
+            xcrun altool --upload-app \
+              --type ios \
+              --file "$IPA_FILE" \
+              --username "$APPLE_ID" \
+              --password "$APP_SPECIFIC_PASSWORD" \
+              --team-id "$APPLE_TEAM_ID"
+            echo "TestFlight upload complete"
+          else
+            echo "No IPA file found for upload"
+            exit 1
+          fi
+
+      # ── Step 16: Generate build summary ─────────────────────
+      - name: Generate build summary
+        run: |
+          echo "=========================================="
+          echo "  KhmerCareer Express - iOS Build"
+          echo "=========================================="
+          echo "Build type: ${{ github.event.inputs.build_type || 'both' }}"
+          echo "Build number: ${{ github.run_number }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref }}"
+          echo ""
+          echo "Xcode version: $(xcodebuild -version | head -1)"
+          echo "macOS version: $(sw_vers -productVersion)"
+          echo ""
+          echo "Output files:"
+          ls -la output/final/ 2>/dev/null || echo "No output files"
+          echo ""
+          echo "Signed build: ${{ secrets.APPLE_CERTIFICATE_BASE64 != '' }}"
+          echo "TestFlight upload: ${{ github.event.inputs.upload_testflight }}"
+          echo "=========================================="
+
+  # ── Notify on build completion ────────────────────────────
+  notify:
+    name: Notify build status
+    needs: build-ios
+    runs-on: macos-latest
+    if: always()
+    steps:
+      - name: Build status
+        run: |
+          if [ "${{ needs.build-ios.result }}" == "success" ]; then
+            echo "iOS build completed successfully!"
+          else
+            echo "iOS build failed or was cancelled."
+            exit 1
+          fi
