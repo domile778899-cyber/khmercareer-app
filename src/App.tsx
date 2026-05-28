@@ -46,6 +46,7 @@ const ChatDetail = lazy(() => import('./pages/ChatDetail'))
 const AIMatch = lazy(() => import('./pages/AIMatch'))
 const VideoResume = lazy(() => import('./pages/VideoResume'))
 const VideoResumeRecord = lazy(() => import('./pages/VideoResumeRecord'))
+const Holidays = lazy(() => import('./pages/Holidays'))
 
 /* ── Admin pages ── */
 const AdminLayout = lazy(() => import('./admin/AdminLayout'))
@@ -183,6 +184,7 @@ export default function App() {
                 <Route path="/ai-match" element={<SafeRoute><SuspenseWrapper><AIMatch /></SuspenseWrapper></SafeRoute>} />
                 <Route path="/video-resume" element={<SafeRoute><SuspenseWrapper><VideoResume /></SuspenseWrapper></SafeRoute>} />
                 <Route path="/video-resume/record" element={<SafeRoute><SuspenseWrapper><VideoResumeRecord /></SuspenseWrapper></SafeRoute>} />
+                <Route path="/holidays" element={<SafeRoute><SuspenseWrapper><Holidays /></SuspenseWrapper></SafeRoute>} />
                 <Route path="*" element={<SafeRoute><SuspenseWrapper><NotFound /></SuspenseWrapper></SafeRoute>} />
               </Route>
 

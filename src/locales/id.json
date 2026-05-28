@@ -20,7 +20,8 @@
     "forEmployers": "Untuk Perekrut",
     "general": "Umum",
     "teach": "Mengajar",
-    "logout": "Keluar"
+    "logout": "Keluar",
+    "holidays": "Hari Raya"
   },
   "hero": {
     "title": "Temukan Pekerjaan yang Tepat",
@@ -924,5 +925,8 @@
     "freeToApply": "GRATIS to Lamar",
     "seventyCommission": "Komisi 70%",
     "monthlyPayouts": "Bulanan payouts"
+  },
+  "holidays": {
+    "title": "Festival Tradisional Kamboja"
   }
 }

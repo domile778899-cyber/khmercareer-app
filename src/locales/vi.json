@@ -20,7 +20,8 @@
     "forEmployers": "Dành cho nhà tuyển dụng",
     "general": "Chung",
     "logout": "Đăng xuất",
-    "teach": "Giảng dạy"
+    "teach": "Giảng dạy",
+    "holidays": "Ngày lễ"
   },
   "hero": {
     "title": "Tìm công việc phù hợp với bạn",
@@ -924,5 +925,8 @@
     "whySubtitle": "Tham gia nền tảng giáo dục phát triển nhanh nhất Campuchia. Chúng tôi cung cấp mọi thứ bạn cần để thành công.",
     "whyTeach": "Tại sao giảng dạy tại đây",
     "title": "Chia sẻ kiến thức của bạn"
+  },
+  "holidays": {
+    "title": "Lễ hội truyền thống Campuchia"
   }
 }

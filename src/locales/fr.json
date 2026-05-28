@@ -20,7 +20,8 @@
     "forEmployers": "Pour employeurs",
     "general": "Général",
     "teach": "Enseigner",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "holidays": "Jours fériés"
   },
   "hero": {
     "title": "Trouvez l'emploi qu'il vous faut",
@@ -924,5 +925,8 @@
     "freeToApply": "GRATUIT to Postuler",
     "seventyCommission": "70% de commission",
     "monthlyPayouts": "Mensuel payouts"
+  },
+  "holidays": {
+    "title": "Festivals traditionnels cambodgiens"
   }
 }

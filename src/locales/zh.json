@@ -20,7 +20,8 @@
     "forEmployers": "雇主",
     "general": "通用",
     "teach": "教学",
-    "logout": "退出"
+    "logout": "退出",
+    "holidays": "节日"
   },
   "hero": {
     "title": "找到适合您的工作",
@@ -924,5 +925,8 @@
     "freeToApply": "免费申请",
     "seventyCommission": "70%分成",
     "monthlyPayouts": "按月结算"
+  },
+  "holidays": {
+    "title": "柬埔寨传统节日"
   }
 }

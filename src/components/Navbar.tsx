@@ -7,7 +7,7 @@ import {
   Briefcase, GraduationCap, DollarSign, FileText, CreditCard,
   Building2, Video, Radio, TrendingUp, Tag, Info, Mail,
   BookOpen, Presentation, Sparkles, LayoutDashboard, Globe, Smartphone,
-  MessageCircle,
+  MessageCircle, Calendar,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useChat } from '../context/ChatContext';
@@ -47,6 +47,7 @@ const generalLinks: NavItem[] = [
   { path: '/pricing', labelKey: 'nav.pricing', icon: <Tag size={16} /> },
   { path: '/about', labelKey: 'nav.about', icon: <Info size={16} /> },
   { path: '/contact', labelKey: 'nav.contact', icon: <Mail size={16} /> },
+  { path: '/holidays', labelKey: 'nav.holidays', icon: <Calendar size={16} /> },
 ];
 
 const educationLinks: NavItem[] = [
@@ -626,6 +627,4 @@ export default function Navbar() {
           </span>
         )}
       </Link>
-    </>
-  );
-}
+    <

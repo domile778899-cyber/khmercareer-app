@@ -20,7 +20,8 @@
     "forEmployers": "Für Arbeitgeber",
     "general": "Allgemein",
     "teach": "Unterrichten",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "holidays": "Feiertage"
   },
   "hero": {
     "title": "Finden Sie den richtigen Job",
@@ -924,5 +925,8 @@
     "freeToApply": "KOSTENLOS to Bewerben",
     "seventyCommission": "70% Provision",
     "monthlyPayouts": "Monatlich payouts"
+  },
+  "holidays": {
+    "title": "Traditionelle Feste Kambodschas"
   }
 }

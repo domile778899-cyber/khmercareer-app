@@ -20,7 +20,8 @@
     "forEmployers": "Para empleadores",
     "general": "General",
     "teach": "Enseñar",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "holidays": "Días festivos"
   },
   "hero": {
     "title": "Encuentre el trabajo adecuado",
@@ -924,5 +925,8 @@
     "freeToApply": "GRATIS to Aplicar",
     "seventyCommission": "70% de comision",
     "monthlyPayouts": "Mensual payouts"
+  },
+  "holidays": {
+    "title": "Festivales tradicionales de Camboya"
   }
 }

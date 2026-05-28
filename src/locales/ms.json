@@ -20,7 +20,8 @@
     "forEmployers": "Untuk Majikan",
     "general": "Umum",
     "teach": "Mengajar",
-    "logout": "Log Keluar"
+    "logout": "Log Keluar",
+    "holidays": "Cuti Umum"
   },
   "hero": {
     "title": "Cari Pekerjaan yang Sesuai",
@@ -924,5 +925,8 @@
     "freeToApply": "PERCUMA to Mohon",
     "seventyCommission": "Komisen 70%",
     "monthlyPayouts": "Bulanan payouts"
+  },
+  "holidays": {
+    "title": "Pesta Tradisional Kemboja"
   }
 }

@@ -20,7 +20,8 @@
     "forEmployers": "لأصحاب العمل",
     "general": "عام",
     "teach": "تدريس",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "holidays": "العطلات"
   },
   "hero": {
     "title": "ابحث عن الوظيفة المناسبة لك",
@@ -924,5 +925,8 @@
     "freeToApply": "مجاني to تقديم",
     "seventyCommission": "70% komisyon",
     "monthlyPayouts": "شهري payouts"
+  },
+  "holidays": {
+    "title": "المهرجانات التقليدية في كمبوديا"
   }
 }

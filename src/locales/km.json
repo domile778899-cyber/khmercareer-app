@@ -423,7 +423,8 @@
     "pricing": "តម្លៃ",
     "about": "អំពីយើង",
     "teach": "បង្រៀន",
-    "register": "ចុះឈ្មោះ"
+    "register": "ចុះឈ្មោះ",
+    "holidays": "ថ្ងៃបុណ្យ"
   },
   "privacy": {
     "userRights": "សិទ្ធិអ្នកប្រើប្រាស់",
@@ -924,5 +925,8 @@
     "unlimitedApplications": "ពាក្យសុំការងារឥតកំណត់",
     "viewPricing": "មើលតម្លៃ",
     "whyJoinUs": "ហេតុអ្វីបានជាចូលរួមជាមួយយើង?"
+  },
+  "holidays": {
+    "title": "បុណ្យប្រពៃណីកម្ពុជា"
   }
 }

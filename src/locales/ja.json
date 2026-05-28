@@ -20,7 +20,8 @@
     "forEmployers": "企業様へ",
     "general": "一般",
     "teach": "講師になる",
-    "logout": "ログアウト"
+    "logout": "ログアウト",
+    "holidays": "祝日"
   },
   "hero": {
     "title": "あなたにぴったりの仕事を見つけよう",
@@ -924,5 +925,8 @@
     "freeToApply": "無料 to 応募する",
     "seventyCommission": "70%コミッション",
     "monthlyPayouts": "月額 payouts"
+  },
+  "holidays": {
+    "title": "カンボジアの伝統祭り"
   }
 }

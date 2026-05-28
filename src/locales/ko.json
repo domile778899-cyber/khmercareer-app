@@ -20,7 +20,8 @@
     "forEmployers": "기업용",
     "general": "일반",
     "teach": "강사되기",
-    "logout": "로그아웃"
+    "logout": "로그아웃",
+    "holidays": "공휴일"
   },
   "hero": {
     "title": "당신에게 맞는 일자리를 찾아보세요",
@@ -924,5 +925,8 @@
     "freeToApply": "묣 to 지원하기",
     "seventyCommission": "70% 커미션",
     "monthlyPayouts": "월간 payouts"
+  },
+  "holidays": {
+    "title": "캄볼디아 전통 축제"
   }
 }

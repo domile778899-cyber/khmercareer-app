@@ -20,7 +20,8 @@
     "forEmployers": "Для работодателей",
     "general": "Общее",
     "teach": "Преподавать",
-    "logout": "Выход"
+    "logout": "Выход",
+    "holidays": "Праздники"
   },
   "hero": {
     "title": "Найдите подходящую работу",
@@ -924,5 +925,8 @@
     "freeToApply": "БЕСПЛАТНО to Откликнуться",
     "seventyCommission": "70% komissii",
     "monthlyPayouts": "Ежемесячно payouts"
+  },
+  "holidays": {
+    "title": "Традиционные фестивали Камбоджи"
   }
 }

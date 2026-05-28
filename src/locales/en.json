@@ -20,7 +20,8 @@
     "forEmployers": "For Employers",
     "general": "General",
     "teach": "Teach",
-    "logout": "Logout"
+    "logout": "Logout",
+    "holidays": "Holidays"
   },
   "hero": {
     "title": "Find the Right Job for You",
@@ -924,5 +925,8 @@
     "freeToApply": "Free to apply",
     "seventyCommission": "70% commission",
     "monthlyPayouts": "Monthly payouts"
+  },
+  "holidays": {
+    "title": "Cambodian Traditional Festivals"
   }
 }
