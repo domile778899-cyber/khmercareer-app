@@ -123,7 +123,7 @@ export function HolidayCountdown({ className, holidayId }: Props) {
 
   if (!selectedHoliday || !countdown) {
     return (
-      <div className={`bg-white rounded-2xl shadow-lg p-8 text-center ${className || ''}`}`}>
+      <div className={`bg-white rounded-2xl shadow-lg p-8 text-center ${className || ''}`}>
         <Timer className="w-12 h-12 text-gray-300 mx-auto mb-3" />
         <p className="text-gray-400">{t('holidayCountdown.noUpcoming', 'No upcoming holidays')}</p>
       </div>

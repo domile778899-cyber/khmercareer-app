@@ -173,7 +173,7 @@ export function HolidayMiniWidget({ className, variant = 'sidebar' }: Props) {
   return (
     <>
       <div
-        className={`bg-white rounded-lg shadow border border-gray-100 overflow-hidden ${className || ''}`}`}
+        className={`bg-white rounded-lg shadow border border-gray-100 overflow-hidden ${className || ''}`}
       >
         <button
           onClick={() => setShowCalendar(true)}

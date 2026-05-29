@@ -627,4 +627,6 @@ export default function Navbar() {
           </span>
         )}
       </Link>
-    <
+  </>
+  );
+}
